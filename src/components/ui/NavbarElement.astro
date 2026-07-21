@@ -1,0 +1,23 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  isActive: boolean;
+}
+
+const { href, label, isActive } = Astro.props;
+---
+
+<li>
+  <a
+    href={href}
+    class:list={[
+      "transition-colors",
+      isActive
+        ? "text-primary font-medium"
+        : "text-foreground hover:text-primary-hover",
+    ]}
+  >
+    {label}
+  </a>
+</li>

@@ -1,0 +1,43 @@
+---
+// src/components/Header.astro
+import NavbarElement from "./ui/NavbarElement.astro";
+
+const pathname = Astro.url.pathname;
+
+const navItems = [
+  { path: "/", label: "inicio" },
+  { path: "/lab", label: "lab" },
+  { path: "/projects", label: "proyectos" },
+];
+---
+
+<header
+  class="flex justify-between items-center py-6 font-mono text-foreground text-lg"
+>
+  <!-- Branding / Logo -->
+  <a href="/" class="cursor-default select-none">
+    <span>matiasblanc@web:~$</span>
+  </a>
+
+  <!-- Navegación -->
+  <nav aria-label="Navegación principal">
+    <ul class="flex gap-6 list-none">
+      {
+        navItems.map((item) => {
+          const isActive =
+            item.path === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.path);
+
+          return (
+            <NavbarElement
+              href={item.path}
+              label={item.label}
+              isActive={isActive}
+            />
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>

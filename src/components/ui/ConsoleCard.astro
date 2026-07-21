@@ -1,0 +1,18 @@
+---
+import Button from "./Button.astro";
+interface Props {
+  title: string;
+  content: string;
+  buttonText?: string;
+}
+
+const { title, content, buttonText } = Astro.props;
+---
+
+<article class="border-foreground py-5">
+  <h3 class="text-muted mb-2 font-mono text-md tracking-tight">
+    $ cat {title}
+  </h3>
+  <p class="mb-2 font-sans text-lg">{content}</p>
+  {buttonText && <Button buttonText={buttonText} />}
+</article>
