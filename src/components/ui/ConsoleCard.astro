@@ -1,18 +1,34 @@
 ---
 import Button from "./Button.astro";
+
 interface Props {
   title: string;
-  content: string;
+  content?: string;
   buttonText?: string;
+  buttonHref?: string;
+  /** Permite pasar contenido adicional debajo del texto */
+  class?: string;
 }
 
-const { title, content, buttonText } = Astro.props;
+const { title, content, buttonText, buttonHref, class: className } = Astro.props;
+const hasSlot = await Astro.slots.has("default");
 ---
 
-<article class="border-foreground py-5">
+<article class:list={["border-foreground py-5", className]}>
   <h3 class="text-muted mb-2 font-mono text-md tracking-tight">
     $ cat {title}
   </h3>
-  <p class="mb-2 font-sans text-lg">{content}</p>
-  {buttonText && <Button buttonText={buttonText} />}
+  {content && <p class="mb-3 font-sans text-lg leading-relaxed">{content}</p>}
+  {hasSlot && (
+    <div class="mb-3 font-sans text-lg leading-relaxed">
+      <slot />
+    </div>
+  )}
+  {
+    buttonText && (
+      <a href={buttonHref ?? "#"} download={!buttonHref || buttonHref === "#" ? true : undefined}>
+        <Button>$ {buttonText}</Button>
+      </a>
+    )
+  }
 </article>

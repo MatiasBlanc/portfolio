@@ -1,0 +1,44 @@
+---
+// src/components/Footer.astro
+// Footer del portfolio con links, prompt y año actual
+const year = new Date().getFullYear();
+
+const links = [
+  { label: "GitHub", href: "https://github.com/matiasblanc" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/matiasblanc" },
+  { label: "Email", href: "mailto:hola@matiasblanc.dev" },
+];
+---
+
+<footer class="border-t border-foreground mt-8 py-8 font-mono text-sm">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <!-- Prompt izquierdo -->
+    <div>
+      <span class="text-muted">matias@web:~$</span>{" "}
+      <span class="text-foreground opacity-60">exit</span>
+    </div>
+
+    <!-- Links sociales -->
+    <ul class="flex gap-6 list-none">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted hover:text-primary transition-colors duration-200"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- Copyright -->
+    <p class="text-muted opacity-60 text-xs">
+      © {year} Matías Blanc
+    </p>
+  </div>
+</footer>

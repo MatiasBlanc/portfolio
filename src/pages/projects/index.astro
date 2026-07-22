@@ -1,10 +1,13 @@
 ---
 import { getCollection } from "astro:content";
 import BaseHead from "../../components/BaseHead.astro";
-import FormattedDate from "../../components/FormattedDate.astro";
-
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ProjectCard from "../../components/ui/ProjectCard.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
-const posts = (await getCollection("projects")).sort(
+import "../../global.css";
+
+const projects = (await getCollection("projects")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
@@ -12,26 +15,51 @@ const posts = (await getCollection("projects")).sort(
 <!doctype html>
 <html lang="es">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead
+      title={`Proyectos · ${SITE_TITLE}`}
+      description={SITE_DESCRIPTION}
+    />
   </head>
-  <body>
+  <body class="w-full lg:w-9/12 mx-auto px-4 lg:px-0">
+    <Header currentPage="proyectos" />
+
     <main>
-      <section>
-        <ul>
-          {
-            posts.map((post) => (
-              <li>
-                <a href={`/blog/${post.id}/`}>
-                  <p class="text-blue-900">
-                    <FormattedDate date={post.data.pubDate} />
-                  </p>
-                  <h4 class="title">{post.data.title}</h4>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+      <!-- Encabezado al estilo terminal -->
+      <div class="py-6 border-b border-foreground">
+        <h1 class="font-mono text-muted text-md tracking-tight mb-1">
+          $ ls proyectos/
+        </h1>
+        <p class="font-sans text-2xl font-bold text-foreground">
+          Proyectos
+        </p>
+      </div>
+
+      <!-- Grid de cards -->
+      <div class="py-8">
+        {
+          projects.length === 0 ? (
+            <p class="font-mono text-muted text-sm">
+              — no se encontraron proyectos
+            </p>
+          ) : (
+            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {projects.map((project) => (
+                <ProjectCard
+                  title={project.data.title}
+                  description={project.data.description}
+                  status={project.data.status}
+                  tags={project.data.tags}
+                  image={project.data.image}
+                  imageAlt={project.data.imageAlt}
+                  href={`/projects/${project.id}/`}
+                />
+              ))}
+            </ul>
+          )
+        }
+      </div>
     </main>
+
+    <Footer />
   </body>
 </html>

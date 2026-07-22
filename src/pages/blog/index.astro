@@ -1,9 +1,11 @@
 ---
 import { getCollection } from "astro:content";
-import BaseHead from "../../components/BaseHead.astro";
-import FormattedDate from "../../components/FormattedDate.astro";
 
+import BaseHead from "../../components/BaseHead.astro";
+import BlogCard from "../../components/ui/BlogCard.astro";
+import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
@@ -14,21 +16,22 @@ const posts = (await getCollection("blog")).sort(
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
-  <body>
-    <main>
-      <section>
-        <ul>
+  <body
+    class="w-full lg:w-9/12 mx-auto bg-background text-foreground font-mono"
+  >
+    <Header currentPage="blog" />
+    <main class="px-4 lg:px-0">
+      <section class="divide-y divide-foreground">
+        <!-- <h1 class="text-sans text-foreground text-3xl font-bold">blog</h1> -->
+        <ul class="lg:w-9/12 flex flex-col p-0 mx-auto">
           {
             posts.map((post) => (
-              <li>
-                <a class="flex" href={`/blog/${post.id}/`}>
-                  <p class="text-blue-900">
-                    <FormattedDate date={post.data.pubDate} />
-                  </p>
-                  <h4 class="title">{post.data.title}</h4>
-                  <p class="text-muted">{post.data.status}</p>
-                </a>
-              </li>
+              <BlogCard
+                id={post.id}
+                title={post.data.title}
+                status={post.data.status}
+                pubDate={post.data.pubDate}
+              />
             ))
           }
         </ul>
