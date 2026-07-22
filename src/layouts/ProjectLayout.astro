@@ -1,0 +1,124 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import type { CollectionEntry } from "astro:content";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Button from "../components/ui/Button.astro";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+const { title, description, pubDate, status, tags, image, imageAlt } = project.data;
+
+const statusLabel = {
+  en_progreso: "en progreso",
+  completado:  "completado",
+  pausado:     "pausado",
+} as const;
+
+const statusColor = {
+  en_progreso: "bg-primary text-background",
+  completado:  "bg-foreground text-background",
+  pausado:     "bg-muted/60 text-foreground",
+} as const;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <BaseHead title={`${title} · Proyectos`} description={description} />
+  </head>
+  <body class="w-full lg:w-9/12 mx-auto px-4 lg:px-0">
+    <Header />
+    
+    <main>
+      <!-- Breadcrumb / Header de terminal -->
+      <div class="py-4 border-b border-foreground mb-6">
+        <p class="font-mono text-muted text-sm tracking-tight">
+          matias@web:~$ cd proyectos/ && cat {project.id}.md
+        </p>
+      </div>
+
+      <header class="mb-8">
+        <!-- Hero Image -->
+        <div class="w-full mb-6 border border-foreground/20 overflow-hidden" style="aspect-ratio: 16/9;">
+          <img
+            src={image}
+            alt={imageAlt}
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        <!-- Meta info -->
+        <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
+          <h1 class="text-sans text-foreground text-3xl font-bold leading-tight">{title}</h1>
+          <span
+            class:list={[
+              "font-mono text-sm px-3 py-1 font-semibold tracking-tight",
+              statusColor[status],
+            ]}
+          >
+            {statusLabel[status]}
+          </span>
+        </div>
+
+        <p class="text-lg text-muted mb-4 font-sans leading-relaxed">
+          {description}
+        </p>
+
+        <!-- Tags & Date -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 border-y border-foreground/20">
+          <div class="flex gap-2 flex-wrap">
+            {tags.map((tag) => (
+              <span class="font-mono text-xs bg-foreground/5 text-muted px-2 py-1 border border-foreground/15">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <p class="text-muted text-sm font-mono whitespace-nowrap">
+            [ <FormattedDate date={pubDate} /> ]
+          </p>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <article
+        class="mb-12 prose max-w-none
+          prose-headings:text-foreground
+          prose-headings:font-sans
+          prose-headings:tracking-tight
+          prose-p:text-foreground
+          prose-p:font-sans
+          prose-p:tracking-tight
+          prose-p:leading-relaxed
+          prose-a:text-primary
+          prose-a:font-mono
+          prose-code:font-mono
+          prose-a:tracking-tight
+          prose-a:no-underline
+          prose-a:hover:underline
+          prose-a:hover:text-primary-hover
+          prose-img:border
+          prose-img:border-foreground/20
+          prose-img:my-6
+          prose-blockquote:bg-foreground/5
+          prose-blockquote:border-l-primary"
+      >
+        <slot />
+      </article>
+      
+      <div class="border-t border-foreground pt-6 flex justify-between items-center">
+        <a href="/projects" class="text-muted hover:text-primary font-mono text-sm transition-colors">
+          &lt;- cd ..
+        </a>
+      </div>
+    </main>
+
+    <Footer />
+  </body>
+</html>

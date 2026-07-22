@@ -1,43 +1,108 @@
 ---
 // src/components/Header.astro
 import NavbarElement from "./ui/NavbarElement.astro";
+import { Menu, X } from "reicon-react";
 
 const pathname = Astro.url.pathname;
-
 const navItems = [
   { path: "/", label: "inicio" },
-  { path: "/lab", label: "lab" },
+  { path: "/blog", label: "blog" },
   { path: "/projects", label: "proyectos" },
 ];
+
+const isActive = (path: string) =>
+  path === "/" ? pathname === "/" : pathname.startsWith(path);
 ---
 
 <header
-  class="flex justify-between items-center py-6 font-mono text-foreground text-lg"
+  class="flex justify-between items-center p-5 font-mono text-foreground text-lg lg:px-0 relative"
 >
   <!-- Branding / Logo -->
   <a href="/" class="cursor-default select-none">
     <span>matiasblanc@web:~$</span>
   </a>
 
-  <!-- Navegación -->
-  <nav aria-label="Navegación principal">
+  <!-- Botón Burger (Solo móvil) -->
+  <button
+    id="menu-btn"
+    class="md:hidden focus:outline-none flex items-center justify-center w-8 h-8 cursor-pointer relative z-50"
+    aria-label="Abrir menú"
+    aria-expanded="false"
+  >
+    <!-- Icono de Menú abierto por defecto -->
+    <span id="icon-menu" class="flex items-center justify-center">
+      <Menu size={24} />
+    </span>
+    <!-- Icono de Cerrar oculto por defecto -->
+    <span id="icon-close" class="hidden flex items-center justify-center">
+      <X size={24} />
+    </span>
+  </button>
+
+  <!-- Navegación de Escritorio -->
+  <nav aria-label="Navegación principal" class="hidden md:block">
     <ul class="flex gap-6 list-none">
       {
-        navItems.map((item) => {
-          const isActive =
-            item.path === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.path);
+        navItems.map((item) => (
+          <NavbarElement
+            href={item.path}
+            label={item.label}
+            isActive={isActive(item.path)}
+          />
+        ))
+      }
+    </ul>
+  </nav>
 
-          return (
-            <NavbarElement
-              href={item.path}
-              label={item.label}
-              isActive={isActive}
-            />
-          );
-        })
+  <!-- Menú Desplegable Móvil (Oculto por defecto) -->
+  <nav
+    id="mobile-menu"
+    aria-label="Navegación móvil"
+    class="hidden fixed inset-0 bg-background z-40 flex-col items-center justify-center p-5 gap-6 md:hidden"
+  >
+    <ul class="flex flex-col items-center gap-6 list-none text-xl">
+      {
+        navItems.map((item) => (
+          <NavbarElement
+            href={item.path}
+            label={item.label}
+            isActive={isActive(item.path)}
+          />
+        ))
       }
     </ul>
   </nav>
 </header>
+
+<script>
+  const menuBtn = document.getElementById("menu-btn");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const iconMenu = document.getElementById("icon-menu");
+  const iconClose = document.getElementById("icon-close");
+
+  const toggleMenu = () => {
+    const isHidden = mobileMenu?.classList.toggle("hidden");
+    mobileMenu?.classList.toggle("flex");
+
+    // Cambiar iconos de hamburguesa a cruz
+    iconMenu?.classList.toggle("hidden");
+    iconClose?.classList.toggle("hidden");
+
+    if (menuBtn) {
+      menuBtn.setAttribute("aria-expanded", (!isHidden).toString());
+    }
+  };
+
+  menuBtn?.addEventListener("click", toggleMenu);
+
+  // Cerrar el menú automáticamente al hacer clic en cualquier enlace
+  mobileMenu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.add("hidden");
+      mobileMenu.classList.remove("flex");
+      iconMenu?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+      menuBtn?.setAttribute("aria-expanded", "false");
+    });
+  });
+</script>

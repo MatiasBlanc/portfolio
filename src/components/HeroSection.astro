@@ -1,0 +1,152 @@
+---
+
+---
+
+<section class="hero-section py-10 md:py-14 relative overflow-hidden">
+  <!-- Prompt decorativo con typing — encima del título -->
+  <div
+    class="hero-prompt font-mono text-muted text-sm md:text-base tracking-tight"
+  >
+    <span id="typed-output" class="ml-2 text-foreground opacity-70"></span>
+    <span class="cursor-blink">▌</span>
+  </div>
+
+  <!-- Nombre principal — inline, tamaño moderado, llamativo -->
+  <div class="hero-name overflow-hidden">
+    <h1
+      class="hero-title font-bold leading-tight tracking-tighter text-foreground whitespace-nowrap"
+    >
+      <span class="name-first">Matías</span><!--
+   -->
+      <span class="name-last">Blanc</span>
+    </h1>
+  </div>
+
+  <!-- Subtítulo con rol -->
+  <p
+    class="hero-subtitle mt-3 font-mono text-muted text-sm md:text-base tracking-tight"
+  >
+    <span class="text-primary font-semibold">frontend dev</span>
+    <span class="opacity-40 mx-2">·</span>
+    cinturón negro de Taekwon-Do ITF
+  </p>
+</section>
+
+<style>
+  /* Prompt — aparece primero */
+  .hero-prompt {
+    animation: fadeIn 0.6s ease 0s both;
+  }
+
+  /* Tamaño fluido del título: entre 2.4rem y 4rem, en una línea */
+  .hero-title {
+    font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    font-family: var(--font-sans);
+    animation: slideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(40px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* El "last name" tiene un ligero acento */
+  .name-last {
+    position: relative;
+  }
+  .name-last::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--color-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: underlineIn 0.4s ease 0.75s forwards;
+  }
+
+  @keyframes underlineIn {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Subtítulo — aparece después del título */
+  .hero-subtitle {
+    animation: fadeIn 0.8s ease 0.5s both;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Cursor parpadeante */
+  .cursor-blink {
+    color: var(--color-primary);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  // Efecto typing en el prompt del hero
+  const phrases = [
+    "ls",
+    "cat bio.txt",
+    "cat experiencia.log",
+    "open portfolio/",
+  ];
+  let phraseIdx = 0;
+  let charIdx = 0;
+  let deleting = false;
+  const el = document.getElementById("typed-output");
+
+  function type() {
+    if (!el) return;
+    const current = phrases[phraseIdx];
+
+    if (!deleting) {
+      el.textContent = current.slice(0, charIdx + 1);
+      charIdx++;
+      if (charIdx === current.length) {
+        deleting = true;
+        setTimeout(type, 1800);
+        return;
+      }
+    } else {
+      el.textContent = current.slice(0, charIdx - 1);
+      charIdx--;
+      if (charIdx === 0) {
+        deleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+      }
+    }
+    setTimeout(type, deleting ? 55 : 100);
+  }
+
+  setTimeout(type, 800);
+</script>

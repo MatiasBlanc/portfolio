@@ -1,0 +1,80 @@
+---
+// src/components/ui/ProjectCard.astro
+// Card de proyecto para la página /projects
+// Imagen arriba (16:9, no cuadrada), contenido debajo
+
+interface Props {
+  title: string;
+  description: string;
+  status: "en_progreso" | "completado" | "pausado";
+  tags: string[];
+  image: string;
+  imageAlt: string;
+  href?: string;
+}
+
+const { title, description, status, tags, image, imageAlt, href = "#" } = Astro.props;
+
+const statusLabel = {
+  en_progreso: "en progreso",
+  completado:  "completado",
+  pausado:     "pausado",
+} as const;
+
+const statusColor = {
+  en_progreso: "bg-primary text-background",
+  completado:  "bg-foreground text-background",
+  pausado:     "bg-muted/60 text-foreground",
+} as const;
+---
+
+<li class="list-none group">
+  <a href={href} class="block border border-foreground/20 hover:border-foreground transition-colors duration-200">
+
+    <!-- Imagen arriba — ratio 16:9, no cuadrada -->
+    <div class="overflow-hidden" style="aspect-ratio: 16/9;">
+      <img
+        src={image}
+        alt={imageAlt}
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <!-- Contenido debajo -->
+    <div class="px-4 py-4 border-t border-foreground/20">
+
+      <!-- Título + badge -->
+      <div class="flex items-start justify-between gap-3 mb-2">
+        <h3 class="font-bold font-sans text-base leading-snug group-hover:text-primary transition-colors duration-200">
+          {title}
+        </h3>
+        <span
+          class:list={[
+            "font-mono text-xs px-2 py-0.5 shrink-0 font-semibold tracking-tight mt-0.5",
+            statusColor[status],
+          ]}
+        >
+          {statusLabel[status]}
+        </span>
+      </div>
+
+      <!-- Descripción -->
+      <p class="text-muted text-sm leading-relaxed line-clamp-2 mb-3">
+        {description}
+      </p>
+
+      <!-- Tags -->
+      <div class="flex gap-1.5 flex-wrap">
+        {
+          tags.map((tag) => (
+            <span class="font-mono text-xs text-muted px-2 py-0.5 border border-foreground/20">
+              {tag}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </a>
+</li>

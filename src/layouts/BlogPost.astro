@@ -1,12 +1,16 @@
 ---
-import { Image } from "astro:assets";
-import type { CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
+import { Fire } from "reicon-react";
+import type { CollectionEntry } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
+import Button from "../components/ui/Button.astro";
+interface Props {
+  post: CollectionEntry<"blog">;
+}
 
-type Props = CollectionEntry<"blog">["data"];
-
-const { title, description, pubDate, updatedDate } = Astro.props;
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate } = post.data;
 ---
 
 <!doctype html>
@@ -16,26 +20,51 @@ const { title, description, pubDate, updatedDate } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <BaseHead title={title} description={description} />
   </head>
-  <body>
-    <main>
-      <article>
-        <div class="">
-          <div class="">
-            <div class="">
+  <body class="w-full lg:w-9/12 mx-auto px-5">
+    <Header />
+    <header class="flex items-center justify-between p-4">
+      <div class="">
+        {
+          updatedDate ? (
+            <p class="text-muted text-sm">
+              Last updated on <FormattedDate date={updatedDate} />
+            </p>
+          ) : (
+            <p class="text-muted text-sm">
               <FormattedDate date={pubDate} />
-              {
-                updatedDate && (
-                  <div class="">
-                    Last updated on <FormattedDate date={updatedDate} />
-                  </div>
-                )
-              }
-            </div>
-            <h1>{title}</h1>
-            <hr />
-          </div>
-        </div>
-      </article>
-    </main>
+            </p>
+          )
+        }
+        <h1 class="text-sans text-foreground text-3xl font-bold">{title}</h1>
+      </div>
+      <Button>
+        Te gusto?
+        <Fire size={24} weight="Filled" />
+      </Button>
+    </header>
+    <hr />
+    <article
+      class="my-5 prose max-w-none
+        prose-headings:text-foreground
+        prose-headings:font-sans
+        prose-headings:tracking-tight
+        prose-p:text-foreground
+        prose-p:font-sans
+        prose-p:tracking-tight
+        prose-a:text-primary
+        prose-a:font-mono
+        prose-code:font-mono
+        prose-a:tracking-tight
+        prose-a:no-underline
+        prose-a:hover:underline
+      prose-a:hover:text-primary-hover
+        prose-img:border
+      prose-img:border-foreground
+        prose-img:rounded-full
+        prose-img:my-4
+        prose-blockquote:bg-background-surface"
+    >
+      <slot />
+    </article>
   </body>
 </html>

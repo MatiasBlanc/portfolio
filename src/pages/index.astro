@@ -1,42 +1,64 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
+import HeroSection from "../components/HeroSection.astro";
 import ConsoleCard from "../components/ui/ConsoleCard.astro";
+import LatestPosts from "../components/LatestPosts.astro";
+import FeaturedProjects from "../components/FeaturedProjects.astro";
+import Footer from "../components/Footer.astro";
 
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 import "../global.css";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
-  <body class="w-8/12 mx-auto">
+  <body class="w-full lg:w-9/12 mx-auto px-4 lg:px-0">
     <Header currentPage="inicio" />
-    <main class="divide-y divide-foreground">
-      <div class="py-5">
-        <h1 class="text-sans text-foreground text-5xl font-bold">
-          Matias Blanc
-        </h1>
+
+    <main>
+      <!-- ── HERO: Nombre + typing effect ── -->
+      <div class="border-b border-foreground">
+        <HeroSection />
       </div>
-      <div>
+
+      <!-- ── BIO ── -->
+      <div class="border-b border-foreground">
         <ConsoleCard
           title="bio.txt"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          content="Desarrollador frontend, cinturón negro de Taekwon-Do. Hago el 80% del frontend de una app móvil para ITF. Documento lo que armo: hardware, dotfiles, código."
         />
       </div>
-      <section class="grid grid-cols-2 divide-x divide-foreground gap-5">
-        <ConsoleCard
-          title="experiencia.log"
-          content="This is a simple console card."
-          buttonText="download cv"
-        />
-        <ConsoleCard
-          title="taekwondo.log"
-          content="Cinturon negro de Fechitat"
-        />
-      </section>
+
+      <!-- ── EXPERIENCIA + TAEKWONDO (grid 2 col) ── -->
+      <div class="grid grid-cols-1 md:grid-cols-2 border-b border-foreground divide-y md:divide-y-0 md:divide-x divide-foreground">
+        <ConsoleCard title="experiencia.log" buttonText="download cv" buttonHref="/cv.pdf">
+          <p class="font-sans text-lg leading-relaxed">
+            frontend · app móvil ITF
+          </p>
+          <p class="font-sans text-base text-muted mt-1">
+            react, react native, python
+          </p>
+        </ConsoleCard>
+
+        <ConsoleCard title="taekwondo.log" class="md:pl-5">
+          <p class="font-sans text-lg leading-relaxed">
+            cinturón negro · vínculo con FECHITAT/ITF · años de trayectoria
+          </p>
+        </ConsoleCard>
+      </div>
+
+      <!-- ── ÚLTIMOS POSTS ── -->
+      <LatestPosts />
+
+      <!-- ── PROYECTOS DESTACADOS ── -->
+      <FeaturedProjects />
     </main>
+
+    <!-- ── FOOTER ── -->
+    <Footer />
   </body>
 </html>
