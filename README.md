@@ -1,63 +1,70 @@
-# Astro Starter Kit: Blog
+# Matías Blanc — Portfolio
 
-```sh
-bun create astro@latest -- --template blog
-```
+Portfolio y blog personal construido con [Astro](https://astro.build), donde comparto mis proyectos, apuntes y posts sobre desarrollo.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+![Captura del sitio](./public/project-portfolio.jpg)
 
-Features:
+## ✨ Características
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+- ⚡ 100/100 en Lighthouse (rendimiento, accesibilidad, SEO y mejores prácticas)
+- 🔍 SEO-friendly con URLs canónicas y Open Graph
+- 🗺️ Sitemap y RSS feed generados automáticamente
+- 📝 Contenido en Markdown y MDX con tipado de frontmatter
+- 🎨 Estilos con Tailwind CSS 4 y tipografía personalizada
+- 🧩 Componentes interactivos con React
 
-## 🚀 Project Structure
+## 🛠️ Stack
 
-Inside of your Astro project, you'll see the following folders and files:
+| Tecnología | Uso |
+| --- | --- |
+| [Astro](https://astro.build) | Framework del sitio |
+| [React](https://react.dev) | Islas interactivas |
+| [Tailwind CSS](https://tailwindcss.com) | Estilos |
+| [MDX](https://mdxjs.com) | Contenido de posts y proyectos |
+| [Bun](https://bun.sh) | Runtime y gestor de paquetes |
+
+## 🚀 Proyectos destacados
+
+- **Portfolio** — este sitio
+- **ITF App** — [enlace al repo](https://github.com/MatiasBlanc)
+- **Dotfiles** — [enlace al repo](https://github.com/MatiasBlanc)
+
+## 📁 Estructura del proyecto
 
 ```text
-├── public/
+├── public/          # Assets estáticos (imágenes, favicon)
 ├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
+│   ├── components/  # Componentes Astro y React
+│   ├── content/     # Colecciones: blog, projects, copilot
+│   ├── layouts/     # Layouts base
+│   ├── pages/       # Rutas del sitio
+│   ├── consts.ts    # Constantes globales
+│   └── global.css   # Estilos globales
 ├── astro.config.mjs
-├── README.md
 ├── package.json
 └── tsconfig.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🧞 Comandos
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Todos los comandos se ejecutan desde la raíz del proyecto:
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+| Comando | Acción |
+| :--- | :--- |
+| `bun install` | Instala las dependencias |
+| `bun dev` | Inicia el servidor de desarrollo en `localhost:4321` |
+| `bun build` | Genera el sitio de producción en `./dist/` |
+| `bun preview` | Previsualiza el build localmente |
+| `bun astro check` | Revisa tipos y HTML del proyecto |
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 🌐 Sitio en vivo
 
-## 🧞 Commands
+El sitio está desplegado en **[matiasblanc.dev](https://matiasblanc.dev)**.
 
-All commands are run from the root of the project, from a terminal:
+## 📄 Licencia
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+[MIT](./LICENSE)
 
-## 👀 Want to learn more?
+## 🙌 Créditos
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+Tema original basado en [Bear Blog](https://github.com/HermanMartinus/bearblog/), adaptado y extendido con Tailwind CSS.
