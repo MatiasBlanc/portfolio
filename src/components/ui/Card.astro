@@ -1,0 +1,40 @@
+---
+/**
+ * Componente Card base reutilizable.
+ * Proporciona la estructura base para todas las tarjetas del sitio.
+ */
+
+interface Props {
+  /** Enlace opcional (hace la tarjeta clicable) */
+  href?: string;
+  /** Elemento HTML contenedor */
+  as?: "div" | "article" | "li";
+  /** Tamaño del padding */
+  padding?: "sm" | "md" | "lg";
+  /** Clases adicionales */
+  class?: string;
+}
+
+const baseClasses = "border border-foreground/15 rounded-2xl transition-all duration-200 hover:border-foreground/30";
+
+const { href, as: Element = "div", padding = "md", class: className } = Astro.props;
+
+/** Clases de padding según tamaño */
+const paddingClasses: Record<string, string> = {
+  sm: "p-4",
+  md: "p-5",
+  lg: "p-6",
+};
+---
+
+{
+  href ? (
+    <a href={href} class:list={["block", baseClasses, paddingClasses[padding], className]}>
+      <slot />
+    </a>
+  ) : (
+    <Element class:list={[baseClasses, paddingClasses[padding], className]}>
+      <slot />
+    </Element>
+  )
+}

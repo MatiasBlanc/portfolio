@@ -4,6 +4,10 @@ description: "El stack definitivo para desarrollo. Cero distracciones y máxima 
 pubDate: "21 Jul 2026"
 status: "build"
 updatedDate: "21 Jul 2026"
+tags:
+  - Terminal
+  - Neovim
+  - Zsh
 ---
 
 <div align="left">

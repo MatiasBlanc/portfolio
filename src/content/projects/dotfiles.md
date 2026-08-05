@@ -1,13 +1,12 @@
 ---
 title: "Dotfiles — setup de terminal"
-description: "Configuración completa de entorno de desarrollo: Neovim, Kitty, Zsh + Starship. Documentado y reproducible desde cero."
-pubDate: "2026-07-21"
+description: "Configuración completa de entorno: Neovim, Kitty, Zsh + Starship. Documentado y reproducible."
+pubDate: "2026-07-15"
 status: "completado"
-tags: ["Neovim", "Zsh", "Kitty", "Starship", "Lua"]
-image: "/project-dotfiles.jpg"
-imageAlt: "Terminal con Neovim y setup de dotfiles"
+tags: ["Neovim", "Zsh", "Kitty"]
+image: "/project-dotfiles.webp"
+imageAlt: "Vista previa de la configuración de terminal con Neovim y Starship"
 ---
+Configuración de dotfiles para un entorno de terminal completo: Neovim como editor principal, Kitty como emulador de terminal y Zsh con Starship como prompt.
 
-Stack completo de configuración de entorno. Neovim como editor principal, Kitty como terminal, Zsh con Starship como prompt.
-
-Todo versionado en git y documentado para poder reproducir el setup en cualquier máquina desde cero.
+Todo está documentado y versionado para que la configuración sea reproducible desde cero en cualquier máquina.

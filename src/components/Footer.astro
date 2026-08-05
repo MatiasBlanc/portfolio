@@ -1,13 +1,15 @@
 ---
 // src/components/Footer.astro
 // Footer del portfolio con links, prompt y año actual
+import socials from "../data/socials.json";
+
 const year = new Date().getFullYear();
 
-const links = [
-  { label: "GitHub", href: "https://github.com/matiasblanc" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/matiasblanc" },
-  { label: "Email", href: "mailto:hola@matiasblanc.dev" },
-];
+const links = Object.entries(socials).map(([key, value]) => ({
+  key,
+  label: value.label,
+  href: value.url,
+}));
 ---
 
 <footer class="border-t border-foreground mt-8 py-8 font-mono text-sm">

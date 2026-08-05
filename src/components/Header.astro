@@ -1,7 +1,8 @@
 ---
 // src/components/Header.astro
 import NavbarElement from "./ui/NavbarElement.astro";
-import { Menu, X } from "reicon-react";
+import { Menu, X, Sun, Moon, AtSign } from "reicon-react";
+import socials from "../data/socials.json";
 
 const pathname = Astro.url.pathname;
 const navItems = [
@@ -15,33 +16,22 @@ const isActive = (path: string) =>
 ---
 
 <header
-  class="flex justify-between items-center p-5 font-mono text-foreground text-lg lg:px-0 relative"
+  class="flex justify-between items-center p-5 font-mono text-foreground text-lg relative"
 >
   <!-- Branding / Logo -->
-  <a href="/" class="cursor-default select-none">
-    <span>matiasblanc@web:~$</span>
+  <a href="/" class="cursor-default select-none shrink-0">
+    <span class="hidden sm:inline">matiasblanc@web:~$</span>
+    <span class="sm:hidden">~/mb</span>
   </a>
 
-  <!-- Botón Burger (Solo móvil) -->
-  <button
-    id="menu-btn"
-    class="md:hidden focus:outline-none flex items-center justify-center w-8 h-8 cursor-pointer relative z-50"
-    aria-label="Abrir menú"
-    aria-expanded="false"
+  <!-- Navegación de Escritorio (centrada) -->
+  <nav
+    aria-label="Navegación principal"
+    class="hidden md:block absolute left-1/2 -translate-x-1/2"
   >
-    <!-- Icono de Menú abierto por defecto -->
-    <span id="icon-menu" class="flex items-center justify-center">
-      <Menu size={24} />
-    </span>
-    <!-- Icono de Cerrar oculto por defecto -->
-    <span id="icon-close" class="hidden flex items-center justify-center">
-      <X size={24} />
-    </span>
-  </button>
-
-  <!-- Navegación de Escritorio -->
-  <nav aria-label="Navegación principal" class="hidden md:block">
-    <ul class="flex gap-6 list-none">
+    <ul
+      class="flex gap-1 list-none bg-foreground/5 backdrop-blur-sm border border-foreground/10 rounded-full px-2 py-2"
+    >
       {
         navItems.map((item) => (
           <NavbarElement
@@ -54,13 +44,60 @@ const isActive = (path: string) =>
     </ul>
   </nav>
 
+  <!-- Acciones derecha: Theme toggle + Burger -->
+  <div class="flex items-center gap-2">
+    <!-- Twitter / X -->
+    <a
+      href={socials.twitter.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center justify-center w-9 h-9 rounded-full bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 transition-colors duration-200"
+      aria-label={socials.twitter.label}
+    >
+      <AtSign size={18} />
+    </a>
+
+    <!-- Botón de tema -->
+    <button
+      id="theme-toggle"
+      class="flex items-center justify-center w-9 h-9 rounded-full bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 cursor-pointer transition-colors duration-200"
+      aria-label="Cambiar tema"
+    >
+      <span id="icon-sun" class="hidden items-center justify-center">
+        <Sun size={18} />
+      </span>
+      <span id="icon-moon" class="flex items-center justify-center">
+        <Moon size={18} />
+      </span>
+    </button>
+
+    <!-- Botón Burger (Solo móvil) -->
+    <button
+      id="menu-btn"
+      class="md:hidden focus:outline-none flex items-center justify-center w-9 h-9 rounded-full bg-foreground/5 border border-foreground/10 cursor-pointer relative z-50"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+    >
+      <!-- Icono de Menú abierto por defecto -->
+      <span id="icon-menu" class="flex items-center justify-center">
+        <Menu size={20} />
+      </span>
+      <!-- Icono de Cerrar oculto por defecto -->
+      <span id="icon-close" class="hidden flex items-center justify-center">
+        <X size={20} />
+      </span>
+    </button>
+  </div>
+
   <!-- Menú Desplegable Móvil (Oculto por defecto) -->
   <nav
     id="mobile-menu"
     aria-label="Navegación móvil"
-    class="hidden fixed inset-0 bg-background z-40 flex-col items-center justify-center p-5 gap-6 md:hidden"
+    class="hidden fixed inset-0 bg-background/80 backdrop-blur-md z-40 flex-col items-center justify-center p-5 gap-6 md:hidden"
   >
-    <ul class="flex flex-col items-center gap-6 list-none text-xl">
+    <ul
+      class="flex flex-col items-center gap-4 list-none text-xl bg-foreground/5 backdrop-blur-sm border border-foreground/10 rounded-2xl px-6 py-4"
+    >
       {
         navItems.map((item) => (
           <NavbarElement
@@ -75,6 +112,41 @@ const isActive = (path: string) =>
 </header>
 
 <script>
+  // === Theme Toggle ===
+  const themeToggle = document.getElementById("theme-toggle");
+  const iconSun = document.getElementById("icon-sun");
+  const iconMoon = document.getElementById("icon-moon");
+
+  function updateThemeIcons() {
+    const isDark =
+      document.documentElement.getAttribute("data-theme") === "dark";
+    if (isDark) {
+      iconSun?.classList.remove("flex");
+      iconSun?.classList.add("hidden");
+      iconMoon?.classList.remove("hidden");
+      iconMoon?.classList.add("flex");
+    } else {
+      iconSun?.classList.remove("hidden");
+      iconSun?.classList.add("flex");
+      iconMoon?.classList.remove("flex");
+      iconMoon?.classList.add("hidden");
+    }
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    updateThemeIcons();
+  }
+
+  // Inicializar iconos según tema actual
+  updateThemeIcons();
+
+  themeToggle?.addEventListener("click", toggleTheme);
+
+  // === Mobile Menu ===
   const menuBtn = document.getElementById("menu-btn");
   const mobileMenu = document.getElementById("mobile-menu");
   const iconMenu = document.getElementById("icon-menu");

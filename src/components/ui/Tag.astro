@@ -1,0 +1,32 @@
+---
+/**
+ * Tag reutilizable para mostrar tecnologías, categorías, etc.
+ *
+ * @example
+ * <Tag text="React" />
+ * <Tag text="TypeScript" variant="primary" />
+ */
+
+interface Props {
+  /** Texto del tag */
+  text: string;
+  /** Variante de color */
+  variant?: "default" | "primary";
+}
+
+const { text, variant = "default" } = Astro.props;
+
+const variantClasses = {
+  default: "border-foreground/20 text-muted",
+  primary: "border-primary/30 text-primary",
+};
+---
+
+<span
+  class:list={[
+    "font-mono text-xs px-2.5 py-0.5 border inline-flex items-center rounded-full",
+    variantClasses[variant],
+  ]}
+>
+  {text}
+</span>

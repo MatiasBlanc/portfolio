@@ -4,7 +4,9 @@ import { Fire } from "reicon-react";
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 import Button from "../components/ui/Button.astro";
+
 interface Props {
   post: CollectionEntry<"blog">;
 }
@@ -23,7 +25,7 @@ const { title, description, pubDate, updatedDate } = post.data;
   <body class="w-full lg:w-9/12 mx-auto px-5">
     <Header />
     <header class="flex items-center justify-between p-4">
-      <div class="">
+      <div>
         {
           updatedDate ? (
             <p class="text-muted text-sm">
@@ -42,7 +44,6 @@ const { title, description, pubDate, updatedDate } = post.data;
         <Fire size={24} weight="Filled" />
       </Button>
     </header>
-    <hr />
     <article
       class="my-5 prose max-w-none
         prose-headings:text-foreground
@@ -57,14 +58,15 @@ const { title, description, pubDate, updatedDate } = post.data;
         prose-a:tracking-tight
         prose-a:no-underline
         prose-a:hover:underline
-      prose-a:hover:text-primary-hover
+        prose-a:hover:text-primary-hover
         prose-img:border
-      prose-img:border-foreground
-        prose-img:rounded-full
+        prose-img:border-foreground
+        prose-img:rounded-2xl
         prose-img:my-4
         prose-blockquote:bg-background-surface"
     >
       <slot />
     </article>
+    <Footer />
   </body>
 </html>

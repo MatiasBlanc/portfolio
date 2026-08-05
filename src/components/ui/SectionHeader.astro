@@ -1,0 +1,30 @@
+---
+/**
+ * Encabezado de sección con estilo terminal.
+ * Muestra un prompt de terminal y un título descriptivo.
+ *
+ * @example
+ * <SectionHeader prompt="cat lab/latest.log" title="Últimos Posts" />
+ * <SectionHeader prompt="ls proyectos/" title="Proyectos" />
+ */
+
+interface Props {
+  /** Comando del prompt (sin el $) */
+  prompt: string;
+  /** Título descriptivo de la sección */
+  title?: string;
+  /** Clases adicionales */
+  class?: string;
+}
+
+const { prompt, title, class: className } = Astro.props;
+---
+
+<div class:list={["py-6", className]}>
+  <h2 class="font-mono text-muted text-sm tracking-tight mb-1">
+    $ {prompt}
+  </h2>
+  {title && (
+    <p class="font-sans text-3xl font-bold text-foreground">{title}</p>
+  )}
+</div>

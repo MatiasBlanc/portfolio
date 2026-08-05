@@ -1,0 +1,49 @@
+---
+/**
+ * Badge de estado reutilizable para proyectos y posts.
+ * Muestra el estado con colores consistentes en todo el sitio.
+ *
+ * @example
+ * <StatusBadge status="en_progreso" />
+ * <StatusBadge status="completado" size="lg" />
+ */
+
+type Status = "en_progreso" | "completado" | "pausado";
+
+interface Props {
+  /** Estado a mostrar */
+  status: Status;
+  /** Tamaño del badge */
+  size?: "sm" | "md" | "lg";
+}
+
+const { status, size = "md" } = Astro.props;
+
+const statusLabel: Record<Status, string> = {
+  en_progreso: "en progreso",
+  completado: "completado",
+  pausado: "pausado",
+};
+
+const statusColor: Record<Status, string> = {
+  en_progreso: "bg-primary text-background",
+  completado: "bg-foreground text-background",
+  pausado: "bg-muted/60 text-foreground",
+};
+
+const sizeClasses = {
+  sm: "text-xs px-2.5 py-0.5",
+  md: "text-xs px-3 py-1",
+  lg: "text-sm px-4 py-1",
+};
+---
+
+<span
+  class:list={[
+    "font-mono font-semibold tracking-tight inline-flex items-center rounded-full",
+    statusColor[status],
+    sizeClasses[size],
+  ]}
+>
+  {statusLabel[status]}
+</span>

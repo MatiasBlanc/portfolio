@@ -1,83 +1,62 @@
 ---
-// src/components/FeaturedProjects.astro
-// Proyectos destacados — lista estilo terminal, sin imágenes (homepage)
+/**
+ * Sección de proyectos destacados en la homepage.
+ * Muestra proyectos en formato de tarjetas con imagen, tags y estado.
+ */
 
-const projects = [
-  {
-    title: "App ITF — plataforma móvil",
-    description:
-      "Plataforma móvil para la International Taekwon-Do Federation. Gestión de eventos, torneos y registro de atletas.",
-    status: "en_progreso" as const,
-    tags: ["React Native", "Python", "ITF"],
-    href: "/projects",
-  },
-  {
-    title: "Dotfiles — setup de terminal",
-    description:
-      "Configuración completa de entorno: Neovim, Kitty, Zsh + Starship. Documentado y reproducible.",
-    status: "completado" as const,
-    tags: ["Neovim", "Zsh", "Kitty"],
-    href: "/projects",
-  },
-  {
-    title: "Portfolio — matiasblanc.dev",
-    description:
-      "Portfolio personal construido con Astro, TypeScript y TailwindCSS. Estética de terminal.",
-    status: "en_progreso" as const,
-    tags: ["Astro", "TypeScript", "TailwindCSS"],
-    href: "/projects",
-  },
-] as const;
+import { getCollection } from "astro:content";
+import ProjectCard from "./ui/ProjectCard.astro";
 
-const statusLabel = {
-  en_progreso: "en progreso",
-  completado: "completado",
-  pausado: "pausado",
-} as const;
-
-const statusColor = {
-  en_progreso: "bg-primary text-background",
-  completado: "bg-foreground text-background",
-  pausado: "bg-muted/60 text-foreground",
-} as const;
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 ---
 
-<section class="py-5 border-t border-foreground">
+<section class="py-5">
   <h3 class="text-muted mb-4 font-mono text-md tracking-tight">
     $ cat proyectos/activo
   </h3>
-  <ul class="divide-y divide-foreground">
-    {
-      projects.map((project) => (
-        <li class="list-none group">
-          <a
-            href={project.href}
-            class="flex flex-col md:flex-row md:items-center justify-between gap-3 py-4 px-2 hover:bg-foreground/5 transition-colors duration-200"
+  {
+    projects.length > 0 ? (
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {projects.map((project, index) => (
+          <li
+            class="animate-fade-in"
+            style={`--animation-delay: ${index * 100}ms`}
           >
-            <div>
-              <h4 class="font-bold font-sans text-lg group-hover:text-primary transition-colors duration-200">
-                {project.title}
-              </h4>
-              <p class="text-muted text-sm mt-0.5">{project.description}</p>
-              <div class="flex gap-2 flex-wrap mt-2">
-                {project.tags.map((tag) => (
-                  <span class="font-mono text-xs text-muted px-2 py-0.5 border border-foreground/20">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <span
-              class:list={[
-                "font-mono text-xs px-3 py-1 shrink-0 font-semibold tracking-tight self-start md:self-center",
-                statusColor[project.status],
-              ]}
-            >
-              {statusLabel[project.status]}
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+            <ProjectCard
+              id={project.id}
+              title={project.data.title}
+              description={project.data.description}
+              image={project.data.image}
+              imageAlt={project.data.imageAlt}
+              date={project.data.pubDate}
+              status={project.data.status}
+            />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-muted text-sm font-mono">
+        $ echo "No hay proyectos todavía"
+      </p>
+    )
+  }
 </section>
+
+<style>
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease both;
+  }
+</style>

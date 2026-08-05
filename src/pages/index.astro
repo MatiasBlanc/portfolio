@@ -16,49 +16,118 @@ import "../global.css";
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
-  <body class="w-full lg:w-9/12 mx-auto px-4 lg:px-0">
+  <body class="w-full lg:w-9/12 bg-background mx-auto px-4 lg:px-0">
     <Header currentPage="inicio" />
 
-    <main>
+    <main class="space-y-12 pb-12">
       <!-- ── HERO: Nombre + typing effect ── -->
-      <div class="border-b border-foreground">
-        <HeroSection />
-      </div>
+      <HeroSection />
 
       <!-- ── BIO ── -->
-      <div class="border-b border-foreground">
-        <ConsoleCard
-          title="bio.txt"
-          content="Desarrollador frontend, cinturón negro de Taekwon-Do. Hago el 80% del frontend de una app móvil para ITF. Documento lo que armo: hardware, dotfiles, código."
-        />
-      </div>
+      <ConsoleCard
+        title="bio.txt"
+        buttonText="download cv"
+        buttonHref="/cv.pdf"
+      >
+        <div class="font-mono text-sm leading-relaxed space-y-1">
+          <p>
+            <span class="text-muted inline-block w-24">nombre:</span>
+            <span class="text-foreground">Matías Blanc</span>
+          </p>
+          <p>
+            <span class="text-muted inline-block w-24">rol:</span>
+            <span class="text-foreground">frontend dev</span>
+          </p>
+          <p>
+            <span class="text-muted inline-block w-24">focus:</span>
+            <span class="text-foreground">app móvil ITF · 80% frontend</span>
+          </p>
+          <p>
+            <span class="text-muted inline-block w-24">stack:</span>
+            <span class="text-foreground">react · react native · python</span>
+          </p>
+          <p>
+            <span class="text-muted inline-block w-24">extras:</span>
+            <span class="text-foreground">taekwon-do · hardware · dotfiles</span>
+          </p>
+        </div>
+      </ConsoleCard>
 
-      <!-- ── EXPERIENCIA + TAEKWONDO (grid 2 col) ── -->
-      <div class="grid grid-cols-1 md:grid-cols-2 border-b border-foreground divide-y md:divide-y-0 md:divide-x divide-foreground">
-        <ConsoleCard title="experiencia.log" buttonText="download cv" buttonHref="/cv.pdf">
-          <p class="font-sans text-lg leading-relaxed">
-            frontend · app móvil ITF
-          </p>
-          <p class="font-sans text-base text-muted mt-1">
-            react, react native, python
-          </p>
-        </ConsoleCard>
-
-        <ConsoleCard title="taekwondo.log" class="md:pl-5">
-          <p class="font-sans text-lg leading-relaxed">
-            cinturón negro · vínculo con FECHITAT/ITF · años de trayectoria
-          </p>
-        </ConsoleCard>
-      </div>
+      <!-- ── PROYECTOS DESTACADOS ── -->
+      <FeaturedProjects />
 
       <!-- ── ÚLTIMOS POSTS ── -->
       <LatestPosts />
 
-      <!-- ── PROYECTOS DESTACADOS ── -->
-      <FeaturedProjects />
+      <!-- ── CONTACTO ── -->
+      <section id="contacto" class="space-y-4">
+        <h3 class="text-muted font-mono text-md tracking-tight">
+          $ cat contact.sh
+        </h3>
+        <div class="rounded-2xl border border-foreground/15 p-5">
+          <form id="contact-form" class="flex flex-col gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label class="flex flex-col gap-1.5">
+                <span class="font-mono text-xs text-muted">$ read nombre</span>
+                <input
+                  name="nombre"
+                  type="text"
+                  required
+                  placeholder="tu nombre"
+                  class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200"
+                />
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="font-mono text-xs text-muted">$ read email</span>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="tu@email.com"
+                  class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200"
+                />
+              </label>
+            </div>
+            <label class="flex flex-col gap-1.5">
+              <span class="font-mono text-xs text-muted">$ cat mensaje.txt</span>
+              <textarea
+                name="mensaje"
+                rows="5"
+                required
+                placeholder="escribí tu mensaje..."
+                class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200 resize-y"
+              ></textarea>
+            </label>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+              <button
+                type="submit"
+                class="inline-flex items-center gap-2 bg-primary text-background px-5 py-2.5 font-mono text-sm font-semibold tracking-tight rounded-full hover:bg-primary-hover transition-colors duration-200 cursor-pointer"
+              >
+                enviar
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
     </main>
 
     <!-- ── FOOTER ── -->
     <Footer />
   </body>
 </html>
+
+<script>
+  // Formulario de contacto: arma un mailto con los datos del form
+  const contactForm = document.getElementById("contact-form");
+  contactForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(contactForm);
+    const subject = encodeURIComponent(
+      `[portfolio] ${data.get("nombre")} — ${data.get("email")}`,
+    );
+    const body = encodeURIComponent(
+      `Hola Matías,\n\n${data.get("mensaje")}\n\n— ${data.get("nombre")} (${data.get("email")})`,
+    );
+    window.location.href = `mailto:hola@matiasblanc.dev?subject=${subject}&body=${body}`;
+  });
+</script>

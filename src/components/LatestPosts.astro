@@ -1,46 +1,94 @@
 ---
-// src/components/LatestPosts.astro
-// Muestra los últimos posts del blog al estilo "cat lab/latest.log"
-import { getCollection } from "astro:content";
-import FormattedDate from "./FormattedDate.astro";
+/**
+ * Sección de últimos posts del blog.
+ * Muestra los posts más recientes en formato de tarjetas.
+ */
 
-const allPosts = await getCollection("blog");
+import FormattedDate from "./FormattedDate.astro";
+import { getPublishedPosts, readingTime } from "../utils/blog";
+import Card from "./ui/Card.astro";
+
+const allPosts = await getPublishedPosts();
 const latestPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 4);
+
+const statusColors: Record<string, string> = {
+  build: "bg-primary/20 text-primary",
+  post: "bg-foreground/10 text-foreground",
+  draft: "bg-muted/30 text-muted",
+  published: "bg-foreground/10 text-foreground",
+};
 ---
 
-<section class="py-5 border-t border-foreground">
+<section class="py-5">
   <h3 class="text-muted mb-4 font-mono text-md tracking-tight">
     $ cat lab/latest.log
   </h3>
-  <ul class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-foreground">
+  <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
     {
-      latestPosts.map((post) => (
-        <li class="list-none">
-          <a
-            href={`/blog/${post.id}/`}
-            class="block py-4 px-2 hover:bg-foreground/5 transition-colors duration-200 group"
-          >
-            <p class="font-mono text-sm mb-1">
-              <span
-                class:list={[
-                  "font-bold",
-                  post.data.status === "build"
-                    ? "text-primary"
-                    : "text-foreground opacity-50",
-                ]}
-              >
-                [<FormattedDate date={post.data.pubDate} />]
-              </span>{" "}
-              <span class="text-muted">{post.data.status}</span>
-            </p>
-            <h4 class="font-bold font-sans text-lg group-hover:text-primary transition-colors duration-200">
-              {post.data.title}
-            </h4>
-          </a>
+      latestPosts.map((post, index) => (
+        <li
+          class="animate-fade-in"
+          style={`--animation-delay: ${index * 80}ms`}
+        >
+          <Card as="article" href={`/blog/${post.id}/`} padding="sm">
+            <div class="group flex flex-col gap-2 min-w-0">
+              <!-- Header: Fecha + Status -->
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-muted text-xs font-mono tracking-tight shrink-0">
+                  <FormattedDate date={post.data.pubDate} />
+                  <span class="opacity-60"> · {readingTime(post.body)} min</span>
+                </p>
+                <span
+                  class:list={[
+                    "text-[10px] font-mono font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full shrink-0",
+                    statusColors[post.data.status] || "bg-muted/20 text-muted",
+                  ]}
+                >
+                  {post.data.status}
+                </span>
+              </div>
+
+              <!-- Título -->
+              <h4 class="font-bold font-sans text-foreground group-hover:text-primary transition-colors duration-200 leading-tight truncate">
+                {post.data.title}
+              </h4>
+
+              <!-- Descripción (si existe) -->
+              {post.data.description && (
+                <p class="text-muted text-sm leading-relaxed line-clamp-2">
+                  {post.data.description}
+                </p>
+              )}
+            </div>
+          </Card>
         </li>
       ))
     }
   </ul>
 </section>
+
+<style>
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease both;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

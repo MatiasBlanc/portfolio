@@ -1,33 +1,72 @@
 ---
+/**
+ * Card con estilo de consola/terminal.
+ * Muestra un título con prefijo de comando y contenido opcional.
+ *
+ * @example
+ * <ConsoleCard title="bio.txt" content="Mi biografía" />
+ *
+ * <ConsoleCard title="experiencia.log" buttonText="download cv" buttonHref="/cv.pdf">
+ *   <p>Contenido personalizado</p>
+ * </ConsoleCard>
+ */
+
 import Button from "./Button.astro";
 
 interface Props {
+  /** Título del archivo/comando */
   title: string;
+  /** Contenido de texto simple */
   content?: string;
+  /** Texto del botón (opcional) */
   buttonText?: string;
+  /** Enlace del botón */
   buttonHref?: string;
-  /** Permite pasar contenido adicional debajo del texto */
+  /** Clases adicionales */
   class?: string;
 }
 
-const { title, content, buttonText, buttonHref, class: className } = Astro.props;
+const {
+  title,
+  content,
+  buttonText,
+  buttonHref,
+  class: className,
+} = Astro.props;
 const hasSlot = await Astro.slots.has("default");
 ---
 
-<article class:list={["border-foreground py-5", className]}>
+<article
+  class:list={[
+    "rounded-2xl border border-foreground/15 p-5",
+    "hover:border-foreground/30 transition-all duration-200",
+    className,
+  ]}
+>
   <h3 class="text-muted mb-2 font-mono text-md tracking-tight">
     $ cat {title}
   </h3>
-  {content && <p class="mb-3 font-sans text-lg leading-relaxed">{content}</p>}
-  {hasSlot && (
-    <div class="mb-3 font-sans text-lg leading-relaxed">
-      <slot />
-    </div>
-  )}
+  {
+    content && (
+      <p class="mb-3 text-foreground font-sans text-lg leading-relaxed">
+        {content}
+      </p>
+    )
+  }
+  {
+    hasSlot && (
+      <div class="mb-3 text-foreground">
+        <slot />
+      </div>
+    )
+  }
   {
     buttonText && (
-      <a href={buttonHref ?? "#"} download={!buttonHref || buttonHref === "#" ? true : undefined}>
-        <Button>$ {buttonText}</Button>
+      <a
+        href={buttonHref ?? "#"}
+        download={!buttonHref || buttonHref === "#" ? true : undefined}
+      >
+        <Button>{buttonText}</Button>
       </a>
     )
   }
