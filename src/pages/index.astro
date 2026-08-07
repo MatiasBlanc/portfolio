@@ -61,51 +61,49 @@ import "../global.css";
 
       <!-- ── CONTACTO ── -->
       <section id="contacto" class="space-y-4">
-        <h3 class="text-muted font-mono text-md tracking-tight">
+        <h3 class="text-muted font-mono text-lg md:text-xl tracking-tight">
           $ cat contact.sh
         </h3>
-        <div class="rounded-2xl border border-foreground/15 p-5">
-          <form id="contact-form" class="flex flex-col gap-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label class="flex flex-col gap-1.5">
-                <span class="font-mono text-xs text-muted">$ read nombre</span>
-                <input
-                  name="nombre"
-                  type="text"
-                  required
-                  placeholder="tu nombre"
-                  class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200"
-                />
-              </label>
-              <label class="flex flex-col gap-1.5">
-                <span class="font-mono text-xs text-muted">$ read email</span>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="tu@email.com"
-                  class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200"
-                />
-              </label>
-            </div>
-            <label class="flex flex-col gap-1.5">
-              <span class="font-mono text-xs text-muted">$ cat mensaje.txt</span>
+        <div
+          class="rounded-2xl border border-primary/25 bg-background-surface/40 p-6 md:p-8"
+        >
+          <form id="contact-form" class="flex flex-col gap-5">
+            <label class="flex flex-col gap-2">
+              <span class="font-mono text-sm text-muted">$ read nombre</span>
+              <input
+                name="nombre"
+                type="text"
+                required
+                placeholder="tu nombre"
+                class="w-full bg-background-surface border border-primary/40 rounded-xl px-5 py-3.5 font-mono text-base text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-colors duration-200"
+              />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="font-mono text-sm text-muted">$ read email</span>
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="tu@email.com"
+                class="w-full bg-background-surface border border-primary/40 rounded-xl px-5 py-3.5 font-mono text-base text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-colors duration-200"
+              />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="font-mono text-sm text-muted">$ cat mensaje.txt</span>
               <textarea
                 name="mensaje"
-                rows="5"
+                rows="6"
                 required
                 placeholder="escribí tu mensaje..."
-                class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200 resize-y"
+                class="w-full bg-background-surface border border-primary/40 rounded-xl px-5 py-3.5 font-mono text-base text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-colors duration-200 resize-y"
               ></textarea>
             </label>
-            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-              <button
-                type="submit"
-                class="inline-flex items-center gap-2 bg-primary text-background px-5 py-2.5 font-mono text-sm font-semibold tracking-tight rounded-full hover:bg-primary-hover transition-colors duration-200 cursor-pointer"
-              >
-                enviar
-              </button>
-            </div>
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center gap-2 bg-primary text-background px-8 py-3.5 font-mono text-base font-semibold tracking-tight rounded-full hover:bg-primary-hover transition-colors duration-200 cursor-pointer"
+            >
+              enviar
+            </button>
           </form>
         </div>
       </section>

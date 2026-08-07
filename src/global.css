@@ -4,8 +4,9 @@
 /* ===== Tema Dark (Tokyo Night - por defecto) ===== */
 :root,
 [data-theme="dark"] {
-  --color-background: #1a1b26;
-  --color-background-surface: #24283b;
+  /* Tokyo Night: bg_dark (#16161e) como fondo, bg (#1a1b26) como superficie */
+  --color-background: #16161e;
+  --color-background-surface: #1a1b26;
 
   --color-foreground: #c0caf5;
   --color-muted: #565f89;
@@ -65,9 +66,23 @@
 }
 
 /* ===== Estilos base ===== */
+html {
+  /* Base 17px: un punto medio entre el 16px original y el 18px */
+  font-size: 17px;
+}
+
 body {
+  /* Sticky footer: el body ocupa todo el viewport y main absorbe el espacio sobrante */
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background-color: var(--color-background);
   color: var(--color-foreground);
+}
+
+main {
+  /* Empuja el footer al fondo en páginas cortas sin perder el margen fijo (mt-8 del footer) */
+  flex: 1 1 auto;
 }
 
 /* ===== Scrollbar personalizada (solo dark) ===== */
