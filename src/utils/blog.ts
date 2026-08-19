@@ -2,13 +2,15 @@ import { getCollection } from "astro:content";
 
 /**
  * Obtiene los posts del blog que están publicados, excluyendo los que
- * tienen status "en_progreso" (marcados como draft en Obsidian).
+ * tienen status "en_progreso" o "draft".
  *
  * @returns Lista de posts publicados, sin ordenar.
  */
 export async function getPublishedPosts() {
   const posts = await getCollection("blog");
-  return posts.filter((post) => post.data.status !== "en_progreso");
+  return posts.filter(
+    (post) => post.data.status !== "en_progreso" && post.data.status !== "draft"
+  );
 }
 
 /** Velocidad de lectura media (palabras por minuto) */
