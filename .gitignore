@@ -39,3 +39,5 @@ skills-lock.json
 # Obsidian (config local del vault en src/)
 src/content/.obsidian/
 src/content/copilot/
+.vercel
+.env*

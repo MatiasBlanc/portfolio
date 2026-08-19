@@ -1,0 +1,259 @@
+---
+/**
+ * LoadingKeyboard.astro — High-Fidelity Mechanical Switch Cutaway (Clean Red Edition)
+ * Vista en corte transversal frontal limpia y sin destellos:
+ * - Carcasa seccionada técnica.
+ * - Vástago en rojo primario de la web (Cherry MX Red).
+ * - Resorte helicoidal metálico con compresión física elástica.
+ * - Hojas de contacto discretas.
+ */
+
+interface Props {
+  text?: string;
+  size?: "sm" | "md" | "lg";
+  fullscreen?: boolean;
+  class?: string;
+}
+
+const {
+  text = "Loading...",
+  size = "md",
+  fullscreen = false,
+  class: className = "",
+} = Astro.props;
+
+const scaleClass = {
+  sm: "scale-75",
+  md: "scale-100",
+  lg: "scale-125",
+}[size];
+---
+
+<div
+  class:list={[
+    "flex flex-col items-center justify-center gap-3 select-none",
+    fullscreen ? "fixed inset-0 z-50 bg-background/95 backdrop-blur-md" : "py-4",
+    className,
+  ]}
+  role="status"
+  aria-label={text}
+>
+  <!-- Switch Cutaway Vector Diagram -->
+  <div class:list={["switch-cutaway-container flex flex-col items-center", scaleClass]}>
+    <svg
+      class="w-28 h-32 overflow-visible"
+      viewBox="0 0 120 130"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <!-- Gradients matching the portfolio's signature primary red -->
+        <linearGradient id="redStemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ef4444" />
+          <stop offset="50%" stop-color="#dc2626" />
+          <stop offset="100%" stop-color="#991b1b" />
+        </linearGradient>
+
+        <linearGradient id="housingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.08)" />
+          <stop offset="100%" stop-color="rgba(255,255,255,0.02)" />
+        </linearGradient>
+      </defs>
+
+      <!-- ── 1. BOTTOM HOUSING BASE (Carcasa Inferior en Corte) ── -->
+      <g class="housing-bottom">
+        <!-- PCB Solder Pins (Metal contacts) -->
+        <rect x="38" y="112" width="2.5" height="14" rx="1" fill="#71717a" />
+        <rect x="78" y="112" width="2.5" height="16" rx="1" fill="#71717a" />
+
+        <!-- Bottom Base Chamber Body -->
+        <path
+          d="M18 68
+             L18 108 C18 111 21 113 25 113
+             L95 113 C99 113 102 111 102 108
+             L102 68
+             L94 68
+             L94 105
+             L26 105
+             L26 68
+             Z"
+          fill="url(#housingGrad)"
+          stroke="currentColor"
+          stroke-width="1.75"
+          class="text-border"
+        />
+
+        <!-- Center Spring Well / Mast Guide -->
+        <path
+          d="M52 86 L52 110 L68 110 L68 86"
+          stroke="currentColor"
+          stroke-width="1.5"
+          class="text-border/80"
+        />
+      </g>
+
+      <!-- ── 2. TOP HOUSING CUTAWAY (Carcasa Superior con Biseles y Guías) ── -->
+      <g class="housing-top">
+        <!-- Outer Roof & Slanted Bevels -->
+        <path
+          d="M14 68
+             L14 62
+             L22 40
+             L38 40
+             L38 28
+             L45 28
+             M75 28
+             L82 28
+             L82 40
+             L98 40
+             L106 62
+             L106 68"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-border-hover"
+        />
+
+        <!-- Housing Latch Clips (Side tabs) -->
+        <path d="M12 60 L18 60 L18 68 L12 68 Z" fill="currentColor" class="text-border/40" />
+        <path d="M102 60 L108 60 L108 68 L102 68 Z" fill="currentColor" class="text-border/40" />
+
+        <!-- Internal Guide Rails (Dashed sliders) -->
+        <line x1="30" y1="40" x2="30" y2="85" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" class="text-border/40" />
+        <line x1="90" y1="40" x2="90" y2="85" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" class="text-border/40" />
+      </g>
+
+      <!-- ── 3. ELECTRICAL LEAF CONTACTS (Hojas Metálicas Limpias) ── -->
+      <g class="contact-leaf">
+        <!-- Static Contact Leg (Right) -->
+        <path d="M78 112 L78 84 L82 64" stroke="#a1a1aa" stroke-width="1.75" stroke-linecap="round" />
+
+        <!-- Movable Flexible Leaf (Bends smoothly with stem movement) -->
+        <path
+          class="movable-leaf origin-[74px_106px]"
+          d="M74 112 L74 80 L88 62"
+          stroke="#d4d4d8"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </g>
+
+      <!-- ── 4. COILED MECHANICAL SPRING (Resorte Helicoidal) ── -->
+      <g class="spring-wrapper origin-[60px_110px]">
+        <path
+          class="spring-coils"
+          d="M54 70
+             L66 73 L54 76 L66 79
+             L54 82 L66 85 L54 88
+             L66 91 L54 94 L66 97
+             L54 100 L66 103 L54 106
+             L60 110"
+          stroke="#94a3b8"
+          stroke-width="2.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+      </g>
+
+      <!-- ── 5. RED STEM / VÁSTAGO ROJO PRIMARIO (Moving Assembly) ── -->
+      <g class="stem-slider">
+        <!-- Upper MX Mount Cross -->
+        <!-- Vertical cross bar -->
+        <rect x="56" y="10" width="8" height="26" rx="2" fill="url(#redStemGrad)" stroke="#991b1b" stroke-width="0.75" />
+        <!-- Horizontal cross bar -->
+        <rect x="47" y="18" width="26" height="8" rx="2" fill="url(#redStemGrad)" stroke="#991b1b" stroke-width="0.75" />
+
+        <!-- Main Slider Block -->
+        <path
+          d="M34 36
+             L86 36
+             L86 52
+             L83 58
+             L72 58
+             L64 58
+             L64 74
+             L56 74
+             L56 58
+             L46 58
+             L34 52
+             Z"
+          fill="url(#redStemGrad)"
+          stroke="#991b1b"
+          stroke-width="1"
+        />
+
+        <!-- Left Slider Guide Leg -->
+        <rect x="28" y="42" width="6" height="15" rx="1.5" fill="url(#redStemGrad)" />
+
+        <!-- Right Tactile Bump Leg (Pushes the leaf) -->
+        <path
+          d="M86 42 L92 42 L94 50 L86 54 Z"
+          fill="url(#redStemGrad)"
+          stroke="#991b1b"
+          stroke-width="0.5"
+        />
+
+        <!-- Center Guide Mast (Enters the spring) -->
+        <rect x="57" y="56" width="6" height="24" rx="1.5" fill="#b91c1c" />
+      </g>
+    </svg>
+
+    <!-- Technical Status Label -->
+    {text && (
+      <div class="flex items-center gap-2 font-mono text-xs text-muted mt-1 tracking-wide">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="text-foreground font-medium">{text}</span>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  /* ════════════════════════════════════════════════════════════════
+     FÍSICA DEL SWITCH MECÁNICO (Keystroke Travel & Smooth Spring)
+     ════════════════════════════════════════════════════════════════ */
+
+  /* 1. Descenso y rebote del Vástago Rojo */
+  .stem-slider {
+    animation: stem-stroke 1.25s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+  }
+
+  @keyframes stem-stroke {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    40%, 60% {
+      transform: translateY(20px);
+    }
+  }
+
+  /* 2. Compresión del Resorte Metálico */
+  .spring-wrapper {
+    animation: spring-stroke 1.25s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+  }
+
+  @keyframes spring-stroke {
+    0%, 100% {
+      transform: scaleY(1);
+    }
+    40%, 60% {
+      transform: scaleY(0.4);
+    }
+  }
+
+  /* 3. Flexión de la Hoja de Contacto al presionar */
+  .movable-leaf {
+    animation: leaf-stroke 1.25s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+  }
+
+  @keyframes leaf-stroke {
+    0%, 15%, 85%, 100% {
+      transform: rotate(0deg);
+    }
+    38%, 62% {
+      transform: rotate(-7deg);
+    }
+  }
+</style>

@@ -1,81 +1,93 @@
 ---
 /**
- * Card de blog reutilizable.
- * Muestra vista previa de un post con fecha, título, descripción y estado.
- *
- * @example
- * <BlogCard id="mi-post" title="Mi Post" status="build" pubDate={new Date()} />
- * <BlogCard id="mi-post" title="Mi Post" description="Descripción" status="build" pubDate={new Date()} />
+ * BlogCard — bento-style tile with bottom-to-top gradient overlay.
+ * Clean, high-contrast monochrome design without bulky background boxes on dates.
+ * Entire card is a clickable link to the article.
  */
 
 import FormattedDate from "../FormattedDate.astro";
-import Card from "./Card.astro";
-import Tag from "./Tag.astro";
 
 interface Props {
-  /** ID del post (slug) */
   id: string;
-  /** Título del post */
   title: string;
-  /** Descripción breve (opcional) */
   description?: string;
-  /** Estado del post */
-  status: string;
-  /** Fecha de publicación */
+  status?: string;
   pubDate: Date;
-  /** Tags/categorías del post */
   tags?: string[];
-  /** Tiempo de lectura estimado en minutos */
   readingTime?: number;
+  image?: string;
+  imageAlt?: string;
+  featured?: boolean;
 }
 
-const { id, title, description, status, pubDate, tags = [], readingTime } = Astro.props;
+const {
+  id,
+  title,
+  description,
+  pubDate,
+  tags = [],
+  readingTime,
+  image,
+  imageAlt,
+  featured = false,
+} = Astro.props;
 
-/** Colores por status conocidos */
-const statusColors: Record<string, string> = {
-  build: "bg-primary/20 text-primary",
-  post: "bg-foreground/10 text-foreground",
-  draft: "bg-muted/30 text-muted",
-  published: "bg-foreground/10 text-foreground",
-};
-
-const statusColor = statusColors[status] || "bg-muted/20 text-muted";
+const displayTags = tags.slice(0, 2);
 ---
 
-<Card as="li" href={`/blog/${id}/`} padding="sm">
-  <div class="group flex flex-col gap-2">
-    <div class="flex items-center justify-between gap-3">
-      <p class="text-muted text-xs font-mono tracking-tight">
-        <FormattedDate date={pubDate} />
-        {readingTime && ` · ${readingTime} min`}
-      </p>
-      <span
-        class:list={[
-          "text-[10px] font-mono font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full",
-          statusColor,
-        ]}
-      >
-        {status}
-      </span>
+<a
+  href={`/blog/${id}/`}
+  class="group relative flex flex-col justify-between rounded-3xl border border-border bg-background-card hover:border-border-hover transition-all duration-200 overflow-hidden min-h-[250px] h-full p-6 sm:p-7 block cursor-pointer select-none shadow-sm hover:shadow-md"
+  aria-label={`Read article: ${title}`}
+>
+  {/* Full-cover image with bottom-up theme-adaptive gradient */}
+  {image ? (
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-background-subtle">
+      <img
+        src={image}
+        alt={imageAlt || title}
+        class="w-full h-full object-cover object-top opacity-60 group-hover:opacity-85 group-hover:scale-105 transition-all duration-500"
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-background-card via-background-card/85 to-transparent" />
+      <div class="absolute inset-0 bg-gradient-to-t from-background-card/95 via-background-card/40 to-transparent" />
     </div>
-    <h4
-      class="font-bold text-xl font-sans text-foreground group-hover:text-primary transition-colors duration-200 leading-tight"
-    >
-      {title}
-    </h4>
-    {
-      description && (
-        <p class="text-muted text-sm leading-relaxed line-clamp-2">
-          {description}
-        </p>
-      )
-    }
-    {
-      tags.length > 0 && (
-        <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
-          {tags.map((tag) => <Tag text={tag} />)}
-        </div>
-      )
-    }
+  ) : (
+    <div class="absolute inset-0 z-0 bg-gradient-to-br from-background-subtle to-background-card pointer-events-none" />
+  )}
+
+  {/* Top meta: clean typography without background box */}
+  <div class="relative z-10 flex items-center justify-between gap-2 text-xs font-mono text-muted pointer-events-none">
+    <div class="flex items-center gap-1.5 text-xs text-muted">
+      <FormattedDate date={pubDate} />
+      {readingTime && <span>· {readingTime} min read</span>}
+    </div>
   </div>
-</Card>
+
+  {/* Bottom content */}
+  <div class="relative z-10 flex flex-col gap-2.5 mt-auto pointer-events-none">
+    <h3 class:list={[
+      "font-bold text-foreground group-hover:text-primary transition-colors duration-200 leading-snug",
+      featured ? "text-2xl sm:text-3xl md:text-4xl max-w-xl" : "text-lg sm:text-xl"
+    ]}>
+      {title}
+    </h3>
+
+    {featured && description && (
+      <p class="text-sm text-muted line-clamp-2 max-w-lg leading-relaxed">
+        {description}
+      </p>
+    )}
+
+    {displayTags.length > 0 && (
+      <div class="flex flex-wrap gap-2 pt-1">
+        {displayTags.map((tag) => (
+          <span class="text-[11px] font-mono text-muted/70">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>

@@ -1,49 +1,53 @@
 ---
 /**
  * Badge de estado reutilizable para proyectos y posts.
- * Muestra el estado con colores consistentes en todo el sitio.
- *
- * @example
- * <StatusBadge status="en_progreso" />
- * <StatusBadge status="completado" size="lg" />
  */
 
 type Status = "en_progreso" | "completado" | "pausado";
 
 interface Props {
-  /** Estado a mostrar */
   status: Status;
-  /** Tamaño del badge */
   size?: "sm" | "md" | "lg";
 }
 
 const { status, size = "md" } = Astro.props;
 
-const statusLabel: Record<Status, string> = {
-  en_progreso: "en progreso",
-  completado: "completado",
-  pausado: "pausado",
-};
-
-const statusColor: Record<Status, string> = {
-  en_progreso: "bg-primary text-background",
-  completado: "bg-foreground text-background",
-  pausado: "bg-muted/60 text-foreground",
-};
-
 const sizeClasses = {
-  sm: "text-xs px-2.5 py-0.5",
+  sm: "text-[11px] px-2.5 py-0.5",
   md: "text-xs px-3 py-1",
-  lg: "text-sm px-4 py-1",
+  lg: "text-xs px-3.5 py-1.5",
+};
+
+const badgeStyles = {
+  en_progreso: "bg-primary/15 text-primary border border-primary/30",
+  completado: "bg-foreground/10 text-foreground border border-foreground/20",
+  pausado: "bg-muted/20 text-muted border border-border",
 };
 ---
 
 <span
   class:list={[
-    "font-mono font-semibold tracking-tight inline-flex items-center rounded-full",
-    statusColor[status],
+    "font-mono font-medium tracking-tight inline-flex items-center rounded-full uppercase",
+    badgeStyles[status],
     sizeClasses[size],
   ]}
 >
-  {statusLabel[status]}
+  {status === "en_progreso" && (
+    <>
+      <span data-lang-en>In Progress</span>
+      <span data-lang-es>En Desarrollo</span>
+    </>
+  )}
+  {status === "completado" && (
+    <>
+      <span data-lang-en>Completed</span>
+      <span data-lang-es>Completado</span>
+    </>
+  )}
+  {status === "pausado" && (
+    <>
+      <span data-lang-en>Archived</span>
+      <span data-lang-es>Archivado</span>
+    </>
+  )}
 </span>

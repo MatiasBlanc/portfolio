@@ -1,2 +1,2 @@
-export const SITE_TITLE = 'Matias Blanc';
-export const SITE_DESCRIPTION = 'Desarrollo de soluciones de software escalables, aplicaciones web modernas y automatización técnica. soy un studiante de Ingeniería Civil en Computación e Informática en la UCN.';
+export const SITE_TITLE = 'Matías Blanc — Full-Stack & Mobile Engineer';
+export const SITE_DESCRIPTION = 'Full-Stack & Mobile Developer specializing in React, React Native, TypeScript, and Python. Building high-performance mobile apps, web platforms, and automated workflows.';

@@ -1,180 +1,350 @@
 ---
 // src/components/Header.astro
-import NavbarElement from "./ui/NavbarElement.astro";
-import { Menu, X, Sun, Moon, AtSign } from "reicon-react";
 import socials from "../data/socials.json";
 
 const pathname = Astro.url.pathname;
-const navItems = [
-  { path: "/", label: "inicio" },
-  { path: "/blog", label: "blog" },
-  { path: "/projects", label: "proyectos" },
-];
+const isHome = pathname === "/" || pathname === "";
+const isProjects = pathname.startsWith("/projects");
+const isBlog = pathname.startsWith("/blog");
 
-const isActive = (path: string) =>
-  path === "/" ? pathname === "/" : pathname.startsWith(path);
+const navLinks = [
+  { href: "/",          labelEn: "Home",     labelEs: "Inicio",    active: isHome },
+  { href: "/projects",  labelEn: "Projects", labelEs: "Proyectos", active: isProjects },
+  { href: "/blog",      labelEn: "Blog",     labelEs: "Blog",      active: isBlog },
+  { href: "/#contact",  labelEn: "Contact",  labelEs: "Contacto",  active: false },
+];
 ---
 
-<header
-  class="flex justify-between items-center p-5 font-mono text-foreground text-lg relative"
->
-  <!-- Branding / Logo -->
-  <a href="/" class="cursor-default select-none shrink-0">
-    <span class="hidden sm:inline">matiasblanc@web:~$</span>
-    <span class="sm:hidden">~/mb</span>
-  </a>
+<header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div id="header-bar" class="max-w-6xl mx-auto px-4 sm:px-6 transition-all duration-300">
+    <div id="header-inner" class="flex items-center justify-between h-16">
 
-  <!-- Navegación de Escritorio (centrada) -->
-  <nav
-    aria-label="Navegación principal"
-    class="hidden md:block absolute left-1/2 -translate-x-1/2"
-  >
-    <ul
-      class="flex gap-1 list-none bg-foreground/5 backdrop-blur-sm border border-foreground/10 rounded-full px-2 py-2"
-    >
-      {
-        navItems.map((item) => (
-          <NavbarElement
-            href={item.path}
-            label={item.label}
-            isActive={isActive(item.path)}
-          />
-        ))
-      }
-    </ul>
-  </nav>
+      <!-- ── Brand ── -->
+      <a href="/" class="font-bold text-sm sm:text-base text-foreground tracking-tight hover:text-primary transition-colors" aria-label="Home">
+        Matías Blanc
+      </a>
 
-  <!-- Acciones derecha: Theme toggle + Burger -->
-  <div class="flex items-center gap-2">
-    <!-- Twitter / X -->
-    <a
-      href={socials.twitter.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex items-center justify-center w-9 h-9 rounded-full bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 transition-colors duration-200"
-      aria-label={socials.twitter.label}
-    >
-      <AtSign size={18} />
-    </a>
+      <!-- ── Desktop Nav (Clean, neutral pill without dot) ── -->
+      <nav
+        id="desktop-nav"
+        class="hidden md:flex items-center gap-0.5 p-1 rounded-xl bg-foreground/5 border border-border/60"
+        aria-label="Main navigation"
+      >
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            data-nav-link={link.href}
+            class:list={[
+              "nav-item relative px-3 py-1.5 rounded-lg text-xs font-medium tracking-wide transition-all duration-150 select-none flex items-center border",
+              link.active
+                ? "nav-item-active bg-foreground/10 text-foreground border-border font-semibold shadow-xs"
+                : "text-muted hover:text-foreground hover:bg-foreground/5 border-transparent",
+            ]}
+          >
+            <span data-lang-en>{link.labelEn}</span>
+            <span data-lang-es>{link.labelEs}</span>
+          </a>
+        ))}
+      </nav>
 
-    <!-- Botón de tema -->
-    <button
-      id="theme-toggle"
-      class="flex items-center justify-center w-9 h-9 rounded-full bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 cursor-pointer transition-colors duration-200"
-      aria-label="Cambiar tema"
-    >
-      <span id="icon-sun" class="hidden items-center justify-center">
-        <Sun size={18} />
-      </span>
-      <span id="icon-moon" class="flex items-center justify-center">
-        <Moon size={18} />
-      </span>
-    </button>
+      <!-- ── Controls ── -->
+      <div class="flex items-center gap-2">
 
-    <!-- Botón Burger (Solo móvil) -->
-    <button
-      id="menu-btn"
-      class="md:hidden focus:outline-none flex items-center justify-center w-9 h-9 rounded-full bg-foreground/5 border border-foreground/10 cursor-pointer relative z-50"
-      aria-label="Abrir menú"
-      aria-expanded="false"
-    >
-      <!-- Icono de Menú abierto por defecto -->
-      <span id="icon-menu" class="flex items-center justify-center">
-        <Menu size={20} />
-      </span>
-      <!-- Icono de Cerrar oculto por defecto -->
-      <span id="icon-close" class="hidden flex items-center justify-center">
-        <X size={20} />
-      </span>
-    </button>
+        <!-- Desktop Language Toggle Button (Hidden on Mobile) -->
+        <button
+          id="lang-toggle-btn"
+          type="button"
+          class="hidden md:flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-border bg-foreground/5 hover:border-primary/40 hover:bg-primary/5 transition-colors cursor-pointer text-foreground select-none"
+          aria-label="Toggle language"
+          title="Switch language (EN / ES)"
+        >
+          <span class="flex items-center justify-center">
+            <!-- UK SVG Flag -->
+            <svg id="svg-flag-en" class="w-4 h-3 rounded-[2px] shrink-0 overflow-hidden shadow-xs border border-border/60" viewBox="0 0 640 480" aria-hidden="true">
+              <path fill="#012169" d="M0 0h640v480H0z"/>
+              <path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z"/>
+              <path fill="#C8102E" d="m424 288 216 159v33h-44L367 332l57-44zM640 0v10L458 147l54 41 128-97V0h-1zM0 480v-10l183-137-54-41L0 389v91zm0-480l217 161-55 42L0 88V0z"/>
+              <path fill="#FFF" d="M240 0v480h160V0H240zM0 160v160h640V160H0z"/>
+              <path fill="#C8102E" d="M267 0v480h106V0H267zM0 187v106h640V187H0z"/>
+            </svg>
+            <!-- Spain SVG Flag -->
+            <svg id="svg-flag-es" class="w-4 h-3 rounded-[2px] shrink-0 overflow-hidden shadow-xs border border-border/60 hidden" viewBox="0 0 640 480" aria-hidden="true">
+              <path fill="#AA151B" d="M0 0h640v480H0z"/>
+              <path fill="#F1BF00" d="M0 120h640v240H0z"/>
+            </svg>
+          </span>
+          <span id="lang-label" class="font-mono">EN</span>
+        </button>
+
+        <!-- Theme toggle -->
+        <button
+          id="theme-toggle-btn"
+          type="button"
+          class="p-2 rounded-lg text-muted hover:text-foreground hover:bg-foreground/8 border border-transparent hover:border-border/60 transition-all cursor-pointer"
+          aria-label="Toggle dark/light mode"
+        >
+          <svg id="theme-icon-sun" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg id="theme-icon-moon" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <!-- Mobile hamburger -->
+        <button
+          id="mobile-menu-btn"
+          type="button"
+          class="md:hidden p-2 rounded-lg text-muted hover:text-foreground hover:bg-foreground/8 transition-colors"
+          aria-label="Toggle mobile navigation"
+          aria-expanded="false"
+          aria-controls="mobile-nav-panel"
+        >
+          <svg id="mobile-icon-menu" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+          <svg id="mobile-icon-close" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Menú Desplegable Móvil (Oculto por defecto) -->
-  <nav
-    id="mobile-menu"
-    aria-label="Navegación móvil"
-    class="hidden fixed inset-0 bg-background/80 backdrop-blur-md z-40 flex-col items-center justify-center p-5 gap-6 md:hidden"
-  >
-    <ul
-      class="flex flex-col items-center gap-4 list-none text-xl bg-foreground/5 backdrop-blur-sm border border-foreground/10 rounded-2xl px-6 py-4"
-    >
-      {
-        navItems.map((item) => (
-          <NavbarElement
-            href={item.path}
-            label={item.label}
-            isActive={isActive(item.path)}
-          />
-        ))
-      }
-    </ul>
-  </nav>
+  <!-- ── Mobile Drawer ── -->
+  <div id="mobile-nav-panel" class="md:hidden hidden" aria-hidden="true">
+    <div class="mx-4 mt-1 mb-3 rounded-2xl border border-border bg-background/95 backdrop-blur-xl shadow-xl overflow-hidden">
+      <nav class="flex flex-col p-2 gap-0.5" id="mobile-nav">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            data-nav-link-mobile={link.href}
+            class:list={[
+              "nav-item-mobile flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+              link.active
+                ? "bg-foreground/10 text-foreground font-semibold"
+                : "text-muted hover:text-foreground hover:bg-foreground/5",
+            ]}
+          >
+            <span>
+              <span data-lang-en>{link.labelEn}</span>
+              <span data-lang-es>{link.labelEs}</span>
+            </span>
+          </a>
+        ))}
+      </nav>
+    </div>
+  </div>
 </header>
 
-<script>
-  // === Theme Toggle ===
-  const themeToggle = document.getElementById("theme-toggle");
-  const iconSun = document.getElementById("icon-sun");
-  const iconMoon = document.getElementById("icon-moon");
+<!-- Spacer for fixed header -->
+<div class="h-16"></div>
 
-  function updateThemeIcons() {
-    const isDark =
-      document.documentElement.getAttribute("data-theme") === "dark";
-    if (isDark) {
-      iconSun?.classList.remove("flex");
-      iconSun?.classList.add("hidden");
-      iconMoon?.classList.remove("hidden");
-      iconMoon?.classList.add("flex");
+<script>
+  // ── Scroll-aware floating glass ──
+  const headerBar = document.getElementById("header-bar");
+  const headerInner = document.getElementById("header-inner");
+
+  function updateHeaderOnScroll() {
+    if (!headerBar) return;
+    if (window.scrollY > 20) {
+      headerBar.classList.add("mt-3", "px-3", "sm:px-4");
+      headerInner?.classList.add(
+        "bg-background/90", "backdrop-blur-xl",
+        "border", "border-border/70",
+        "rounded-2xl", "px-4",
+        "shadow-lg", "shadow-black/10"
+      );
     } else {
-      iconSun?.classList.remove("hidden");
-      iconSun?.classList.add("flex");
-      iconMoon?.classList.remove("flex");
-      iconMoon?.classList.add("hidden");
+      headerBar.classList.remove("mt-3", "px-3", "sm:px-4");
+      headerInner?.classList.remove(
+        "bg-background/90", "backdrop-blur-xl",
+        "border", "border-border/70",
+        "rounded-2xl", "px-4",
+        "shadow-lg", "shadow-black/10"
+      );
+    }
+  }
+  window.addEventListener("scroll", updateHeaderOnScroll, { passive: true });
+  updateHeaderOnScroll();
+
+  // ── Active link tracker for Contact & Home ──
+  const isHomePage = window.location.pathname === "/" || window.location.pathname === "";
+  if (isHomePage) {
+    const contactSection = document.getElementById("contact");
+    const homeLink = document.querySelector<HTMLElement>('[data-nav-link="/"]');
+    const contactLink = document.querySelector<HTMLElement>('[data-nav-link="/#contact"]');
+    const homeLinkM = document.querySelector<HTMLElement>('[data-nav-link-mobile="/"]');
+    const contactLinkM = document.querySelector<HTMLElement>('[data-nav-link-mobile="/#contact"]');
+
+    function setActiveLink(activeTarget: "home" | "contact") {
+      const isContact = activeTarget === "contact";
+
+      // Desktop nav update
+      if (contactLink && homeLink) {
+        contactLink.classList.toggle("bg-foreground/10", isContact);
+        contactLink.classList.toggle("text-foreground", isContact);
+        contactLink.classList.toggle("border-border", isContact);
+        contactLink.classList.toggle("shadow-xs", isContact);
+        contactLink.classList.toggle("font-semibold", isContact);
+        contactLink.classList.toggle("text-muted", !isContact);
+        contactLink.classList.toggle("border-transparent", !isContact);
+
+        homeLink.classList.toggle("bg-foreground/10", !isContact);
+        homeLink.classList.toggle("text-foreground", !isContact);
+        homeLink.classList.toggle("border-border", !isContact);
+        homeLink.classList.toggle("shadow-xs", !isContact);
+        homeLink.classList.toggle("font-semibold", !isContact);
+        homeLink.classList.toggle("text-muted", isContact);
+        homeLink.classList.toggle("border-transparent", isContact);
+      }
+
+      // Mobile nav update
+      if (contactLinkM && homeLinkM) {
+        contactLinkM.classList.toggle("bg-foreground/10", isContact);
+        contactLinkM.classList.toggle("text-foreground", isContact);
+        contactLinkM.classList.toggle("font-semibold", isContact);
+        contactLinkM.classList.toggle("text-muted", !isContact);
+
+        homeLinkM.classList.toggle("bg-foreground/10", !isContact);
+        homeLinkM.classList.toggle("text-foreground", !isContact);
+        homeLinkM.classList.toggle("font-semibold", !isContact);
+        homeLinkM.classList.toggle("text-muted", isContact);
+      }
+    }
+
+    // Scroll spy for contact section
+    if (contactSection) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveLink("contact");
+            } else if (window.scrollY < contactSection.offsetTop - 300) {
+              setActiveLink("home");
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      observer.observe(contactSection);
+    }
+
+    if (window.location.hash === "#contact") {
+      setActiveLink("contact");
+    }
+
+    contactLink?.addEventListener("click", () => setActiveLink("contact"));
+    contactLinkM?.addEventListener("click", () => setActiveLink("contact"));
+    homeLink?.addEventListener("click", () => setActiveLink("home"));
+    homeLinkM?.addEventListener("click", () => setActiveLink("home"));
+  }
+
+  // ── Language toggle logic (Desktop Only + Google Translate Sync) ──
+  const svgEn = document.getElementById("svg-flag-en");
+  const svgEs = document.getElementById("svg-flag-es");
+  const labelEl = document.getElementById("lang-label");
+
+  function triggerGoogleTranslate(lang: string) {
+    const pathname = window.location.pathname.replace(/\/$/, "");
+    const isContentDetail =
+      (pathname.startsWith("/blog/") && pathname !== "/blog") ||
+      (pathname.startsWith("/projects/") && pathname !== "/projects");
+    if (!isContentDetail) return;
+
+    const domain = window.location.hostname;
+    document.cookie = `googtrans=/es/${lang}; path=/;`;
+    document.cookie = `googtrans=/es/${lang}; path=/; domain=${domain}`;
+    document.cookie = `googtrans=/auto/${lang}; path=/;`;
+    document.cookie = `googtrans=/auto/${lang}; path=/; domain=${domain}`;
+
+    function triggerCombo() {
+      const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
+      if (select) {
+        select.value = lang;
+        select.dispatchEvent(new Event("change"));
+        return true;
+      }
+      return false;
+    }
+
+    if (!triggerCombo()) {
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        if (triggerCombo() || attempts > 12) {
+          clearInterval(interval);
+        }
+      }, 250);
     }
   }
 
-  function toggleTheme() {
-    const current = document.documentElement.getAttribute("data-theme");
-    const next = current === "dark" ? "light" : "dark";
+  function applyLang(lang: string) {
+    document.documentElement.setAttribute("data-lang", lang);
+    localStorage.setItem("preferred_lang", lang);
+
+    const isEn = lang === "en";
+
+    // Desktop
+    svgEn?.classList.toggle("hidden", !isEn);
+    svgEs?.classList.toggle("hidden", isEn);
+    if (labelEl) labelEl.textContent = isEn ? "EN" : "ES";
+
+    // Sync Google Translate for Markdown and project content
+    triggerGoogleTranslate(lang);
+  }
+
+  function toggleLanguage() {
+    const current = document.documentElement.getAttribute("data-lang") || "en";
+    const next = current === "en" ? "es" : "en";
+    applyLang(next);
+  }
+
+  // Init from storage
+  const initialLang = localStorage.getItem("preferred_lang") || "en";
+  applyLang(initialLang);
+
+  // Toggle listener
+  document.getElementById("lang-toggle-btn")?.addEventListener("click", toggleLanguage);
+
+  // ── Theme toggle ──
+  const sunIcon = document.getElementById("theme-icon-sun");
+  const moonIcon = document.getElementById("theme-icon-moon");
+
+  function syncThemeIcons() {
+    const isDark = document.documentElement.getAttribute("data-theme") !== "light";
+    sunIcon?.classList.toggle("hidden", !isDark);
+    moonIcon?.classList.toggle("hidden", isDark);
+  }
+
+  const storedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", storedTheme);
+  syncThemeIcons();
+
+  document.getElementById("theme-toggle-btn")?.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);
-    updateThemeIcons();
+    syncThemeIcons();
+  });
+
+  // ── Mobile menu ──
+  const mobileBtn = document.getElementById("mobile-menu-btn");
+  const mobilePanel = document.getElementById("mobile-nav-panel");
+  const iconMenu = document.getElementById("mobile-icon-menu");
+  const iconClose = document.getElementById("mobile-icon-close");
+
+  function toggleMobileMenu(force?: boolean) {
+    const isOpen = force !== undefined ? !force : !mobilePanel?.classList.contains("hidden");
+    mobilePanel?.classList.toggle("hidden", isOpen);
+    mobilePanel?.setAttribute("aria-hidden", String(isOpen));
+    mobileBtn?.setAttribute("aria-expanded", String(!isOpen));
+    iconMenu?.classList.toggle("hidden", !isOpen);
+    iconClose?.classList.toggle("hidden", isOpen);
   }
 
-  // Inicializar iconos según tema actual
-  updateThemeIcons();
-
-  themeToggle?.addEventListener("click", toggleTheme);
-
-  // === Mobile Menu ===
-  const menuBtn = document.getElementById("menu-btn");
-  const mobileMenu = document.getElementById("mobile-menu");
-  const iconMenu = document.getElementById("icon-menu");
-  const iconClose = document.getElementById("icon-close");
-
-  const toggleMenu = () => {
-    const isHidden = mobileMenu?.classList.toggle("hidden");
-    mobileMenu?.classList.toggle("flex");
-
-    // Cambiar iconos de hamburguesa a cruz
-    iconMenu?.classList.toggle("hidden");
-    iconClose?.classList.toggle("hidden");
-
-    if (menuBtn) {
-      menuBtn.setAttribute("aria-expanded", (!isHidden).toString());
-    }
-  };
-
-  menuBtn?.addEventListener("click", toggleMenu);
-
-  // Cerrar el menú automáticamente al hacer clic en cualquier enlace
-  mobileMenu?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.add("hidden");
-      mobileMenu.classList.remove("flex");
-      iconMenu?.classList.remove("hidden");
-      iconClose?.classList.add("hidden");
-      menuBtn?.setAttribute("aria-expanded", "false");
-    });
+  mobileBtn?.addEventListener("click", () => toggleMobileMenu());
+  mobilePanel?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => toggleMobileMenu(false));
   });
 </script>

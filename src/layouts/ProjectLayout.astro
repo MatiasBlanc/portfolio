@@ -5,99 +5,156 @@ import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import StatusBadge from "../components/ui/StatusBadge.astro";
-import Tag from "../components/ui/Tag.astro";
 
 interface Props {
   project: CollectionEntry<"projects">;
 }
 
 const { project } = Astro.props;
-const { title, description, pubDate, status, tags, image, imageAlt } = project.data;
+const { title, description, pubDate, status, tags, image, imageAlt, liveUrl, githubUrl } = project.data;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <BaseHead title={`${title} · Proyectos`} description={description} />
+    <BaseHead title={`${title} · Matías Blanc`} description={description} />
   </head>
-  <body class="w-full lg:w-9/12 mx-auto px-4 lg:px-0">
+  <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
     <Header />
 
-    <main>
-      <!-- Breadcrumb de terminal -->
-      <div class="py-4">
-        <p class="font-mono text-muted text-sm tracking-tight">
-          matias@web:~$ cd proyectos/ && cat {project.id}.md
-        </p>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+      <!-- Back nav -->
+      <div class="mb-5 sm:mb-10">
+        <a
+          href="/projects"
+          class="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-muted hover:text-foreground transition-colors group"
+        >
+          <span class="group-hover:-translate-x-1 transition-transform">←</span>
+          <span data-lang-en>All projects</span>
+          <span data-lang-es>Todos los proyectos</span>
+        </a>
       </div>
 
-      <header class="mb-8">
-        <!-- Hero Image -->
-        <div class="w-full mb-6 rounded-2xl border border-foreground/10 overflow-hidden" style="aspect-ratio: 16/9;">
+      <!-- Article header -->
+      <header class="mb-6 sm:mb-12">
+        <div class="flex items-center gap-3 mb-3 sm:mb-5">
+          <StatusBadge status={status} size="md" />
+          <span class="text-muted text-xs font-mono">
+            <FormattedDate date={pubDate} />
+          </span>
+        </div>
+
+        <h1 class="text-2xl sm:text-5xl font-extrabold tracking-tight text-foreground leading-[1.12] mb-3 sm:mb-5">
+          {title}
+        </h1>
+
+        <p class="text-base sm:text-xl text-muted leading-relaxed mb-4 sm:mb-6">
+          {description}
+        </p>
+
+        <!-- Neutral tags + Live Mode / Demo Action Button Row -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 sm:pt-4 border-t border-border pb-5 sm:pb-8">
+          <!-- Neutral tags (no red) -->
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span class="px-2.5 py-1 rounded-lg text-xs font-mono border border-border text-muted bg-background-subtle">
+                #{tag}
+              </span>
+            ))}
+          </div>
+
+          <!-- Live Mode / Demo Button -->
+          <div class="flex items-center gap-2.5">
+            {liveUrl ? (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-all shadow-md select-none"
+              >
+                <span>Live Mode ↗</span>
+              </a>
+            ) : (
+              <a
+                href="/#contact"
+                class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-all shadow-md select-none"
+              >
+                <span data-lang-en>Live Demo ↗</span>
+                <span data-lang-es>Live Demo ↗</span>
+              </a>
+            )}
+            {githubUrl && (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border border-border bg-foreground/5 hover:bg-foreground/10 text-foreground text-xs font-mono font-medium transition-colors select-none"
+              >
+                <span>GitHub ↗</span>
+              </a>
+            )}
+          </div>
+        </div>
+
+        <!-- Hero image -->
+        <div class="w-full rounded-2xl border border-border overflow-hidden bg-background-subtle aspect-[16/9]">
           <img
             src={image}
             alt={imageAlt}
             class="w-full h-full object-cover"
           />
         </div>
-
-        <!-- Meta info -->
-        <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
-          <h1 class="text-sans text-foreground text-3xl font-bold leading-tight">{title}</h1>
-          <StatusBadge status={status} size="lg" />
-        </div>
-
-        <p class="text-lg text-muted mb-4 font-sans leading-relaxed">
-          {description}
-        </p>
-
-        <!-- Tags & Date -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 rounded-2xl border border-foreground/10 px-4">
-          <div class="flex gap-2 flex-wrap">
-            {tags.map((tag) => (
-              <Tag text={tag} />
-            ))}
-          </div>
-          <p class="text-muted text-sm font-mono whitespace-nowrap">
-            [ <FormattedDate date={pubDate} /> ]
-          </p>
-        </div>
       </header>
 
-      <!-- Content -->
+      <!-- Markdown body (High contrast in both Dark and Light modes) -->
       <article
-        class="mb-12 prose max-w-none
-          prose-headings:text-foreground
+        class="prose dark:prose-invert max-w-none
           prose-headings:font-sans
           prose-headings:tracking-tight
-          prose-p:text-foreground
-          prose-p:font-sans
-          prose-p:tracking-tight
-          prose-p:leading-relaxed
-          prose-a:text-primary
-          prose-a:font-mono
-          prose-code:font-mono
-          prose-a:tracking-tight
-          prose-a:no-underline
-          prose-a:hover:underline
-          prose-a:hover:text-primary-hover
-          prose-img:border
-          prose-img:border-foreground/20
-          prose-img:rounded-2xl
-          prose-img:my-6
-          prose-blockquote:bg-foreground/5
-          prose-blockquote:border-l-primary"
+          prose-headings:font-bold
+          prose-headings:text-foreground
+          prose-h2:text-xl sm:prose-h2:text-3xl
+          prose-h2:mt-8 sm:prose-h2:mt-12 prose-h2:mb-4 sm:prose-h2:mb-6
+          prose-h2:border-b prose-h2:border-border prose-h2:pb-2 sm:prose-h2:pb-3
+          prose-h3:text-lg sm:prose-h3:text-2xl prose-h3:mt-6 sm:prose-h3:mt-8 prose-h3:mb-2 sm:prose-h3:mb-3
+          prose-p:text-muted prose-p:text-sm sm:prose-p:text-lg prose-p:leading-relaxed
+          prose-li:text-muted prose-li:my-1 sm:prose-li:my-1.5
+          prose-strong:text-foreground prose-strong:font-semibold
+          prose-a:text-primary prose-a:underline prose-a:underline-offset-4 prose-a:hover:text-primary-hover
+          prose-code:font-mono prose-code:text-primary prose-code:bg-primary-subtle
+          prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md
+          prose-blockquote:border-l-2 prose-blockquote:border-primary prose-blockquote:bg-background-surface
+          prose-blockquote:text-foreground prose-blockquote:rounded-r-lg
+          prose-blockquote:py-2.5 sm:prose-blockquote:py-3 prose-blockquote:px-4 sm:prose-blockquote:px-5 prose-blockquote:not-italic
+          prose-hr:border-border
+          prose-img:rounded-2xl prose-img:border prose-img:border-border"
       >
         <slot />
       </article>
 
-      <div class="py-6 flex justify-start">
-        <a href="/projects" class="text-muted hover:text-primary font-mono text-sm transition-colors">
-          &lt;- cd ..
+      <!-- Bottom CTA -->
+      <section class="mt-10 sm:mt-16 pt-6 sm:pt-10 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
+        <div>
+          <h3 class="text-lg sm:text-xl font-bold text-foreground mb-1">
+            <span data-lang-en>Interested in similar solutions?</span>
+            <span data-lang-es>¿Te interesa una solución similar?</span>
+          </h3>
+          <p class="text-xs sm:text-sm text-muted">
+            <span data-lang-en>Let's discuss how we can build your next product together.</span>
+            <span data-lang-es>Hablemos sobre cómo construir tu próximo producto.</span>
+          </p>
+        </div>
+        <a
+          href="/#contact"
+          class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm bg-primary text-white hover:bg-primary-hover transition-all shadow-md shrink-0 text-center"
+        >
+          <span data-lang-en>Get in touch</span>
+          <span data-lang-es>Contactar</span>
+          <span>→</span>
         </a>
-      </div>
+      </section>
     </main>
 
     <Footer />

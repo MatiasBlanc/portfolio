@@ -1,0 +1,441 @@
+---
+/**
+ * ReaderSidebar.astro — Modular reader toolbar dock.
+ * Features:
+ * - Desktop: Vertical sidebar with comfortable width (w-14) and generous margin.
+ * - Mobile: Floating collapsible trigger button with an elegant popover menu.
+ * - Active theme indicator: Subtle secondary border/ring, smaller and non-intrusive.
+ * - Continuous font scaling (+2px per click, reset on indicator click).
+ * - Typography selector (Serif, Sans, Mono).
+ * - Download article as Markdown (.md).
+ */
+
+interface Props {
+  title: string;
+  slug: string;
+  rawMarkdown: string;
+}
+
+const { title, slug, rawMarkdown } = Astro.props;
+const encodedMarkdown = encodeURIComponent(rawMarkdown);
+---
+
+<!-- ══════════════════════════════════════════════════════════════
+     DESKTOP VERTICAL DOCK (Comfortable width & clear labels)
+     ══════════════════════════════════════════════════════════════ -->
+<aside
+  id="reader-sidebar-dock"
+  class="hidden md:flex flex-col items-center w-14 p-2 rounded-2xl bg-background-card/95 backdrop-blur-xl border border-border shadow-2xl select-none fixed left-[max(1rem,calc(50%-27rem))] top-1/2 -translate-y-1/2 z-40 gap-2"
+  aria-label="Reader settings"
+>
+  <!-- 1. Typography selector -->
+  <div class="flex flex-col gap-1 w-full items-center" role="group" aria-label="Font family selector">
+    <span class="text-[9px] font-mono uppercase tracking-widest text-muted/70 mb-0.5">Font</span>
+    <button
+      type="button"
+      data-font-btn="serif"
+      class="w-full py-1 rounded-lg text-[11px] font-serif font-semibold transition-colors cursor-pointer text-muted hover:text-foreground text-center"
+      title="Serif font (Editorial)"
+      aria-label="Serif font"
+    >
+      Serif
+    </button>
+    <button
+      type="button"
+      data-font-btn="sans"
+      class="w-full py-1 rounded-lg text-[11px] font-sans font-semibold transition-colors cursor-pointer text-muted hover:text-foreground text-center"
+      title="Sans-serif font (Modern)"
+      aria-label="Sans-serif font"
+    >
+      Sans
+    </button>
+    <button
+      type="button"
+      data-font-btn="mono"
+      class="w-full py-1 rounded-lg text-[11px] font-mono font-semibold transition-colors cursor-pointer text-muted hover:text-foreground text-center"
+      title="Monospace font (Code)"
+      aria-label="Monospace font"
+    >
+      Mono
+    </button>
+  </div>
+
+  <!-- Divider -->
+  <div class="w-8 h-px bg-border/80 my-0.5"></div>
+
+  <!-- 2. Continuous Font Size Scaler -->
+  <div class="flex flex-col gap-1 w-full items-center" role="group" aria-label="Font size controls">
+    <span class="text-[9px] font-mono uppercase tracking-widest text-muted/70 mb-0.5">Size</span>
+    <button
+      type="button"
+      id="font-size-increase-btn"
+      class="w-full py-1 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer text-muted hover:text-foreground hover:bg-foreground/10 text-center"
+      title="Increase size (+2px per click)"
+      aria-label="Increase font size"
+    >
+      A+
+    </button>
+    <button
+      type="button"
+      id="font-size-reset-btn"
+      class="w-full py-0.5 text-[9px] font-mono text-muted hover:text-foreground transition-colors cursor-pointer text-center leading-none"
+      title="Click to reset font size"
+      aria-label="Reset font size"
+    >
+      <span id="font-size-indicator">100%</span>
+    </button>
+    <button
+      type="button"
+      id="font-size-decrease-btn"
+      class="w-full py-1 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer text-muted hover:text-foreground hover:bg-foreground/10 text-center"
+      title="Decrease size (-2px per click)"
+      aria-label="Decrease font size"
+    >
+      A-
+    </button>
+  </div>
+
+  <!-- Divider -->
+  <div class="w-8 h-px bg-border/80 my-0.5"></div>
+
+  <!-- 3. Theme Selector (Dark, Sepia, Light with subtle secondary border) -->
+  <div class="flex flex-col gap-2 items-center py-1" role="group" aria-label="Theme selector">
+    <span class="text-[9px] font-mono uppercase tracking-widest text-muted/70 mb-0.5">Theme</span>
+    <button
+      type="button"
+      data-theme-btn="dark"
+      class="w-4 h-4 rounded-full bg-black border border-white/20 transition-transform cursor-pointer"
+      title="Dark mode"
+      aria-label="Dark mode"
+    ></button>
+    <button
+      type="button"
+      data-theme-btn="sepia"
+      class="w-4 h-4 rounded-full bg-[#fcf8ee] border border-stone-400 transition-transform cursor-pointer"
+      title="Sepia warm paper mode"
+      aria-label="Sepia mode"
+    ></button>
+    <button
+      type="button"
+      data-theme-btn="light"
+      class="w-4 h-4 rounded-full bg-white border border-stone-300 transition-transform cursor-pointer"
+      title="Light mode"
+      aria-label="Light mode"
+    ></button>
+  </div>
+
+  <!-- Divider -->
+  <div class="w-8 h-px bg-border/80 my-0.5"></div>
+
+  <!-- 4. Download as Markdown (.md) Button -->
+  <button
+    type="button"
+    id="download-markdown-btn"
+    data-content={encodedMarkdown}
+    data-filename={`${slug}.md`}
+    class="w-full py-2 rounded-xl text-muted hover:text-foreground hover:bg-foreground/10 transition-colors cursor-pointer flex flex-col items-center justify-center gap-0.5"
+    title="Download article as Markdown (.md)"
+    aria-label="Download Markdown"
+  >
+    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+    <span class="text-[8px] font-mono uppercase font-bold">.md</span>
+  </button>
+</aside>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MOBILE COLLAPSIBLE DROPDOWN (Floating Trigger + Popover)
+     ══════════════════════════════════════════════════════════════ -->
+<div class="md:hidden fixed bottom-5 right-5 z-40 select-none">
+  <!-- Trigger Button -->
+  <button
+    type="button"
+    id="mobile-reader-trigger"
+    class="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-background-card/95 backdrop-blur-xl border border-border shadow-2xl text-xs font-mono font-semibold text-foreground cursor-pointer active:scale-95 transition-transform"
+    aria-expanded="false"
+    aria-controls="mobile-reader-popover"
+  >
+    <span class="text-primary font-bold">Aa</span>
+    <span>Reader</span>
+    <svg id="mobile-trigger-chevron" class="w-3.5 h-3.5 text-muted transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+    </svg>
+  </button>
+
+  <!-- Desplegable / Popover Panel -->
+  <div
+    id="mobile-reader-popover"
+    class="hidden absolute bottom-14 right-0 w-64 p-4 rounded-2xl bg-background-card/98 backdrop-blur-2xl border border-border shadow-2xl flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-2 duration-150"
+    role="region"
+    aria-label="Reader options"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-border/80 pb-2">
+      <span class="text-xs font-mono font-bold uppercase tracking-wider text-foreground">Reader Options</span>
+      <button
+        type="button"
+        id="mobile-reader-close"
+        class="text-muted hover:text-foreground text-xs p-1 cursor-pointer"
+        aria-label="Close reader options"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- 1. Typography selector -->
+    <div>
+      <span class="text-[10px] font-mono uppercase tracking-widest text-muted block mb-1.5">Typography</span>
+      <div class="grid grid-cols-3 gap-1.5" role="group" aria-label="Mobile font family">
+        <button
+          type="button"
+          data-font-btn="serif"
+          class="py-1.5 rounded-lg text-xs font-serif font-semibold border border-border bg-foreground/5 text-muted hover:text-foreground text-center cursor-pointer transition-colors"
+        >
+          Serif
+        </button>
+        <button
+          type="button"
+          data-font-btn="sans"
+          class="py-1.5 rounded-lg text-xs font-sans font-semibold border border-border bg-foreground/5 text-muted hover:text-foreground text-center cursor-pointer transition-colors"
+        >
+          Sans
+        </button>
+        <button
+          type="button"
+          data-font-btn="mono"
+          class="py-1.5 rounded-lg text-xs font-mono font-semibold border border-border bg-foreground/5 text-muted hover:text-foreground text-center cursor-pointer transition-colors"
+        >
+          Mono
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. Font size controls -->
+    <div>
+      <span class="text-[10px] font-mono uppercase tracking-widest text-muted block mb-1.5">Text Size</span>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          id="mobile-size-decrease"
+          class="flex-1 py-1.5 rounded-lg border border-border bg-foreground/5 text-xs font-mono font-bold text-muted hover:text-foreground text-center cursor-pointer"
+        >
+          A-
+        </button>
+        <button
+          type="button"
+          id="mobile-size-reset"
+          class="flex-1 py-1.5 rounded-lg border border-border bg-foreground/5 text-xs font-mono text-muted hover:text-foreground text-center cursor-pointer"
+        >
+          <span id="mobile-size-indicator">100%</span>
+        </button>
+        <button
+          type="button"
+          id="mobile-size-increase"
+          class="flex-1 py-1.5 rounded-lg border border-border bg-foreground/5 text-xs font-mono font-bold text-muted hover:text-foreground text-center cursor-pointer"
+        >
+          A+
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. Theme selector -->
+    <div>
+      <span class="text-[10px] font-mono uppercase tracking-widest text-muted block mb-1.5">Theme Mode</span>
+      <div class="flex items-center justify-around p-1.5 rounded-xl border border-border bg-foreground/5">
+        <button
+          type="button"
+          data-theme-btn="dark"
+          class="flex items-center gap-1.5 text-xs font-mono text-muted hover:text-foreground cursor-pointer"
+        >
+          <span class="w-3.5 h-3.5 rounded-full bg-black border border-white/30 inline-block"></span>
+          <span>Dark</span>
+        </button>
+        <button
+          type="button"
+          data-theme-btn="sepia"
+          class="flex items-center gap-1.5 text-xs font-mono text-muted hover:text-foreground cursor-pointer"
+        >
+          <span class="w-3.5 h-3.5 rounded-full bg-[#fcf8ee] border border-stone-400 inline-block"></span>
+          <span>Sepia</span>
+        </button>
+        <button
+          type="button"
+          data-theme-btn="light"
+          class="flex items-center gap-1.5 text-xs font-mono text-muted hover:text-foreground cursor-pointer"
+        >
+          <span class="w-3.5 h-3.5 rounded-full bg-white border border-stone-300 inline-block"></span>
+          <span>Light</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. Download Markdown -->
+    <button
+      type="button"
+      id="mobile-download-md"
+      data-content={encodedMarkdown}
+      data-filename={`${slug}.md`}
+      class="w-full py-2.5 rounded-xl border border-border bg-foreground/5 hover:bg-foreground/10 text-xs font-mono font-semibold text-foreground flex items-center justify-center gap-2 cursor-pointer transition-colors"
+    >
+      <svg class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      <span>Download as .md</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  // ── 1. Dynamic Font Family Switcher (Serif, Sans, Mono) ──
+  const fontBtns = document.querySelectorAll<HTMLButtonElement>("[data-font-btn]");
+  function applyReaderFont(font: string) {
+    document.documentElement.setAttribute("data-font", font);
+    localStorage.setItem("reader_font", font);
+
+    fontBtns.forEach((btn) => {
+      const isActive = btn.dataset.fontBtn === font;
+      btn.classList.toggle("bg-foreground/15", isActive);
+      btn.classList.toggle("text-foreground", isActive);
+      btn.classList.toggle("font-bold", isActive);
+      btn.classList.toggle("text-muted", !isActive);
+    });
+  }
+  const initialFont = localStorage.getItem("reader_font") || "serif";
+  applyReaderFont(initialFont);
+
+  fontBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const font = btn.dataset.fontBtn;
+      if (font) applyReaderFont(font);
+    });
+  });
+
+  // ── 2. Multi-step Continuous Font Scaling (+2px per click) ──
+  const BASE_SIZE_PX = 17;
+  const STEP_PX = 2;
+  const MIN_SIZE_PX = 12;
+  const MAX_SIZE_PX = 54;
+
+  let currentSizePx = Number(localStorage.getItem("reader_font_size_px")) || BASE_SIZE_PX;
+  const sizeIndicator = document.getElementById("font-size-indicator");
+  const mobileSizeIndicator = document.getElementById("mobile-size-indicator");
+
+  function applyReaderFontSize(sizePx: number) {
+    currentSizePx = Math.max(MIN_SIZE_PX, Math.min(MAX_SIZE_PX, sizePx));
+    document.documentElement.style.setProperty("--reader-font-size", `${currentSizePx}px`);
+    localStorage.setItem("reader_font_size_px", String(currentSizePx));
+
+    const percentage = Math.round((currentSizePx / BASE_SIZE_PX) * 100);
+    if (sizeIndicator) sizeIndicator.textContent = `${percentage}%`;
+    if (mobileSizeIndicator) mobileSizeIndicator.textContent = `${percentage}%`;
+  }
+  applyReaderFontSize(currentSizePx);
+
+  document.getElementById("font-size-increase-btn")?.addEventListener("click", () => {
+    applyReaderFontSize(currentSizePx + STEP_PX);
+  });
+  document.getElementById("font-size-decrease-btn")?.addEventListener("click", () => {
+    applyReaderFontSize(currentSizePx - STEP_PX);
+  });
+  document.getElementById("font-size-reset-btn")?.addEventListener("click", () => {
+    applyReaderFontSize(BASE_SIZE_PX);
+  });
+
+  document.getElementById("mobile-size-increase")?.addEventListener("click", () => {
+    applyReaderFontSize(currentSizePx + STEP_PX);
+  });
+  document.getElementById("mobile-size-decrease")?.addEventListener("click", () => {
+    applyReaderFontSize(currentSizePx - STEP_PX);
+  });
+  document.getElementById("mobile-size-reset")?.addEventListener("click", () => {
+    applyReaderFontSize(BASE_SIZE_PX);
+  });
+
+  // ── 3. Theme Switcher (Subtle secondary border, small & clean) ──
+  const themeBtns = document.querySelectorAll<HTMLButtonElement>("[data-theme-btn]");
+  function applyReaderTheme(theme: string) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+
+    themeBtns.forEach((btn) => {
+      const isActive = btn.dataset.themeBtn === theme;
+      // Secondary subtle border: ring-1.5 ring-muted ring-offset-1, no excessive scaling
+      btn.classList.toggle("ring-1.5", isActive);
+      btn.classList.toggle("ring-muted", isActive);
+      btn.classList.toggle("ring-offset-1", isActive);
+      btn.classList.toggle("ring-offset-background-card", isActive);
+      btn.classList.toggle("scale-105", isActive);
+    });
+  }
+  const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  applyReaderTheme(currentTheme);
+
+  themeBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const theme = btn.dataset.themeBtn;
+      if (theme) applyReaderTheme(theme);
+    });
+  });
+
+  // ── 4. Download Article as Markdown (.md) ──
+  function triggerMarkdownDownload(buttonEl: HTMLElement | null) {
+    if (!buttonEl) return;
+    const encoded = buttonEl.getAttribute("data-content");
+    const filename = buttonEl.getAttribute("data-filename") || "article.md";
+    if (!encoded) return;
+
+    const content = decodeURIComponent(encoded);
+    const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById("download-markdown-btn")?.addEventListener("click", function () {
+    triggerMarkdownDownload(this as HTMLElement);
+  });
+  document.getElementById("mobile-download-md")?.addEventListener("click", function () {
+    triggerMarkdownDownload(this as HTMLElement);
+  });
+
+  // ── 5. Mobile Popover Toggle & Dismiss ──
+  const mobileTrigger = document.getElementById("mobile-reader-trigger");
+  const mobilePopover = document.getElementById("mobile-reader-popover");
+  const mobileClose = document.getElementById("mobile-reader-close");
+  const chevronIcon = document.getElementById("mobile-trigger-chevron");
+
+  function toggleMobilePopover(force?: boolean) {
+    const isHidden = force !== undefined ? !force : mobilePopover?.classList.contains("hidden");
+    mobilePopover?.classList.toggle("hidden", !isHidden);
+    mobileTrigger?.setAttribute("aria-expanded", String(isHidden));
+    chevronIcon?.classList.toggle("rotate-180", isHidden);
+  }
+
+  mobileTrigger?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMobilePopover();
+  });
+
+  mobileClose?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMobilePopover(false);
+  });
+
+  // Click outside to close
+  document.addEventListener("click", (e) => {
+    if (
+      mobilePopover &&
+      !mobilePopover.classList.contains("hidden") &&
+      !mobilePopover.contains(e.target as Node) &&
+      !mobileTrigger?.contains(e.target as Node)
+    ) {
+      toggleMobilePopover(false);
+    }
+  });
+</script>

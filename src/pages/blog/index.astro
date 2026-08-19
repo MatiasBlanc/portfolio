@@ -1,270 +1,141 @@
 ---
 import { getPublishedPosts, readingTime } from "../../utils/blog";
-
 import BaseHead from "../../components/BaseHead.astro";
 import BlogCard from "../../components/ui/BlogCard.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
-import PageHeader from "../../components/ui/PageHeader.astro";
+import RssButton from "../../components/blog/RssButton.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 import "../../global.css";
 
 const posts = (await getPublishedPosts()).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
-
-// Paginación: 6 posts por página vía ?page=N
-const PAGE_SIZE = 6;
-const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
-const rawPage = Number(Astro.url.searchParams.get("page")) || 1;
-const page = Math.min(Math.max(rawPage, 1), totalPages);
-const pagePosts = posts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-// Tags únicos de todos los posts publicados
-const allTags = [...new Set(posts.flatMap((post) => post.data.tags ?? []))].sort();
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
-    <BaseHead title={`Blog · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={`Articles & Builds · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
-  <body
-    class="w-full lg:w-9/12 mx-auto bg-background text-foreground font-mono px-4 lg:px-0"
-  >
-    <Header currentPage="blog" />
-    <main>
-      <PageHeader title="Blog" />
+  <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
+    <Header />
 
-      <!-- Buscador + filtro por tags -->
-      {
-        posts.length > 0 && (
-          <div class="mb-6 -mt-2 flex flex-col gap-3 lg:w-9/12 mx-auto">
-            <div class="relative">
-              <span
-                class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm pointer-events-none"
-                aria-hidden="true"
-              >
-                $
-              </span>
-              <input
-                id="blog-search"
-                type="search"
-                placeholder="grep -i 'título o descripción'"
-                aria-label="Buscar artículos"
-                class="w-full bg-background-surface border border-foreground/15 rounded-full pl-9 pr-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200"
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
+      <!-- Page header with title and RSS Feed button -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8">
+        <div>
+          <p class="text-xs font-mono font-semibold uppercase tracking-widest text-muted mb-1.5 sm:mb-3">
+            Matías Blanc · Writing
+          </p>
+          <h1 class="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
+            Articles & Builds
+          </h1>
+        </div>
+
+        <!-- Modular RSS Feed Button -->
+        <RssButton />
+      </div>
+
+      <!-- Prominent Search Bar (Clean and responsive) -->
+      {posts.length > 0 && (
+        <div class="mb-6 sm:mb-10 max-w-xl">
+          <div class="relative">
+            <input
+              id="blog-search"
+              type="search"
+              placeholder="Search articles by title or keyword..."
+              aria-label="Search articles"
+              class="w-full bg-background-card border border-border rounded-2xl pl-12 pr-5 py-3 sm:py-3.5 text-sm sm:text-base text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40 transition-all shadow-sm"
+            />
+            <svg
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
-            </div>
+            </svg>
+          </div>
+          <p class="text-xs font-mono text-muted mt-2 sm:mt-3 pl-1">
+            <span id="blog-count">{`${posts.length} ${posts.length === 1 ? "article" : "articles"}`}</span>
+          </p>
+        </div>
+      )}
 
-            <div
-              id="blog-tags"
-              class="flex flex-wrap gap-2"
-              role="group"
-              aria-label="Filtrar por tags"
-            >
-              <button
-                type="button"
-                data-tag="all"
-                class="tag-pill tag-pill-active font-mono text-xs px-3 py-1 rounded-full border transition-colors duration-200 cursor-pointer"
+      <!-- Posts grid -->
+      {posts.length > 0 ? (
+        <>
+          <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {posts.map((post) => (
+              <div
+                data-post-card
+                data-tags={(post.data.tags ?? []).join(",")}
+                data-title={post.data.title}
+                data-description={post.data.description}
+                class="h-full"
               >
-                todos
-              </button>
-              {
-                allTags.map((tag) => (
-                  <button
-                    type="button"
-                    data-tag={tag}
-                    class="tag-pill font-mono text-xs px-3 py-1 rounded-full border transition-colors duration-200 cursor-pointer"
-                  >
-                    {tag}
-                  </button>
-                ))
-              }
-            </div>
+                <BlogCard
+                  id={post.id}
+                  title={post.data.title}
+                  description={post.data.description}
+                  status={post.data.status}
+                  pubDate={post.data.pubDate}
+                  tags={post.data.tags}
+                  readingTime={readingTime(post.body)}
+                  image={post.data.image}
+                  imageAlt={post.data.imageAlt ?? undefined}
+                />
+              </div>
+            ))}
           </div>
-        )
-      }
-
-      <p class="text-muted text-sm font-mono mb-6 lg:w-9/12 mx-auto">
-        <span id="blog-count">
-          {`${pagePosts.length} ${pagePosts.length === 1 ? "artículo" : "artículos"} en esta página`}
-        </span>
-      </p>
-
-      {
-        posts.length > 0 ? (
-          <>
-            <ul id="blog-grid" class="grid grid-cols-1 gap-4 lg:w-9/12 mx-auto">
-              {pagePosts.map((post, index) => (
-                <li
-                  data-post-card
-                  data-tags={(post.data.tags ?? []).join(",")}
-                  data-title={post.data.title}
-                  data-description={post.data.description}
-                  class="animate-fade-in"
-                  style={`--animation-delay: ${index * 80}ms`}
-                >
-                  <BlogCard
-                    id={post.id}
-                    title={post.data.title}
-                    description={post.data.description}
-                    status={post.data.status}
-                    pubDate={post.data.pubDate}
-                    tags={post.data.tags}
-                    readingTime={readingTime(post.body)}
-                  />
-                </li>
-              ))}
-            </ul>
-
-            <div
-              id="blog-empty"
-              class="hidden text-center py-16 lg:w-9/12 mx-auto"
-            >
-              <p class="font-mono text-muted text-sm">
-                $ grep: no se encontraron resultados
-              </p>
-              <p class="text-muted/50 text-xs mt-2">
-                Prueba con otro término o tag
-              </p>
-            </div>
-
-            {
-              totalPages > 1 && (
-                <nav
-                  id="blog-pagination"
-                  aria-label="Paginación"
-                  class="flex items-center justify-center gap-5 mt-10 font-mono text-sm lg:w-9/12 mx-auto"
-                >
-                  {page > 1 ? (
-                    <a
-                      href={`/blog/?page=${page - 1}`}
-                      class="text-muted hover:text-primary transition-colors duration-200"
-                    >
-                      « anterior
-                    </a>
-                  ) : (
-                    <span class="text-muted opacity-30 cursor-not-allowed">
-                      « anterior
-                    </span>
-                  )}
-
-                  <span class="text-muted">
-                    {page}/{totalPages}
-                  </span>
-
-                  {page < totalPages ? (
-                    <a
-                      href={`/blog/?page=${page + 1}`}
-                      class="text-muted hover:text-primary transition-colors duration-200"
-                    >
-                      siguiente »
-                    </a>
-                  ) : (
-                    <span class="text-muted opacity-30 cursor-not-allowed">
-                      siguiente »
-                    </span>
-                  )}
-                </nav>
-              )
-            }
-          </>
-        ) : (
-          <div class="text-center py-16">
-            <p class="font-mono text-muted text-sm">
-              $ echo "No hay posts todavía"
-            </p>
-            <p class="text-muted/50 text-xs mt-2">Próximamente...</p>
+          <div id="blog-empty" class="hidden text-center py-12 sm:py-20">
+            <p class="text-muted text-base">No articles found matching your search.</p>
           </div>
-        )
-      }
+        </>
+      ) : (
+        <div class="text-center py-12 sm:py-20">
+          <p class="text-muted text-base">No articles published yet.</p>
+        </div>
+      )}
     </main>
 
     <Footer />
+
+    <script>
+      const searchInput = document.getElementById("blog-search") as HTMLInputElement | null;
+      const cards = document.querySelectorAll("[data-post-card]") as NodeListOf<HTMLElement>;
+      const countEl = document.getElementById("blog-count");
+      const emptyEl = document.getElementById("blog-empty");
+      const gridEl = document.getElementById("blog-grid");
+
+      function applyFilter() {
+        const query = searchInput?.value.trim().toLowerCase() ?? "";
+        let visible = 0;
+
+        cards.forEach((card) => {
+          const tags = (card.dataset.tags ?? "").toLowerCase();
+          const title = (card.dataset.title ?? "").toLowerCase();
+          const desc = (card.dataset.description ?? "").toLowerCase();
+          const haystack = `${title} ${desc} ${tags}`;
+          const show = !query || haystack.includes(query);
+
+          card.classList.toggle("hidden", !show);
+          if (show) visible++;
+        });
+
+        if (countEl) countEl.textContent = `${visible} ${visible === 1 ? "article" : "articles"}`;
+        emptyEl?.classList.toggle("hidden", visible > 0);
+        gridEl?.classList.toggle("hidden", visible === 0);
+      }
+
+      searchInput?.addEventListener("input", applyFilter);
+    </script>
   </body>
 </html>
-
-<style>
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.5s ease var(--animation-delay, 0ms) both;
-    animation-timeline: view();
-    animation-range: entry 0% cover 30%;
-  }
-
-  /* Pills de tags */
-  .tag-pill {
-    border-color: var(--color-foreground);
-    opacity: 0.25;
-    color: var(--color-foreground);
-    background: transparent;
-  }
-  .tag-pill:hover {
-    opacity: 0.6;
-  }
-  .tag-pill-active,
-  .tag-pill-active:hover {
-    opacity: 1;
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-  }
-</style>
-
-<script>
-  // Filtrado client-side: búsqueda por texto + tag activo
-  const searchInput = document.getElementById("blog-search");
-  const tagButtons = document.querySelectorAll("[data-tag]");
-  const cards = document.querySelectorAll("[data-post-card]");
-  const countEl = document.getElementById("blog-count");
-  const emptyEl = document.getElementById("blog-empty");
-  const gridEl = document.getElementById("blog-grid");
-  const paginationEl = document.getElementById("blog-pagination");
-
-  let activeTag = "all";
-
-  function applyFilter() {
-    const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
-    const hasFilter = activeTag !== "all" || query !== "";
-    let visible = 0;
-
-    cards.forEach((card) => {
-      const tags = (card.dataset.tags ?? "").split(",").filter(Boolean);
-      const haystack =
-        `${card.dataset.title ?? ""} ${card.dataset.description ?? ""}`.toLowerCase();
-
-      const matchesTag = activeTag === "all" || tags.includes(activeTag);
-      const matchesQuery = !query || haystack.includes(query);
-      const show = matchesTag && matchesQuery;
-
-      card.classList.toggle("hidden", !show);
-      if (show) visible++;
-    });
-
-    countEl.textContent = `${visible} ${visible === 1 ? "artículo" : "artículos"}${hasFilter ? " encontrados" : " en esta página"}`;
-    emptyEl.classList.toggle("hidden", visible > 0);
-    gridEl.classList.toggle("hidden", visible === 0);
-    paginationEl?.classList.toggle("hidden", hasFilter);
-  }
-
-  tagButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      activeTag = btn.dataset.tag ?? "all";
-      tagButtons.forEach((b) =>
-        b.classList.toggle("tag-pill-active", b === btn),
-      );
-      applyFilter();
-    });
-  });
-
-  searchInput?.addEventListener("input", applyFilter);
-</script>

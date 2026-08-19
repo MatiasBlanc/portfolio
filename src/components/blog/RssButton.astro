@@ -1,0 +1,27 @@
+---
+/**
+ * RssButton.astro — Clean, minimalist RSS Feed icon button.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<a
+  href="/rss.xml"
+  target="_blank"
+  rel="noopener noreferrer"
+  class:list={[
+    "p-2.5 rounded-xl border border-border bg-foreground/5 hover:bg-foreground/10 text-muted hover:text-foreground transition-colors flex items-center justify-center select-none shadow-xs group",
+    className,
+  ]}
+  title="Subscribe to RSS feed"
+  aria-label="RSS Feed"
+>
+  <svg class="w-4 h-4 text-muted group-hover:text-primary transition-colors" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <circle cx="6.18" cy="17.82" r="2.18" />
+    <path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z" />
+  </svg>
+</a>

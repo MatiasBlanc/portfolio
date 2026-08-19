@@ -4,7 +4,6 @@ import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import ProjectCard from "../../components/ui/ProjectCard.astro";
-import PageHeader from "../../components/ui/PageHeader.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 import "../../global.css";
 
@@ -14,74 +13,45 @@ const projects = (await getCollection("projects")).sort(
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <BaseHead
-      title={`Proyectos · ${SITE_TITLE}`}
+      title={`Projects · ${SITE_TITLE}`}
       description={SITE_DESCRIPTION}
     />
   </head>
-  <body class="w-full lg:w-9/12 bg-background mx-auto px-4 lg:px-0">
-    <Header currentPage="proyectos" />
+  <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
+    <Header />
 
-    <main>
-      <PageHeader title="Proyectos" />
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
+      <!-- Page header -->
+      <div class="mb-6 sm:mb-12">
+        <p class="text-xs font-mono font-semibold uppercase tracking-widest text-muted mb-1.5 sm:mb-3">
+          Matías Blanc · Portfolio
+        </p>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight leading-tight">
+          <span data-lang-en>Projects</span>
+          <span data-lang-es>Proyectos</span>
+        </h1>
+      </div>
 
-      <p class="text-muted text-sm font-mono mb-6 -mt-4">
-        {`${projects.length} ${projects.length === 1 ? 'proyecto' : 'proyectos'} encontrados`}
-      </p>
-
-      <div class="py-4">
-        {projects.length === 0 ? (
-          <div class="text-center py-16">
-            <p class="font-mono text-muted text-sm">
-              $ echo "No hay proyectos todavía"
-            </p>
-            <p class="text-muted/50 text-xs mt-2">
-              Próximamente...
-            </p>
-          </div>
-        ) : (
-          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {projects.map((project, index) => (
-              <li
-                class="animate-fade-in"
-                style={`--animation-delay: ${index * 100}ms`}
-              >
-                <ProjectCard
-                  id={project.id}
-                  title={project.data.title}
-                  description={project.data.description}
-                  image={project.data.image}
-                  imageAlt={project.data.imageAlt}
-                  date={project.data.pubDate}
-                  tags={project.data.tags}
-                  status={project.data.status}
-                />
-              </li>
-            ))}
-          </ul>
-        )}
+      <!-- Projects bento grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {projects.map((project) => (
+          <ProjectCard
+            id={project.id}
+            title={project.data.title}
+            description={project.data.description}
+            image={project.data.image}
+            imageAlt={project.data.imageAlt}
+            date={project.data.pubDate}
+            tags={project.data.tags}
+            status={project.data.status}
+          />
+        ))}
       </div>
     </main>
 
     <Footer />
   </body>
 </html>
-
-<style>
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.5s ease both;
-  }
-</style>
