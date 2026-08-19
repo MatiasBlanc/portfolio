@@ -69,17 +69,25 @@ const posts = (await getPublishedPosts()).sort(
         </div>
       )}
 
-      <!-- Posts grid -->
+      <!-- Posts grid (Equalized heights and responsive columns) -->
       {posts.length > 0 ? (
         <>
-          <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div
+            id="blog-grid"
+            class:list={[
+              "grid gap-5 items-stretch",
+              posts.length === 2
+                ? "grid-cols-1 md:grid-cols-2"
+                : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            ]}
+          >
             {posts.map((post) => (
               <div
                 data-post-card
                 data-tags={(post.data.tags ?? []).join(",")}
                 data-title={post.data.title}
                 data-description={post.data.description}
-                class="h-full"
+                class="h-full flex flex-col"
               >
                 <BlogCard
                   id={post.id}

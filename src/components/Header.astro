@@ -294,7 +294,15 @@ const navLinks = [
     triggerGoogleTranslate(lang);
   }
 
+  import { bind, play } from "cuelume";
+
+  // Wires up all data-cuelume-* attributes across the UI
+  bind();
+
   function toggleLanguage() {
+    try {
+      play("page", { volume: 0.4 });
+    } catch (_) {}
     const current = document.documentElement.getAttribute("data-lang") || "en";
     const next = current === "en" ? "es" : "en";
     applyLang(next);
@@ -322,6 +330,9 @@ const navLinks = [
   syncThemeIcons();
 
   document.getElementById("theme-toggle-btn")?.addEventListener("click", () => {
+    try {
+      play("toggle", { volume: 0.35 });
+    } catch (_) {}
     const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);

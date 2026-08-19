@@ -192,19 +192,19 @@ const scaleClass = {
         <!-- Upper MX Mount Cross -->
         <!-- Vertical cross bar -->
         <rect
-          x="56"
-          y="10"
-          width="8"
-          height="26"
+          x="55"
+          y="16"
+          width="10"
+          height="20"
           rx="2"
           fill="url(#redStemGrad)"
           stroke="#991b1b"
           stroke-width="0.75"></rect>
         <!-- Horizontal cross bar -->
         <rect
-          x="47"
-          y="18"
-          width="10"
+          x="50"
+          y="20"
+          width="20"
           height="8"
           rx="2"
           fill="url(#redStemGrad)"
@@ -302,19 +302,32 @@ const scaleClass = {
 
   /* 3. Flexión de la Hoja de Contacto al presionar */
   .movable-leaf {
-    animation: leaf-stroke 1.25s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: leaf-stroke 1.25s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
   }
 
   @keyframes leaf-stroke {
-    0%,
-    15%,
-    85%,
-    100% {
+    0%, 15%, 85%, 100% {
       transform: rotate(0deg);
     }
-    38%,
-    62% {
+    38%, 62% {
       transform: rotate(-7deg);
     }
   }
 </style>
+
+<script>
+  import { play } from "cuelume";
+
+  document.querySelectorAll(".switch-cutaway-container").forEach((el) => {
+    el.addEventListener("pointerdown", () => {
+      try {
+        play("press", { volume: 0.45 });
+      } catch (_) {}
+    });
+    el.addEventListener("pointerup", () => {
+      try {
+        play("release", { volume: 0.45 });
+      } catch (_) {}
+    });
+  });
+</script>
