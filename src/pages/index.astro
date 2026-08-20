@@ -1,133 +1,711 @@
 ---
+// src/pages/index.astro
+import { getCollection } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
-import HeroSection from "../components/HeroSection.astro";
-import ConsoleCard from "../components/ui/ConsoleCard.astro";
-import LatestPosts from "../components/LatestPosts.astro";
-import FeaturedProjects from "../components/FeaturedProjects.astro";
 import Footer from "../components/Footer.astro";
-
+import ProjectCard from "../components/ui/ProjectCard.astro";
+import BlogCard from "../components/ui/BlogCard.astro";
+import LoadingKeyboard from "../components/ui/LoadingKeyboard.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { getPublishedPosts, readingTime } from "../utils/blog";
 import "../global.css";
+
+// Proyectos ordenados por fecha
+const allProjects = await getCollection("projects");
+const projects = allProjects
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+// Blog posts ordenados por fecha
+const allPosts = await getPublishedPosts();
+const posts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={`${SITE_TITLE} — Full-Stack & Mobile Engineer`} description={SITE_DESCRIPTION} />
   </head>
-  <body class="w-full lg:w-9/12 bg-background mx-auto px-4 lg:px-0">
-    <Header currentPage="inicio" />
+  <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
+    <!-- Initial Entrance Splash Screen (1 second, first visit only) -->
+    <div
+      id="page-entrance-loader"
+      class="fixed inset-0 z-[9999] bg-background flex flex-col items-center justify-center transition-opacity duration-500 select-none"
+      aria-hidden="true"
+    >
+      <LoadingKeyboard size="md" />
+    </div>
+    <script is:inline>
+      if (sessionStorage.getItem("portfolio_splash_shown")) {
+        const el = document.getElementById("page-entrance-loader");
+        if (el) el.style.display = "none";
+      }
+    </script>
 
-    <main class="space-y-12 pb-12">
-      <!-- ── HERO: Nombre + typing effect ── -->
-      <HeroSection />
+    <Header />
 
-      <!-- ── BIO ── -->
-      <ConsoleCard
-        title="bio.txt"
-        buttonText="download cv"
-        buttonHref="/cv.pdf"
-      >
-        <div class="font-mono text-sm leading-relaxed space-y-1">
-          <p>
-            <span class="text-muted inline-block w-24">nombre:</span>
-            <span class="text-foreground">Matías Blanc</span>
-          </p>
-          <p>
-            <span class="text-muted inline-block w-24">rol:</span>
-            <span class="text-foreground">frontend dev</span>
-          </p>
-          <p>
-            <span class="text-muted inline-block w-24">focus:</span>
-            <span class="text-foreground">app móvil ITF · 80% frontend</span>
-          </p>
-          <p>
-            <span class="text-muted inline-block w-24">stack:</span>
-            <span class="text-foreground">react · react native · python</span>
-          </p>
-          <p>
-            <span class="text-muted inline-block w-24">extras:</span>
-            <span class="text-foreground">taekwon-do · hardware · dotfiles</span>
-          </p>
-        </div>
-      </ConsoleCard>
+    <main class="max-w-6xl mx-auto px-4 sm:px-6">
 
-      <!-- ── PROYECTOS DESTACADOS ── -->
-      <FeaturedProjects />
+      <!-- ══════════════════════════════════════════════════════════════
+           HERO
+           ══════════════════════════════════════════════════════════════ -->
+      <section class="pt-8 pb-14 sm:pt-20 sm:pb-28 border-b border-border">
+        <!-- Headline -->
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1] mb-4 sm:mb-6 max-w-4xl">
+          <span data-lang-en>
+            <span class="block text-primary font-mono text-sm sm:text-base lg:text-lg font-semibold tracking-normal mb-2 sm:mb-3">Matías Blanc · Full-Stack & Mobile Engineer</span>
+            Building Fast, Scalable Web & Mobile Applications.
+          </span>
+          <span data-lang-es>
+            <span class="block text-primary font-mono text-sm sm:text-base lg:text-lg font-semibold tracking-normal mb-2 sm:mb-3">Matías Blanc · Desarrollador Full-Stack & Mobile</span>
+            Desarrollo Aplicaciones Móviles y Web Rápidas y Escalables.
+          </span>
+        </h1>
 
-      <!-- ── ÚLTIMOS POSTS ── -->
-      <LatestPosts />
+        <!-- Subtitle with greeting and name -->
+        <p class="text-base sm:text-xl text-muted leading-relaxed max-w-2xl mb-6 sm:mb-10">
+          <span data-lang-en>
+            Hi, I'm <strong class="text-foreground font-semibold">Matías Blanc</strong>. Specializing in <strong class="text-foreground font-semibold">React, React Native, TypeScript, and Python</strong>, I help founders and teams turn complex ideas into polished, production-ready software.
+          </span>
+          <span data-lang-es>
+            Hola, soy <strong class="text-foreground font-semibold">Matías Blanc</strong>. Especializado en <strong class="text-foreground font-semibold">React, React Native, TypeScript y Python</strong>, ayudo a fundadores y equipos a transformar ideas complejas en software de producción impecable.
+          </span>
+        </p>
 
-      <!-- ── CONTACTO ── -->
-      <section id="contacto" class="space-y-4">
-        <h3 class="text-muted font-mono text-md tracking-tight">
-          $ cat contact.sh
-        </h3>
-        <div class="rounded-2xl border border-foreground/15 p-5">
-          <form id="contact-form" class="flex flex-col gap-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label class="flex flex-col gap-1.5">
-                <span class="font-mono text-xs text-muted">$ read nombre</span>
-                <input
-                  name="nombre"
-                  type="text"
-                  required
-                  placeholder="tu nombre"
-                  class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200"
-                />
-              </label>
-              <label class="flex flex-col gap-1.5">
-                <span class="font-mono text-xs text-muted">$ read email</span>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="tu@email.com"
-                  class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200"
-                />
-              </label>
-            </div>
-            <label class="flex flex-col gap-1.5">
-              <span class="font-mono text-xs text-muted">$ cat mensaje.txt</span>
-              <textarea
-                name="mensaje"
-                rows="5"
-                required
-                placeholder="escribí tu mensaje..."
-                class="w-full bg-transparent border border-foreground/20 rounded-xl px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted/60 focus:outline-none focus:border-primary transition-colors duration-200 resize-y"
-              ></textarea>
-            </label>
-            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-              <button
-                type="submit"
-                class="inline-flex items-center gap-2 bg-primary text-background px-5 py-2.5 font-mono text-sm font-semibold tracking-tight rounded-full hover:bg-primary-hover transition-colors duration-200 cursor-pointer"
-              >
-                enviar
-              </button>
-            </div>
-          </form>
+        <!-- CTA -->
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+          <a
+            href="#projects"
+            class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm bg-primary text-white flex items-center gap-2"
+          >
+            <span data-lang-en>Explore my work</span>
+            <span data-lang-es>Ver mis proyectos</span>
+            <span>→</span>
+          </a>
+          <a
+            href="#contact"
+            class="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-medium text-xs sm:text-sm text-muted hover:text-foreground transition-colors"
+          >
+            <span data-lang-en>Get in touch</span>
+            <span data-lang-es>Contactar</span>
+          </a>
         </div>
       </section>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           PROJECTS
+           ══════════════════════════════════════════════════════════════ -->
+      <section id="projects" class="py-12 sm:py-20 border-b border-border scroll-mt-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-10">
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            <span data-lang-en>Projects</span>
+            <span data-lang-es>Proyectos</span>
+          </h2>
+          <a
+            href="/projects"
+            class="text-xs sm:text-sm font-semibold text-muted hover:text-primary flex items-center gap-1.5 group shrink-0 transition-colors"
+          >
+            <span data-lang-en>All projects</span>
+            <span data-lang-es>Ver todos</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {projects.map((project) => (
+            <ProjectCard
+              id={project.id}
+              title={project.data.title}
+              description={project.data.description}
+              image={project.data.image}
+              imageAlt={project.data.imageAlt}
+              date={project.data.pubDate}
+              tags={project.data.tags}
+              status={project.data.status}
+            />
+          ))}
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           ABOUT ME
+           ══════════════════════════════════════════════════════════════ -->
+      <section id="about" class="py-12 sm:py-20 border-b border-border scroll-mt-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start">
+
+          <!-- Left: Name & info -->
+          <div class="lg:col-span-4 flex flex-col gap-4 sm:gap-5">
+            <div>
+              <h2 class="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+                Matías Blanc
+              </h2>
+              <p class="text-sm sm:text-base text-muted font-medium mt-1">
+                <span data-lang-en>IT Engineering Student · UCN</span>
+                <span data-lang-es>Estudiante Ing. Civil Computación · UCN</span>
+              </p>
+            </div>
+
+            <div class="space-y-2 sm:space-y-2.5 text-sm sm:text-base font-medium text-foreground/80 pt-3.5 border-t border-border">
+              <p class="flex items-center gap-2"><span>📍</span> Coquimbo, Chile</p>
+              <p class="flex items-center gap-2"><span>⚡</span> English · Spanish</p>
+              <p class="flex items-center gap-2"><span>🥋</span> 1st Dan ITF Taekwon-Do</p>
+            </div>
+          </div>
+
+          <!-- Right: Direct bio -->
+          <div class="lg:col-span-8 space-y-3 sm:space-y-4 text-muted text-sm sm:text-base leading-relaxed">
+            <p>
+              <span data-lang-en>
+                Full-Stack & Mobile Developer studying Computer Science at <strong class="text-foreground font-semibold">Universidad Católica del Norte (UCN)</strong>. I build production-ready applications with React, React Native, TypeScript, and Python.
+              </span>
+              <span data-lang-es>
+                Desarrollador Full-Stack y Mobile estudiando Ingeniería Civil en Computación en la <strong class="text-foreground font-semibold">Universidad Católica del Norte (UCN)</strong>. Construyo aplicaciones en producción con React, React Native, TypeScript y Python.
+              </span>
+            </p>
+            <p>
+              <span data-lang-en>
+                My experience ranges from real-time mobile platforms for sports federations to automated content systems. I prioritize clean code, type safety, and fast load times.
+              </span>
+              <span data-lang-es>
+                Mi experiencia abarca desde plataformas móviles en tiempo real para federaciones deportivas hasta sistemas automatizados de contenido. Priorizo código limpio, tipado estricto y rendimiento.
+              </span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TECH STACK (Spacious, prominent typography)
+           ══════════════════════════════════════════════════════════════ -->
+      <section class="py-12 sm:py-20 border-b border-border">
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight mb-6 sm:mb-10">
+          <span data-lang-en>Stack</span>
+          <span data-lang-es>Stack</span>
+        </h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-foreground tracking-tight mb-3 sm:mb-4">
+              Languages
+            </h3>
+            <ul class="space-y-2 sm:space-y-2.5 text-sm sm:text-base text-foreground/80 font-medium">
+              <li>TypeScript</li>
+              <li>Python</li>
+              <li>JavaScript</li>
+              <li>SQL</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-foreground tracking-tight mb-3 sm:mb-4">
+              Frontend & Mobile
+            </h3>
+            <ul class="space-y-2 sm:space-y-2.5 text-sm sm:text-base text-foreground/80 font-medium">
+              <li>React</li>
+              <li>React Native / Expo</li>
+              <li>Next.js</li>
+              <li>Astro</li>
+              <li>TailwindCSS</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-foreground tracking-tight mb-3 sm:mb-4">
+              Backend & Data
+            </h3>
+            <ul class="space-y-2 sm:space-y-2.5 text-sm sm:text-base text-foreground/80 font-medium">
+              <li>FastAPI</li>
+              <li>Node.js</li>
+              <li>PostgreSQL</li>
+              <li>WebSockets</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-foreground tracking-tight mb-3 sm:mb-4">
+              Tools & Infra
+            </h3>
+            <ul class="space-y-2 sm:space-y-2.5 text-sm sm:text-base text-foreground/80 font-medium">
+              <li>Git / GitHub</li>
+              <li>Docker</li>
+              <li>Linux</li>
+              <li>Vercel</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           BLOG
+           ══════════════════════════════════════════════════════════════ -->
+      <section class="py-12 sm:py-20 border-b border-border">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-10">
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            <span data-lang-en>Articles & Builds</span>
+            <span data-lang-es>Artículos y Builds</span>
+          </h2>
+          <a
+            href="/blog"
+            class="text-xs sm:text-sm font-semibold text-muted hover:text-primary flex items-center gap-1.5 group shrink-0 transition-colors"
+          >
+            <span data-lang-en>All articles</span>
+            <span data-lang-es>Ver todos</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </a>
+        </div>
+
+        <!-- Articles & Builds Grid (Adapts to 2 posts with equal 50/50 columns and matching heights) -->
+        <div class:list={[
+          "grid gap-5 items-stretch",
+          posts.length === 2
+            ? "grid-cols-1 md:grid-cols-2"
+            : posts.length >= 3
+              ? "grid-cols-1 md:grid-cols-3"
+              : "grid-cols-1"
+        ]}>
+          {posts.map((post) => (
+            <div class="h-full flex flex-col">
+              <BlogCard
+                id={post.id}
+                title={post.data.title}
+                description={post.data.description}
+                status={post.data.status}
+                pubDate={post.data.pubDate}
+                tags={post.data.tags}
+                readingTime={readingTime(post.body)}
+                image={post.data.image}
+                imageAlt={post.data.imageAlt ?? undefined}
+                featured={posts.length === 1}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           CONTACT
+           ══════════════════════════════════════════════════════════════ -->
+      <section id="contact" class="py-12 sm:py-20 scroll-mt-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
+
+          <!-- Left: pitch -->
+          <div class="lg:col-span-5 space-y-4 sm:space-y-5">
+            <h2 class="text-2xl sm:text-5xl font-extrabold text-foreground tracking-tight leading-tight">
+              <span data-lang-en>Let's build your next product.</span>
+              <span data-lang-es>Construyamos tu próximo producto.</span>
+            </h2>
+            <p class="text-muted text-sm sm:text-base leading-relaxed">
+              <span data-lang-en>
+                MVP in mind? Need a cross-platform mobile app or a reliable dev for your team? Drop me a message and I'll get back to you fast.
+              </span>
+              <span data-lang-es>
+                ¿Tienes un MVP en mente? ¿Necesitas una app móvil o un desarrollador confiable? Escríbeme y te respondo rápido.
+              </span>
+            </p>
+
+            <div class="flex items-center gap-3 pt-1 sm:pt-2">
+              <div class="w-8 h-8 rounded-lg bg-foreground/5 border border-border flex items-center justify-center text-foreground text-xs font-mono shrink-0">
+                ✉
+              </div>
+              <a
+                href="mailto:hi@matiasblanc.dev"
+                class="text-xs sm:text-sm font-semibold text-foreground hover:text-primary transition-colors"
+              >
+                hi@matiasblanc.dev
+              </a>
+            </div>
+          </div>
+
+          <!-- Right: form -->
+          <div class="lg:col-span-7">
+            <form
+              id="contact-form"
+              class="relative p-5 sm:p-7 rounded-2xl border border-border bg-background-card flex flex-col gap-4 sm:gap-5 overflow-hidden shadow-sm"
+            >
+              <!-- Loading overlay (Mechanical switch cutaway animation) -->
+              <div
+                id="form-loading-overlay"
+                class="hidden absolute inset-0 z-30 bg-background/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center"
+              >
+                <LoadingKeyboard text="Sending message..." size="md" />
+              </div>
+
+              <!-- Success overlay -->
+              <div
+                id="form-success-overlay"
+                class="hidden absolute inset-0 z-30 bg-background/95 backdrop-blur-md flex flex-col items-center justify-center p-5 sm:p-6 text-center"
+              >
+                <!-- Double checkmark badge (WhatsApp read receipts style) -->
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3 text-emerald-400 select-none shadow-sm shadow-emerald-500/10">
+                  <div class="flex items-center -space-x-2.5">
+                    <svg class="w-6 h-6 stroke-[2.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <svg class="w-6 h-6 stroke-[2.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Standard success text -->
+                <div id="standard-success-content" class="flex flex-col items-center">
+                  <h3 class="text-xl font-bold text-foreground mb-1">
+                    <span data-lang-en>Message sent!</span>
+                    <span data-lang-es>¡Mensaje enviado!</span>
+                  </h3>
+                  <p class="text-sm text-muted max-w-xs mb-5">
+                    <span data-lang-en>I'll get back to you soon.</span>
+                    <span data-lang-es>Te responderé a la brevedad.</span>
+                  </p>
+                </div>
+
+                <!-- Easter Egg Secret Terminal Content -->
+                <div id="easter-egg-content" class="hidden flex flex-col items-center max-w-xs sm:max-w-sm w-full mb-3">
+                  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] font-semibold mb-2.5 animate-pulse">
+                    <span>✨</span>
+                    <span>EASTER EGG ACTIVATED</span>
+                    <span>🚀</span>
+                  </div>
+                  <div class="w-full text-left bg-background-card/90 border border-border rounded-xl p-3 sm:p-3.5 mb-3 font-mono text-xs text-foreground/90 space-y-1 shadow-inner">
+                    <div class="text-muted/60 text-[10px] pb-1 border-b border-border/50 flex justify-between items-center">
+                      <span>dev@matiasblanc:~</span>
+                      <span class="text-emerald-400">● 200 OK</span>
+                    </div>
+                    <p class="text-emerald-400 font-semibold">&gt; console.log("Hello, World! 👋");</p>
+                    <p class="text-foreground/90">&gt; <span data-lang-en>Secret protocol unlocked! Thanks for exploring.</span><span data-lang-es>¡Protocolo secreto desbloqueado! Gracias por explorar.</span></p>
+                    <p class="text-muted text-[11px]">&gt; <span data-lang-en>Message delivered directly to Matías ☕</span><span data-lang-es>Mensaje enviado directamente a Matías ☕</span></p>
+                  </div>
+                  <button
+                    type="button"
+                    id="easter-egg-confetti-btn"
+                    class="px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 mb-2"
+                  >
+                    <span>🎉</span>
+                    <span data-lang-en>More Confetti!</span>
+                    <span data-lang-es>¡Más Confetti!</span>
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  id="form-reset-btn"
+                  class="px-5 py-2 rounded-xl text-xs font-semibold bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors cursor-pointer"
+                >
+                  <span data-lang-en>Send another</span>
+                  <span data-lang-es>Enviar otro</span>
+                </button>
+              </div>
+
+              <!-- Fields -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="flex flex-col gap-1.5 sm:gap-2">
+                  <span class="text-xs font-medium text-foreground">
+                    <span data-lang-en>Name</span>
+                    <span data-lang-es>Nombre</span>
+                  </span>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="John Doe"
+                    class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-background-subtle border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-muted/40"
+                  />
+                </label>
+
+                <label class="flex flex-col gap-1.5 sm:gap-2">
+                  <span class="text-xs font-medium text-foreground">Email</span>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="john@example.com"
+                    class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-background-subtle border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-muted/40"
+                  />
+                </label>
+              </div>
+
+              <label class="flex flex-col gap-1.5 sm:gap-2">
+                <span class="text-xs font-medium text-foreground">
+                  <span data-lang-en>Project scope & details</span>
+                  <span data-lang-es>Detalles del proyecto</span>
+                </span>
+                <textarea
+                  name="message"
+                  required
+                  rows="5"
+                  placeholder="Tell me about your project, timeline, and goals..."
+                  class="w-full px-4 py-3.5 rounded-xl bg-background-subtle border border-border text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors placeholder:text-muted/50 min-h-[140px] resize-y"
+                ></textarea>
+              </label>
+
+              <!-- Error message banner -->
+              <div
+                id="form-error-msg"
+                class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs"
+              ></div>
+
+              <div class="flex items-center justify-end pt-1">
+                <button
+                  id="contact-submit-btn"
+                  type="submit"
+                  class="w-full sm:w-auto px-6 py-3 rounded-xl font-semibold text-sm bg-primary text-white hover:bg-primary-hover active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span data-lang-en>Send Message</span>
+                  <span data-lang-es>Enviar Mensaje</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
     </main>
 
-    <!-- ── FOOTER ── -->
+    <!-- Canvas for Easter Egg celebration particles -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[99999]"></canvas>
+
     <Footer />
+
+    <script>
+      const form = document.getElementById("contact-form") as HTMLFormElement | null;
+      const loadingOverlay = document.getElementById("form-loading-overlay");
+      const successOverlay = document.getElementById("form-success-overlay");
+      const standardSuccess = document.getElementById("standard-success-content");
+      const easterEggContent = document.getElementById("easter-egg-content");
+      const easterEggConfettiBtn = document.getElementById("easter-egg-confetti-btn");
+      const errorMsg = document.getElementById("form-error-msg");
+      const resetBtn = document.getElementById("form-reset-btn");
+      const submitBtn = document.getElementById("contact-submit-btn") as HTMLButtonElement | null;
+      const confettiCanvas = document.getElementById("confetti-canvas") as HTMLCanvasElement | null;
+
+      // Web3Forms public access key (configured via PUBLIC_WEB3FORMS_KEY env or fallback)
+      const WEB3FORMS_ACCESS_KEY =
+        import.meta.env.PUBLIC_WEB3FORMS_KEY || "";
+
+      import { play } from "cuelume";
+
+      // ── Particle Confetti Physics Engine for Easter Egg ──
+      function triggerConfetti() {
+        if (!confettiCanvas) return;
+        const ctx = confettiCanvas.getContext("2d");
+        if (!ctx) return;
+
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+
+        const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#22c55e"];
+        interface Particle {
+          x: number;
+          y: number;
+          vx: number;
+          vy: number;
+          size: number;
+          color: string;
+          rotation: number;
+          vRotation: number;
+          alpha: number;
+        }
+
+        const particles: Particle[] = [];
+        const count = 100;
+
+        for (let i = 0; i < count; i++) {
+          const fromLeft = i % 2 === 0;
+          particles.push({
+            x: fromLeft ? confettiCanvas.width * 0.25 + (Math.random() * 80 - 40) : confettiCanvas.width * 0.75 + (Math.random() * 80 - 40),
+            y: confettiCanvas.height * 0.75,
+            vx: (fromLeft ? 1 : -1) * (Math.random() * 8 + 4) + (Math.random() - 0.5) * 4,
+            vy: -(Math.random() * 12 + 10),
+            size: Math.random() * 7 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            vRotation: (Math.random() - 0.5) * 12,
+            alpha: 1,
+          });
+        }
+
+        let animId: number;
+        function render() {
+          if (!ctx || !confettiCanvas) return;
+          ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+          let activeCount = 0;
+          for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.38; // gravity
+            p.vx *= 0.985; // air drag
+            p.rotation += p.vRotation;
+            p.alpha -= 0.007;
+
+            if (p.alpha > 0) {
+              activeCount++;
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate((p.rotation * Math.PI) / 180);
+              ctx.globalAlpha = Math.max(p.alpha, 0);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+              ctx.restore();
+            }
+          }
+
+          if (activeCount > 0) {
+            animId = requestAnimationFrame(render);
+          } else {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            cancelAnimationFrame(animId);
+          }
+        }
+
+        render();
+      }
+
+      function isEasterEggPhrase(name: string, message: string): boolean {
+        const normalize = (str: string) =>
+          (str || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, "");
+
+        const normMsg = normalize(message);
+        const normName = normalize(name);
+
+        return (
+          normMsg.includes("holamundo") ||
+          normMsg.includes("helloworld") ||
+          normName.includes("holamundo") ||
+          normName.includes("helloworld")
+        );
+      }
+
+      easterEggConfettiBtn?.addEventListener("click", () => {
+        triggerConfetti();
+        try { play("ready", { volume: 0.4 }); } catch (_) {}
+      });
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorMsg?.classList.add("hidden");
+
+        const formData = new FormData(form);
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const message = formData.get("message") as string;
+
+        const isEasterEgg = isEasterEggPhrase(name, message);
+
+        // Show loading state
+        loadingOverlay?.classList.remove("hidden");
+        if (submitBtn) submitBtn.disabled = true;
+
+        try {
+          let success = false;
+          let errorDetails = "Error al enviar el mensaje.";
+
+          const subject = isEasterEgg
+            ? `🎉 [Easter Egg] Nuevo mensaje de ${name} vía portfolio`
+            : `Nuevo mensaje de ${name} vía portfolio`;
+
+          if (WEB3FORMS_ACCESS_KEY) {
+            // 1. Envío mediante Web3Forms si hay clave configurada
+            const response = await fetch("https://api.web3forms.com/submit", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({
+                access_key: WEB3FORMS_ACCESS_KEY,
+                name,
+                email,
+                message,
+                from_name: "Portfolio Contact Form",
+                subject,
+              }),
+            });
+
+            const result = await response.json();
+            success = response.status === 200 && (result.success === true || result.success === "true");
+            if (!success) errorDetails = result.message || errorDetails;
+          } else {
+            // 2. Envío automático directo vía FormSubmit (cero popups, entrega directa al inbox)
+            const response = await fetch("https://formsubmit.co/ajax/matias.f.blanc@gmail.com", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({
+                name,
+                email,
+                message,
+                _subject: subject,
+                _template: "table",
+                _captcha: "false",
+              }),
+            });
+
+            const result = await response.json();
+            success = result.success === "true" || result.success === true || response.ok;
+            if (!success) errorDetails = result.message || errorDetails;
+          }
+
+          if (success) {
+            loadingOverlay?.classList.add("hidden");
+            successOverlay?.classList.remove("hidden");
+
+            if (isEasterEgg) {
+              standardSuccess?.classList.add("hidden");
+              easterEggContent?.classList.remove("hidden");
+              triggerConfetti();
+            } else {
+              standardSuccess?.classList.remove("hidden");
+              easterEggContent?.classList.add("hidden");
+            }
+
+            try { play("ready", { volume: 0.5 }); } catch (_) {}
+            form.reset();
+          } else {
+            throw new Error(errorDetails);
+          }
+        } catch (err: any) {
+          loadingOverlay?.classList.add("hidden");
+          try { play("error", { volume: 0.4 }); } catch (_) {}
+          if (submitBtn) submitBtn.disabled = false;
+          if (errorMsg) {
+            errorMsg.textContent =
+              err.message || "Error al enviar el mensaje. Por favor escribe directamente a hi@matiasblanc.dev";
+            errorMsg.classList.remove("hidden");
+          }
+        }
+      });
+
+      resetBtn?.addEventListener("click", () => {
+        successOverlay?.classList.add("hidden");
+        standardSuccess?.classList.remove("hidden");
+        easterEggContent?.classList.add("hidden");
+        if (submitBtn) submitBtn.disabled = false;
+      });
+
+      // ── Entrance Splash Screen Loader (1 second on first visit only) ──
+      const entranceLoader = document.getElementById("page-entrance-loader");
+      if (entranceLoader && !sessionStorage.getItem("portfolio_splash_shown")) {
+        sessionStorage.setItem("portfolio_splash_shown", "true");
+        setTimeout(() => {
+          entranceLoader.classList.add("opacity-0", "pointer-events-none");
+          setTimeout(() => {
+            entranceLoader.style.display = "none";
+          }, 400);
+        }, 1000);
+      } else if (entranceLoader) {
+        entranceLoader.style.display = "none";
+      }
+    </script>
   </body>
 </html>
-
-<script>
-  // Formulario de contacto: arma un mailto con los datos del form
-  const contactForm = document.getElementById("contact-form");
-  contactForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const data = new FormData(contactForm);
-    const subject = encodeURIComponent(
-      `[portfolio] ${data.get("nombre")} — ${data.get("email")}`,
-    );
-    const body = encodeURIComponent(
-      `Hola Matías,\n\n${data.get("mensaje")}\n\n— ${data.get("nombre")} (${data.get("email")})`,
-    );
-    window.location.href = `mailto:hola@matiasblanc.dev?subject=${subject}&body=${body}`;
-  });
-</script>

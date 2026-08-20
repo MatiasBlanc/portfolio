@@ -1,72 +1,174 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
-import { Fire } from "reicon-react";
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import Button from "../components/ui/Button.astro";
+import ReaderSidebar from "../components/blog/ReaderSidebar.astro";
+import { readingTime } from "../utils/blog";
 
 interface Props {
   post: CollectionEntry<"blog">;
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, updatedDate } = post.data;
+const { title, description, pubDate, updatedDate, tags = [] } = post.data;
+const estTime = readingTime(post.body);
+
+const rawMarkdown = `---
+title: "${title.replace(/"/g, '\\"')}"
+description: "${(description || '').replace(/"/g, '\\"')}"
+pubDate: "${pubDate.toISOString().split("T")[0]}"
+tags: [${tags.map((t: string) => `"${t}"`).join(", ")}]
+---
+
+${post.body ?? ""}`;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <BaseHead title={title} description={description} />
+    <BaseHead
+      title={`${title} · Matías Blanc`}
+      description={description}
+      image={post.data.image}
+      type="article"
+      pubDate={pubDate}
+      updatedDate={updatedDate}
+      tags={tags}
+    />
   </head>
-  <body class="w-full lg:w-9/12 mx-auto px-5">
+  <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
+    <!-- Reading Progress Bar (Fixed Top) -->
+    <div
+      id="reading-progress"
+      class="fixed top-0 left-0 right-0 h-[2.5px] bg-primary z-50 origin-left scale-x-0 transition-transform duration-75"
+      aria-hidden="true"
+    ></div>
+
     <Header />
-    <header class="flex items-center justify-between p-4">
-      <div>
-        {
-          updatedDate ? (
-            <p class="text-muted text-sm">
-              Last updated on <FormattedDate date={updatedDate} />
+
+    <!-- Article layout container with Reader Sidebar placed snugly on the left -->
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6">
+      <!-- Modular Vertical Reader Sidebar Dock -->
+      <ReaderSidebar
+        title={title}
+        slug={post.id}
+        rawMarkdown={rawMarkdown}
+      />
+
+      <main class="max-w-2xl mx-auto py-6 sm:py-12">
+        <!-- Back link -->
+        <div class="mb-6 pb-3 sm:mb-10 sm:pb-4 border-b border-border text-xs">
+          <a
+            href="/blog"
+            class="inline-flex items-center gap-1.5 font-medium text-muted hover:text-foreground transition-colors group"
+          >
+            <span class="group-hover:-translate-x-1 transition-transform">←</span>
+            <span data-lang-en>All articles</span>
+            <span data-lang-es>Todos los artículos</span>
+          </a>
+        </div>
+
+        <!-- Article Header -->
+        <header class="mb-8 pb-6 sm:mb-12 sm:pb-8 border-b border-border">
+          <div class="flex items-center gap-2 text-xs font-mono text-muted mb-3 sm:mb-4">
+            <FormattedDate date={pubDate} />
+            {estTime && <span>· {estTime} min read</span>}
+            {updatedDate && (
+              <span>
+                (Updated <FormattedDate date={updatedDate} />)
+              </span>
+            )}
+          </div>
+
+          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15] mb-3 sm:mb-6">
+            {title}
+          </h1>
+
+          {description && (
+            <p class="text-sm sm:text-lg text-muted leading-relaxed mb-4 sm:mb-6 font-sans">
+              {description}
             </p>
-          ) : (
-            <p class="text-muted text-sm">
-              <FormattedDate date={pubDate} />
-            </p>
-          )
-        }
-        <h1 class="text-sans text-foreground text-3xl font-bold">{title}</h1>
-      </div>
-      <Button>
-        Te gusto?
-        <Fire size={24} weight="Filled" />
-      </Button>
-    </header>
-    <article
-      class="my-5 prose max-w-none
-        prose-headings:text-foreground
-        prose-headings:font-sans
-        prose-headings:tracking-tight
-        prose-p:text-foreground
-        prose-p:font-sans
-        prose-p:tracking-tight
-        prose-a:text-primary
-        prose-a:font-mono
-        prose-code:font-mono
-        prose-a:tracking-tight
-        prose-a:no-underline
-        prose-a:hover:underline
-        prose-a:hover:text-primary-hover
-        prose-img:border
-        prose-img:border-foreground
-        prose-img:rounded-2xl
-        prose-img:my-4
-        prose-blockquote:bg-background-surface"
-    >
-      <slot />
-    </article>
+          )}
+
+          {tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 pt-1 sm:pt-2">
+              {tags.map((tag) => (
+                <span class="text-xs font-mono text-muted">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <!-- Markdown Article Content (Styled with @tailwindcss/typography with high contrast) -->
+        <article
+          id="article-content"
+          class="reader-content prose dark:prose-invert max-w-none
+            prose-headings:tracking-tight prose-headings:font-bold prose-headings:text-foreground
+            prose-h2:text-xl sm:prose-h2:text-3xl
+            prose-h2:mt-10 sm:prose-h2:mt-14 prose-h2:mb-4 sm:prose-h2:mb-5
+            prose-h2:border-b prose-h2:border-border prose-h2:pb-2 sm:prose-h2:pb-3
+            prose-h3:text-lg sm:prose-h3:text-2xl prose-h3:mt-8 sm:prose-h3:mt-10 prose-h3:mb-3 sm:prose-h3:mb-4
+            prose-p:text-muted prose-p:mb-5 sm:prose-p:mb-6
+            prose-li:text-muted prose-li:my-1 sm:prose-li:my-1.5
+            prose-strong:text-foreground prose-strong:font-semibold
+            prose-a:text-primary prose-a:underline prose-a:underline-offset-4 prose-a:hover:text-primary-hover
+            prose-code:font-mono prose-code:text-primary prose-code:bg-primary-subtle
+            prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-[0.9em]
+            prose-pre:border prose-pre:border-border prose-pre:bg-background-card prose-pre:rounded-2xl prose-pre:p-4 sm:prose-pre:p-5
+            prose-blockquote:border-l-2 prose-blockquote:border-primary prose-blockquote:bg-background-surface
+            prose-blockquote:text-foreground prose-blockquote:py-2.5 sm:prose-blockquote:py-3 prose-blockquote:px-4 sm:prose-blockquote:px-5 prose-blockquote:not-italic
+            prose-blockquote:rounded-r-xl prose-blockquote:my-6 sm:prose-blockquote:my-8
+            prose-hr:border-border prose-hr:my-8 sm:prose-hr:my-12
+            prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:my-6 sm:prose-img:my-8"
+        >
+          <slot />
+        </article>
+
+        <!-- Footer navigation -->
+        <div class="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-border flex items-center justify-between gap-4 text-xs sm:text-sm font-mono">
+          <a
+            href="/blog"
+            class="text-muted hover:text-foreground transition-colors flex items-center gap-1.5 group"
+          >
+            <span class="group-hover:-translate-x-1 transition-transform">←</span>
+            <span data-lang-en>Back to articles</span>
+            <span data-lang-es>Volver al blog</span>
+          </a>
+          <a
+            href="mailto:hi@matiasblanc.dev"
+            class="text-xs font-semibold text-primary hover:underline transition-colors"
+          >
+            hi@matiasblanc.dev →
+          </a>
+        </div>
+      </main>
+    </div>
+
     <Footer />
+
+    <!-- Reading Progress Bar Logic -->
+    <script>
+      const progressBar = document.getElementById("reading-progress");
+      function updateReadingProgress() {
+        const article = document.getElementById("article-content");
+        if (!article || !progressBar) return;
+        const totalHeight = article.clientHeight;
+        const articleTop = article.offsetTop;
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+
+        const progress = Math.min(
+          Math.max((scrollY - articleTop + 200) / (totalHeight - windowHeight + 300), 0),
+          1
+        );
+        progressBar.style.transform = `scaleX(${progress})`;
+      }
+      window.addEventListener("scroll", updateReadingProgress, { passive: true });
+      updateReadingProgress();
+    </script>
   </body>
 </html>

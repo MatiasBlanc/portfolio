@@ -3,7 +3,7 @@ title: Estructurando aplicaciones React con Clean Architecture 2026
 description: Guía práctica para estructurar aplicaciones React con Clean Architecture.
 category: blog
 pubDate: 08 Jul 2022
-status: post
+status: draft
 tags:
   - React
   - TypeScript

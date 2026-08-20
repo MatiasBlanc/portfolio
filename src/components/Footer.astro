@@ -1,46 +1,52 @@
 ---
 // src/components/Footer.astro
-// Footer del portfolio con links, prompt y año actual
 import socials from "../data/socials.json";
-
-const year = new Date().getFullYear();
-
-const links = Object.entries(socials).map(([key, value]) => ({
-  key,
-  label: value.label,
-  href: value.url,
-}));
 ---
 
-<footer class="border-t border-foreground mt-8 py-8 font-mono text-sm">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-    <!-- Prompt izquierdo -->
-    <div>
-      <span class="text-muted">matias@web:~$</span>{" "}
-      <span class="text-foreground opacity-60">exit</span>
-    </div>
-
-    <!-- Links sociales -->
-    <ul class="flex gap-6 list-none">
-      {
-        links.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-muted hover:text-primary transition-colors duration-200"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
-      }
+<footer class="w-full border-t border-border mt-10 sm:mt-20 py-6 sm:py-10 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-center">
+    <!-- Social links -->
+    <ul class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 list-none">
+      <li>
+        <a
+          href={socials.upwork.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs font-medium text-muted hover:text-foreground transition-colors"
+        >
+          UpWork
+        </a>
+      </li>
+      <li>
+        <a
+          href={socials.github.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs font-medium text-muted hover:text-foreground transition-colors"
+        >
+          GitHub
+        </a>
+      </li>
+      <li>
+        <a
+          href={socials.linkedin.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs font-medium text-muted hover:text-foreground transition-colors"
+        >
+          LinkedIn
+        </a>
+      </li>
+      <li>
+        <a
+          href={socials.twitter.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs font-medium text-muted hover:text-foreground transition-colors"
+        >
+          Twitter / X
+        </a>
+      </li>
     </ul>
-
-    <!-- Copyright -->
-    <p class="text-muted opacity-60 text-xs">
-      © {year} Matías Blanc
-    </p>
   </div>
 </footer>

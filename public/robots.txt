@@ -1,0 +1,38 @@
+# Robots.txt for https://matiasblanc.dev
+User-agent: *
+Allow: /
+
+# Explicitly allow AI Search & LLM crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Sitemaps and Feeds
+Sitemap: https://matiasblanc.dev/sitemap-index.xml
+Sitemap: https://matiasblanc.dev/rss.xml
