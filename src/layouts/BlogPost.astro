@@ -28,9 +28,15 @@ ${post.body ?? ""}`;
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <BaseHead title={`${title} · Matías Blanc`} description={description} />
+    <BaseHead
+      title={`${title} · Matías Blanc`}
+      description={description}
+      image={post.data.image}
+      type="article"
+      pubDate={pubDate}
+      updatedDate={updatedDate}
+      tags={tags}
+    />
   </head>
   <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
     <!-- Reading Progress Bar (Fixed Top) -->

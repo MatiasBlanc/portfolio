@@ -54,9 +54,15 @@ const posts = allPosts
            ══════════════════════════════════════════════════════════════ -->
       <section class="pt-8 pb-14 sm:pt-20 sm:pb-28 border-b border-border">
         <!-- Headline -->
-        <h1 class="text-3xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.08] mb-4 sm:mb-6 max-w-4xl">
-          <span data-lang-en>Building Fast, Scalable Mobile & Web Applications.</span>
-          <span data-lang-es>Desarrollo Aplicaciones Móviles y Web Rápidas y Escalables.</span>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1] mb-4 sm:mb-6 max-w-4xl">
+          <span data-lang-en>
+            <span class="block text-primary font-mono text-sm sm:text-base lg:text-lg font-semibold tracking-normal mb-2 sm:mb-3">Matías Blanc · Full-Stack & Mobile Engineer</span>
+            Building Fast, Scalable Web & Mobile Applications.
+          </span>
+          <span data-lang-es>
+            <span class="block text-primary font-mono text-sm sm:text-base lg:text-lg font-semibold tracking-normal mb-2 sm:mb-3">Matías Blanc · Desarrollador Full-Stack & Mobile</span>
+            Desarrollo Aplicaciones Móviles y Web Rápidas y Escalables.
+          </span>
         </h1>
 
         <!-- Subtitle with greeting and name -->
@@ -330,25 +336,59 @@ const posts = allPosts
               <!-- Success overlay -->
               <div
                 id="form-success-overlay"
-                class="hidden absolute inset-0 z-30 bg-background/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center"
+                class="hidden absolute inset-0 z-30 bg-background/95 backdrop-blur-md flex flex-col items-center justify-center p-5 sm:p-6 text-center"
               >
-                <!-- 2 checkmarks stacked vertically without background box -->
-                <div class="flex flex-col items-center justify-center -space-y-2.5 mb-3 text-emerald-400 select-none">
-                  <svg class="w-7 h-7 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <svg class="w-7 h-7 stroke-[2.5] opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
+                <!-- Double checkmark badge (WhatsApp read receipts style) -->
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3 text-emerald-400 select-none shadow-sm shadow-emerald-500/10">
+                  <div class="flex items-center -space-x-2.5">
+                    <svg class="w-6 h-6 stroke-[2.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <svg class="w-6 h-6 stroke-[2.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
                 </div>
-                <h3 class="text-xl font-bold text-foreground mb-1">
-                  <span data-lang-en>Message sent!</span>
-                  <span data-lang-es>¡Mensaje enviado!</span>
-                </h3>
-                <p class="text-sm text-muted max-w-xs mb-5">
-                  <span data-lang-en>I'll get back to you soon.</span>
-                  <span data-lang-es>Te responderé a la brevedad.</span>
-                </p>
+
+                <!-- Standard success text -->
+                <div id="standard-success-content" class="flex flex-col items-center">
+                  <h3 class="text-xl font-bold text-foreground mb-1">
+                    <span data-lang-en>Message sent!</span>
+                    <span data-lang-es>¡Mensaje enviado!</span>
+                  </h3>
+                  <p class="text-sm text-muted max-w-xs mb-5">
+                    <span data-lang-en>I'll get back to you soon.</span>
+                    <span data-lang-es>Te responderé a la brevedad.</span>
+                  </p>
+                </div>
+
+                <!-- Easter Egg Secret Terminal Content -->
+                <div id="easter-egg-content" class="hidden flex flex-col items-center max-w-xs sm:max-w-sm w-full mb-3">
+                  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] font-semibold mb-2.5 animate-pulse">
+                    <span>✨</span>
+                    <span>EASTER EGG ACTIVATED</span>
+                    <span>🚀</span>
+                  </div>
+                  <div class="w-full text-left bg-background-card/90 border border-border rounded-xl p-3 sm:p-3.5 mb-3 font-mono text-xs text-foreground/90 space-y-1 shadow-inner">
+                    <div class="text-muted/60 text-[10px] pb-1 border-b border-border/50 flex justify-between items-center">
+                      <span>dev@matiasblanc:~</span>
+                      <span class="text-emerald-400">● 200 OK</span>
+                    </div>
+                    <p class="text-emerald-400 font-semibold">&gt; console.log("Hello, World! 👋");</p>
+                    <p class="text-foreground/90">&gt; <span data-lang-en>Secret protocol unlocked! Thanks for exploring.</span><span data-lang-es>¡Protocolo secreto desbloqueado! Gracias por explorar.</span></p>
+                    <p class="text-muted text-[11px]">&gt; <span data-lang-en>Message delivered directly to Matías ☕</span><span data-lang-es>Mensaje enviado directamente a Matías ☕</span></p>
+                  </div>
+                  <button
+                    type="button"
+                    id="easter-egg-confetti-btn"
+                    class="px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 mb-2"
+                  >
+                    <span>🎉</span>
+                    <span data-lang-en>More Confetti!</span>
+                    <span data-lang-es>¡Más Confetti!</span>
+                  </button>
+                </div>
+
                 <button
                   type="button"
                   id="form-reset-btn"
@@ -425,21 +465,129 @@ const posts = allPosts
 
     </main>
 
+    <!-- Canvas for Easter Egg celebration particles -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[99999]"></canvas>
+
     <Footer />
 
     <script>
       const form = document.getElementById("contact-form") as HTMLFormElement | null;
       const loadingOverlay = document.getElementById("form-loading-overlay");
       const successOverlay = document.getElementById("form-success-overlay");
+      const standardSuccess = document.getElementById("standard-success-content");
+      const easterEggContent = document.getElementById("easter-egg-content");
+      const easterEggConfettiBtn = document.getElementById("easter-egg-confetti-btn");
       const errorMsg = document.getElementById("form-error-msg");
       const resetBtn = document.getElementById("form-reset-btn");
       const submitBtn = document.getElementById("contact-submit-btn") as HTMLButtonElement | null;
+      const confettiCanvas = document.getElementById("confetti-canvas") as HTMLCanvasElement | null;
 
       // Web3Forms public access key (configured via PUBLIC_WEB3FORMS_KEY env or fallback)
       const WEB3FORMS_ACCESS_KEY =
         import.meta.env.PUBLIC_WEB3FORMS_KEY || "";
 
       import { play } from "cuelume";
+
+      // ── Particle Confetti Physics Engine for Easter Egg ──
+      function triggerConfetti() {
+        if (!confettiCanvas) return;
+        const ctx = confettiCanvas.getContext("2d");
+        if (!ctx) return;
+
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+
+        const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#22c55e"];
+        interface Particle {
+          x: number;
+          y: number;
+          vx: number;
+          vy: number;
+          size: number;
+          color: string;
+          rotation: number;
+          vRotation: number;
+          alpha: number;
+        }
+
+        const particles: Particle[] = [];
+        const count = 100;
+
+        for (let i = 0; i < count; i++) {
+          const fromLeft = i % 2 === 0;
+          particles.push({
+            x: fromLeft ? confettiCanvas.width * 0.25 + (Math.random() * 80 - 40) : confettiCanvas.width * 0.75 + (Math.random() * 80 - 40),
+            y: confettiCanvas.height * 0.75,
+            vx: (fromLeft ? 1 : -1) * (Math.random() * 8 + 4) + (Math.random() - 0.5) * 4,
+            vy: -(Math.random() * 12 + 10),
+            size: Math.random() * 7 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            vRotation: (Math.random() - 0.5) * 12,
+            alpha: 1,
+          });
+        }
+
+        let animId: number;
+        function render() {
+          if (!ctx || !confettiCanvas) return;
+          ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+          let activeCount = 0;
+          for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.38; // gravity
+            p.vx *= 0.985; // air drag
+            p.rotation += p.vRotation;
+            p.alpha -= 0.007;
+
+            if (p.alpha > 0) {
+              activeCount++;
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate((p.rotation * Math.PI) / 180);
+              ctx.globalAlpha = Math.max(p.alpha, 0);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+              ctx.restore();
+            }
+          }
+
+          if (activeCount > 0) {
+            animId = requestAnimationFrame(render);
+          } else {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            cancelAnimationFrame(animId);
+          }
+        }
+
+        render();
+      }
+
+      function isEasterEggPhrase(name: string, message: string): boolean {
+        const normalize = (str: string) =>
+          (str || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, "");
+
+        const normMsg = normalize(message);
+        const normName = normalize(name);
+
+        return (
+          normMsg.includes("holamundo") ||
+          normMsg.includes("helloworld") ||
+          normName.includes("holamundo") ||
+          normName.includes("helloworld")
+        );
+      }
+
+      easterEggConfettiBtn?.addEventListener("click", () => {
+        triggerConfetti();
+        try { play("ready", { volume: 0.4 }); } catch (_) {}
+      });
 
       form?.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -450,6 +598,8 @@ const posts = allPosts
         const email = formData.get("email") as string;
         const message = formData.get("message") as string;
 
+        const isEasterEgg = isEasterEggPhrase(name, message);
+
         // Show loading state
         loadingOverlay?.classList.remove("hidden");
         if (submitBtn) submitBtn.disabled = true;
@@ -457,6 +607,10 @@ const posts = allPosts
         try {
           let success = false;
           let errorDetails = "Error al enviar el mensaje.";
+
+          const subject = isEasterEgg
+            ? `🎉 [Easter Egg] Nuevo mensaje de ${name} vía portfolio`
+            : `Nuevo mensaje de ${name} vía portfolio`;
 
           if (WEB3FORMS_ACCESS_KEY) {
             // 1. Envío mediante Web3Forms si hay clave configurada
@@ -472,7 +626,7 @@ const posts = allPosts
                 email,
                 message,
                 from_name: "Portfolio Contact Form",
-                subject: `Nuevo mensaje de ${name} vía portfolio`,
+                subject,
               }),
             });
 
@@ -491,7 +645,7 @@ const posts = allPosts
                 name,
                 email,
                 message,
-                _subject: `Nuevo mensaje de ${name} desde tu Portfolio`,
+                _subject: subject,
                 _template: "table",
                 _captcha: "false",
               }),
@@ -505,6 +659,16 @@ const posts = allPosts
           if (success) {
             loadingOverlay?.classList.add("hidden");
             successOverlay?.classList.remove("hidden");
+
+            if (isEasterEgg) {
+              standardSuccess?.classList.add("hidden");
+              easterEggContent?.classList.remove("hidden");
+              triggerConfetti();
+            } else {
+              standardSuccess?.classList.remove("hidden");
+              easterEggContent?.classList.add("hidden");
+            }
+
             try { play("ready", { volume: 0.5 }); } catch (_) {}
             form.reset();
           } else {
@@ -524,6 +688,8 @@ const posts = allPosts
 
       resetBtn?.addEventListener("click", () => {
         successOverlay?.classList.add("hidden");
+        standardSuccess?.classList.remove("hidden");
+        easterEggContent?.classList.add("hidden");
         if (submitBtn) submitBtn.disabled = false;
       });
 

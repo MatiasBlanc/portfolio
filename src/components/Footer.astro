@@ -1,19 +1,12 @@
 ---
 // src/components/Footer.astro
 import socials from "../data/socials.json";
-
-const year = new Date().getFullYear();
 ---
 
 <footer class="w-full border-t border-border mt-10 sm:mt-20 py-6 sm:py-10 text-sm">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-5">
-    <!-- Left: copyright -->
-    <p class="text-xs font-mono text-muted">
-      © {year} Matías Blanc. All rights reserved.
-    </p>
-
-    <!-- Right: social links -->
-    <ul class="flex flex-wrap items-center justify-center gap-4 sm:gap-5 list-none">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-center">
+    <!-- Social links -->
+    <ul class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 list-none">
       <li>
         <a
           href={socials.upwork.url}

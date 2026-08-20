@@ -1,0 +1,30 @@
+# Matías Blanc — Full-Stack & Mobile Engineer
+
+> Technical portfolio, engineering builds, and blog by Matías Blanc.
+
+## About
+- **Name**: Matías Blanc
+- **Role**: Full-Stack & Mobile Developer / IT Engineering Student at Universidad Católica del Norte (UCN)
+- **Location**: Coquimbo, Chile
+- **Website**: https://matiasblanc.dev
+- **Contact**: hi@matiasblanc.dev
+- **Profiles**:
+  - GitHub: https://github.com/matiasblanc
+  - LinkedIn: https://linkedin.com/in/matiasblanc
+  - Twitter/X: https://x.com/matiasblnc
+  - Upwork: https://www.upwork.com/freelancers/~matiasblanc
+
+## Core Expertise & Tech Stack
+- **Frontend & Mobile**: React, React Native, Expo, Next.js, Astro, TailwindCSS, TypeScript
+- **Backend & Data**: Python, FastAPI, Node.js, PostgreSQL, WebSockets, REST APIs
+- **Tools & Infra**: Linux, Docker, Git/GitHub, Neovim, Vercel
+
+## Featured Projects
+- **ITF Taekwon-Do App**: Real-time scoring, tournament brackets, and federation management with React Native, Expo, and WebSockets.
+- **Trending2Tweet**: Autonomous AI content pipeline transforming trending topics into social media posts via Python and LLM workflows.
+- **Fechitat**: Minimalist event and milestone countdown mobile application with clean UX and offline storage.
+- **Personal Portfolio & Blog**: Ultra-fast, accessible, content-focused Astro 5 + TailwindCSS portfolio.
+
+## Technical Blog & Articles
+- [Articles & Builds Index](https://matiasblanc.dev/blog): Technical articles on mobile architecture, React, Neovim, AI agents, and developer tooling.
+- RSS Feed: https://matiasblanc.dev/rss.xml
