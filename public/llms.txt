@@ -21,9 +21,10 @@
 - **Tools & Infra**: Linux, Docker, Git/GitHub, Neovim, Vercel
 
 ## Featured Projects
+- **Riego Mendoza (https://riegomendoza.ar)**: High-performance water engineering and smart irrigation portal with automated lead acquisition.
+- **FECHITAT (https://fechitat.cl)**: Official institutional web portal for the Chilean Federation of Traditional Taekwon-Do, interactive dojo maps, and rank registry.
 - **Trending2Tweet**: Autonomous AI content pipeline transforming trending topics into social media posts via Python and LLM workflows.
 - **ITF Taekwon-Do App**: Real-time scoring, tournament brackets, and federation management with React Native, Expo, and WebSockets.
-- **Fechitat**: Minimalist event and milestone countdown mobile application with clean UX and offline storage.
 - **Personal Portfolio & Blog**: Ultra-fast, accessible, content-focused Astro 5 + TailwindCSS portfolio.
 
 ## Technical Blog & Articles

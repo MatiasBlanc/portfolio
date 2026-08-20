@@ -2,7 +2,7 @@
 title: "FECHITAT — Official National Taekwon-Do Federation Portal"
 description: "High-performance institutional web portal for the Chilean Federation of Traditional Taekwon-Do. Interactive dojo locator, event calendars, and verified rank registry."
 pubDate: 2026-08-01
-status: "en_progreso"
+status: "completado"
 tags:
   - Astro
   - React
@@ -11,6 +11,7 @@ tags:
   - Leaflet
 image: /project-fechitat.webp
 imageAlt: "FECHITAT Official Website homepage and interactive dojo map"
+liveUrl: "https://fechitat.cl"
 ---
 
 ## Project Overview
