@@ -1,13 +1,10 @@
 ---
-title: "El talento no necesita traducción"
-description: "Por qué construir, documentar y fortalecer el ecosistema tecnológico en español es una ventaja comunitaria y la visión detrás de madeinchile.tech."
+title: El talento no necesita traducción
+description: Por qué construir, documentar y fortalecer el ecosistema tecnológico en español es una ventaja comunitaria y la visión detrás de madeinchile.tech.
 pubDate: 2026-08-24
-status: "build"
+status: build
 tags:
   - Comunidad
-  - Open Source
-  - Chile
-  - Startups
 ---
 
 La industria tecnológica en Latinoamérica arrastra un sesgo instalado desde hace años: para que un proyecto "valga", parece obligatorio mirar hacia Silicon Valley y escribir todo en inglés desde el primer día. El alcance global es un objetivo legítimo, pero ese reflejo ha tenido un costo silencioso: cientos de herramientas, librerías y productos de alto nivel construidos localmente pasan completamente desapercibidos en su propio patio trasero.
