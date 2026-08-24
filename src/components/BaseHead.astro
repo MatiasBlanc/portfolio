@@ -1,6 +1,11 @@
 ---
 import "../global.css";
 
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 interface Props {
   title: string;
   description: string;
@@ -10,6 +15,8 @@ interface Props {
   updatedDate?: Date;
   tags?: string[];
   author?: string;
+  /** Lista de preguntas frecuentes del post para el marcado FAQPage. */
+  faq?: FaqItem[];
 }
 
 const {
@@ -21,6 +28,7 @@ const {
   updatedDate,
   tags = [],
   author = "Matías Blanc",
+  faq,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://matiasblanc.dev");
@@ -161,6 +169,26 @@ const schemaData =
 
 <!-- Structured Data (JSON-LD) for Search Engines & AI Crawlers -->
 <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+{type === "article" && faq && faq.length > 0 && (
+  <>
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      })}
+    />
+  </>
+)}
 
 <!-- Prevenir flash de tema, fuente e idioma incorrectos -->
 <script is:inline>

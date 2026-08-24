@@ -8,6 +8,15 @@ tags:
   - Terminal
   - Neovim
   - Zsh
+faq:
+  - question: "¿Es necesario ser un experto para empezar a usar dotfiles?"
+    answer: "No. Puedes empezar copiando configs, pero es mejor que entiendas cada línea antes de incluirla. Conocer lo básico de Zsh, Neovim y la estructura de archivos te evitará frustraciones al depurar."
+  - question: "¿Qué diferencia hay entre una terminal como Kitty y el entorno de desarrollo integrado (VS Code)?"
+    answer: "Kitty es una terminal. VS Code es un editor con terminal integrado. La diferencia clave es que Kitty renderiza por GPU y permite splits nativos, mientras que el IDE trae más herramientas integradas pero consume más recursos."
+  - question: "¿Vale la pena el esfuerzo de migrar de VS Code a Neovim?"
+    answer: "Si pasas muchas horas escribiendo código, sí. La curva de aprendizaje es real, pero una vez que la superas, editas a la velocidad del pensamiento y sin un navegador que consuma memoria."
+  - question: "¿Cómo puedo mantener mis dotfiles sincronizados entre equipos?"
+    answer: "Suelo usar un repositorio Git y crear symlinks manualmente (o con una herramienta como Stow). Así cualquier cambio queda versionado y puedes reinstalarlo en otra máquina de forma muy rápida."
 ---
 
 <div align="left">
