@@ -5,6 +5,7 @@ import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ReaderSidebar from "../components/blog/ReaderSidebar.astro";
+import Faq from "../components/blog/Faq.astro";
 import { readingTime } from "../utils/blog";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 
 const { post } = Astro.props;
 const { title, description, pubDate, updatedDate, tags = [] } = post.data;
+const faq = post.data.faq;
 const estTime = readingTime(post.body);
 
 const rawMarkdown = `---
@@ -36,6 +38,7 @@ ${post.body ?? ""}`;
       pubDate={pubDate}
       updatedDate={updatedDate}
       tags={tags}
+      faq={faq}
     />
   </head>
   <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
@@ -126,6 +129,14 @@ ${post.body ?? ""}`;
             prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:my-6 sm:prose-img:my-8"
         >
           <slot />
+
+          {faq && faq.length > 0 && (
+            <Faq
+              items={faq}
+              title="Preguntas Frecuentes"
+              lang="es"
+            />
+          )}
         </article>
 
         <!-- Footer navigation -->

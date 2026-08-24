@@ -1,0 +1,75 @@
+---
+/**
+ * Componente de Preguntas Frecuentes (FAQ) para posts del blog.
+ *
+ * Renderiza una lista de preguntas/respuestas en formato acordeón (`<details>`)
+ * accesible, además de exponer la sección con HTML semántico (<section> + <h2>)
+ * para que los crawlers de IA y Google (AI Overviews / featured snippets)
+ * puedan extraer el contenido estructurado de la página.
+ */
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  items: FaqItem[];
+  /** Título de la sección. Por defecto: "Preguntas Frecuentes" */
+  title?: string;
+  /** Idioma de la sección (para el atributo hreflang/aria) */
+  lang?: "es" | "en";
+}
+
+const {
+  items,
+  title = "Preguntas Frecuentes",
+  lang = "es",
+} = Astro.props;
+
+if (items.length === 0) {
+  // No renderizamos nada si no hay preguntas.
+  return;
+}
+---
+
+<section aria-label={title} class="mt-10 sm:mt-16 pt-2 sm:pt-3">
+  <h2
+    lang={lang}
+    class="text-xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-[1.15] mb-3 sm:mb-5"
+  >
+    {title}
+  </h2>
+
+  <div class="space-y-3 sm:space-y-4">
+    {
+      items.map((item) => (
+        <details class="group rounded-xl border border-border bg-background-surface shadow-soft">
+          <summary
+            class="flex items-center justify-between gap-3 list-none cursor-pointer px-4 sm:px-6 py-3 sm:py-4 text-foreground font-medium text-base sm:text-lg"
+          >
+            <span>{item.question}</span>
+            <svg
+              class="faq-chevron shrink-0 text-muted transition-transform duration-200 group-open:rotate-180"
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m6 9l6 6 6-6" />
+            </svg>
+          </summary>
+          <p class="px-4 sm:px-6 py-3 sm:py-4 text-muted leading-relaxed whitespace-pre-line group-open:mb-0">
+            {item.answer}
+          </p>
+        </details>
+      ))
+    }
+  </div>
+</section>
