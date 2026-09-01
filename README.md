@@ -2,6 +2,13 @@
 
 Portfolio y blog personal construido con [Astro](https://astro.build), donde comparto mis proyectos, apuntes y posts sobre desarrollo.
 
+<details>
+  <summary>🇺🇸 <b>Click here to read in English / Read in English</b></summary>
+  <br/>
+
+  Personal portfolio and technical blog built with [Astro](https://astro.build), [React](https://react.dev), and [Tailwind CSS](https://tailwindcss.com), documenting technical projects, engineering insights, and development guides.
+</details>
+
 ![Captura del sitio](./public/project-portfolio.jpg)
 
 ## ✨ Características
