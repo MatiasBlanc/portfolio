@@ -25,7 +25,7 @@ const posts = allPosts
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es" data-lang="es">
   <head>
     <BaseHead title={`${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
@@ -52,46 +52,38 @@ const posts = allPosts
       <!-- ══════════════════════════════════════════════════════════════
            HERO
            ══════════════════════════════════════════════════════════════ -->
-      <section class="pt-8 pb-14 sm:pt-20 sm:pb-28 border-b border-border">
-        <!-- Headline -->
-        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1] mb-4 sm:mb-6 max-w-4xl">
-          <span data-lang-en>
-            <span class="block text-primary font-mono text-sm sm:text-base lg:text-lg font-semibold tracking-normal mb-2 sm:mb-3">Matías Blanc · Full-Stack & Web Engineer</span>
-            Building Fast, Scalable Web Applications & Digital Products.
-          </span>
-          <span data-lang-es>
-            <span class="block text-primary font-mono text-sm sm:text-base lg:text-lg font-semibold tracking-normal mb-2 sm:mb-3">Matías Blanc · Desarrollador Full-Stack & Web</span>
-            Desarrollo Aplicaciones Web y Plataformas Digitales de Alto Rendimiento.
-          </span>
-        </h1>
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-10 pb-16 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 border-b border-border">
+        <div class="lg:col-span-7">
+          <h1 class="max-w-4xl text-[clamp(3rem,6vw,5rem)] font-extrabold leading-[0.98] tracking-[-0.055em] text-foreground">
+            <span data-lang-es>Creo software para problemas reales.</span>
+            <span data-lang-en>I build software for real-world problems.</span>
+          </h1>
+          <p class="max-w-2xl mt-6 text-base sm:text-lg leading-relaxed text-muted">
+            <span data-lang-es>Soy Matías. Desarrollo sitios, herramientas y automatizaciones para personas y organizaciones que necesitan algo que funcione, no solo que se vea bien.</span>
+            <span data-lang-en>I’m Matías. I build websites, tools and automations for people and organizations that need something that works, not just something that looks good.</span>
+          </p>
+          <div class="flex flex-wrap gap-3 mt-8">
+            <a href="#projects" class="inline-flex items-center justify-center min-h-11 px-5 rounded-xl bg-primary text-sm font-semibold text-white hover:bg-primary-hover transition-colors">
+              <span data-lang-es>Ver proyectos</span>
+              <span data-lang-en>View projects</span>
+              <span class="ml-2" aria-hidden="true">→</span>
+            </a>
+            <a href="#contact" class="inline-flex items-center justify-center min-h-11 px-5 rounded-xl border border-border text-sm font-semibold text-foreground hover:border-primary/60 hover:bg-foreground/5 transition-colors">
+              <span data-lang-es>Contactarme</span>
+              <span data-lang-en>Get in touch</span>
+            </a>
+          </div>
+        </div>
 
-        <!-- Subtitle with greeting and name -->
-        <p class="text-base sm:text-xl text-muted leading-relaxed max-w-2xl mb-6 sm:mb-10">
-          <span data-lang-en>
-            Hi, I'm <strong class="text-foreground font-semibold">Matías Blanc</strong>. Specializing in <strong class="text-foreground font-semibold">React, Next.js, TypeScript, and Python</strong>, I help founders and teams turn complex ideas into high-performance web platforms and polished software.
-          </span>
-          <span data-lang-es>
-            Hola, soy <strong class="text-foreground font-semibold">Matías Blanc</strong>. Especializado en <strong class="text-foreground font-semibold">React, Next.js, TypeScript y Python</strong>, ayudo a fundadores y equipos a transformar ideas complejas en plataformas web de alto rendimiento y software de producción.
-          </span>
-        </p>
-
-        <!-- CTA -->
-        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
-          <a
-            href="#projects"
-            class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm bg-primary text-white flex items-center gap-2"
-          >
-            <span data-lang-en>Explore my work</span>
-            <span data-lang-es>Ver mis proyectos</span>
-            <span>→</span>
-          </a>
-          <a
-            href="#contact"
-            class="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-medium text-xs sm:text-sm text-muted hover:text-foreground transition-colors"
-          >
-            <span data-lang-en>Get in touch</span>
-            <span data-lang-es>Contactar</span>
-          </a>
+        <div class="lg:col-span-5 relative min-h-[300px] sm:min-h-[380px]" aria-label="Proyectos destacados">
+          <div class="absolute inset-x-5 top-1/2 -translate-y-1/2 rounded-3xl border border-border bg-background-card p-3 shadow-2xl shadow-black/20 rotate-[-3deg]">
+            <img src="/project-fechitat.webp" alt="Vista del portal FECHITAT" width="1920" height="1080" class="w-full aspect-[16/10] object-cover rounded-2xl" fetchpriority="high" />
+            <p class="px-2 pt-3 pb-1 text-xs font-mono text-muted">01 · FECHITAT</p>
+          </div>
+          <div class="absolute right-0 bottom-2 w-2/3 rounded-2xl border border-border bg-background-surface p-2 shadow-xl rotate-[5deg]">
+            <img src="/project-riegomendoza.webp" alt="Vista de Riego Mendoza" width="1920" height="1080" class="w-full aspect-[16/10] object-cover rounded-xl" loading="lazy" />
+            <p class="px-1 pt-2 pb-1 text-[10px] font-mono text-muted">02 · RIEGO MENDOZA</p>
+          </div>
         </div>
       </section>
 
@@ -125,6 +117,7 @@ const posts = allPosts
               date={project.data.pubDate}
               tags={project.data.tags}
               status={project.data.status}
+              showTags={false}
             />
           ))}
         </div>

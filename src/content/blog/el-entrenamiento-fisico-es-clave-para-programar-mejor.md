@@ -1,12 +1,14 @@
 ---
-title: "El mejor debugger no es un linter: el entrenamiento físico es clave para programar mejor"
-description: Por qué construir, documentar y fortalecer el ecosistema tecnológico en español es una ventaja comunitaria y la visión detrás de madeinchile.tech.
+title: "El entrenamiento físico es clave para programar mejor"
+description: "Cómo el entrenamiento físico puede mejorar la concentración, el aprendizaje y el rendimiento al programar."
+image: "https://pbs.twimg.com/media/HQhFLBBXMAIFlda?format=jpg&name=4096x4096"
+imageAlt: "Persona entrenando con pesas"
 pubDate: 2026-08-24
 status: build
 tags:
   - Comunidad
 ---
-# El mejor debugger no es un linter: el entrenamiento físico es clave para programar mejor
+# El entrenamiento físico es clave para programar mejor
 
 La cultura tradicional del desarrollo de software suele romantizar las jornadas maratónicas: café infinito, posturas poco ergonómicas y horas continuas depurando código. Sin embargo, cuando el trabajo depende completamente de la **agudeza cognitiva**, el sedentarismo prolongado se convierte en el principal cuello de botella del rendimiento mental.
 

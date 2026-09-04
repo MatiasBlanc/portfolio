@@ -157,7 +157,8 @@ main {
   line-height: calc(var(--reader-font-size, 1.0625rem) * 1.75);
 }
 
-/* Ocultar elementos de idioma según data-lang en el elemento html */
+/* Mostrar únicamente el idioma activo, con español como estado inicial seguro. */
+html:not([data-lang]) [data-lang-en],
 html[data-lang="es"] [data-lang-en] {
   display: none !important;
 }

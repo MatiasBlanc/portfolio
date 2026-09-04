@@ -14,6 +14,7 @@ interface Props {
   date: Date;
   tags: string[];
   status?: string;
+  showTags?: boolean;
   githubUrl?: string;
   liveUrl?: string;
 }
@@ -25,6 +26,7 @@ const {
   image,
   imageAlt,
   tags = [],
+  showTags = true,
 } = Astro.props;
 
 const displayTags = tags.slice(0, 4);
@@ -57,7 +59,7 @@ const displayTags = tags.slice(0, 4);
       </p>
     </div>
 
-    {displayTags.length > 0 && (
+    {showTags && displayTags.length > 0 && (
       <div class="flex flex-wrap gap-1.5 pt-3 border-t border-border">
         {displayTags.map((tag) => (
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium border border-border text-muted bg-background-subtle">

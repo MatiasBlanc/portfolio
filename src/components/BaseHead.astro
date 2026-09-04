@@ -196,7 +196,7 @@ const schemaData =
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
 
-    const savedLang = localStorage.getItem("preferred_lang") || "en";
+    const savedLang = localStorage.getItem("preferred_lang") === "en" ? "en" : "es";
     document.documentElement.setAttribute("data-lang", savedLang);
 
     const savedFont = localStorage.getItem("reader_font") || "serif";
