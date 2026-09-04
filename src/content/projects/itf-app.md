@@ -10,7 +10,7 @@ tags:
   - FastAPI
   - WebSockets
   - TailwindCSS
-image: /project-itf.webp
+image: ../../assets/projects/itf-app.webp
 imageAlt: "ITF Mobile App UI showcasing tournament brackets and athlete registration"
 ---
 

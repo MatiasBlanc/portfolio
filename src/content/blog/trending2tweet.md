@@ -6,7 +6,7 @@ status: en_progreso
 tags:
   - Python
   - OpenAI
-image: /blog-TTT.jpg
-imageAlt:
+image: ../../assets/blog/trending2tweet.webp
+imageAlt: "Trending2Tweet banner"
 ---
 Bot que detecta repositorios en tendencia en GitHub y genera tweets técnicos con IA para publicar en X. Gestión de historial para evitar duplicados y soporte para múltiples proveedores de LLM.

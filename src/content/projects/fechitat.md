@@ -9,7 +9,7 @@ tags:
   - TypeScript
   - TailwindCSS
   - Leaflet
-image: /project-fechitat.webp
+image: ../../assets/projects/fechitat.webp
 imageAlt: "FECHITAT Official Website homepage and interactive dojo map"
 liveUrl: "https://fechitat.cl"
 ---

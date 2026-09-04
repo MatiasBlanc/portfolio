@@ -9,7 +9,7 @@ tags:
   - TailwindCSS
   - Automation
   - UI/UX
-image: /project-riegomendoza.webp
+image: ../../assets/projects/riegomendoza.webp
 imageAlt: "Riego Mendoza official web platform and smart irrigation solutions"
 liveUrl: "https://riegomendoza.ar"
 ---

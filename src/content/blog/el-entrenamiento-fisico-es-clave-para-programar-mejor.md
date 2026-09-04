@@ -1,7 +1,7 @@
 ---
 title: "El entrenamiento físico es clave para programar mejor"
 description: "Cómo el entrenamiento físico puede mejorar la concentración, el aprendizaje y el rendimiento al programar."
-image: "https://pbs.twimg.com/media/HQhFLBBXMAIFlda?format=jpg&name=4096x4096"
+image: ../../assets/blog/entrenamiento-fisico.webp
 imageAlt: "Persona entrenando con pesas"
 pubDate: 2026-08-24
 status: build

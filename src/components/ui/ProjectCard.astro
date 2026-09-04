@@ -5,11 +5,14 @@
  * Entire card is a clickable link to the project case study.
  */
 
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
 interface Props {
   id: string;
   title: string;
   description: string;
-  image: string;
+  image: ImageMetadata | string;
   imageAlt: string;
   date: Date;
   tags: string[];
@@ -39,13 +42,23 @@ const displayTags = tags.slice(0, 4);
 >
   {/* Top Image Preview with resting opacity that illuminates on hover */}
   <div class="relative w-full aspect-[16/10] overflow-hidden bg-background-subtle border-b border-border">
-    <img
-      src={image}
-      alt={imageAlt || title}
-      class="w-full h-full object-cover object-top opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-      loading="lazy"
-      decoding="async"
-    />
+    {typeof image === "string" ? (
+      <img
+        src={image}
+        alt={imageAlt || title}
+        class="w-full h-full object-cover object-top opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <Image
+        src={image}
+        alt={imageAlt || title}
+        class="w-full h-full object-cover object-top opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+        loading="lazy"
+        decoding="async"
+      />
+    )}
   </div>
 
   {/* Bottom Info Content */}

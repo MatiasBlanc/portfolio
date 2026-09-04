@@ -8,6 +8,8 @@ tags:
   - Terminal
   - Neovim
   - Zsh
+image: ../../assets/blog/dotfiles.webp
+imageAlt: "El Setup Definitivo para Terminal: Mis Dotfiles"
 faq:
   - question: ¿Es necesario ser un experto para empezar a usar dotfiles?
     answer: No. Puedes empezar copiando configs, pero es mejor que entiendas cada línea antes de incluirla. Conocer lo básico de Zsh, Neovim y la estructura de archivos te evitará frustraciones al depurar.

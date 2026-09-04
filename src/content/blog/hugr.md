@@ -2,14 +2,14 @@
 title: "Hugr: Mi Segundo Cerebro y Asistente Personal con Obsidian y Bots"
 description: "Cómo construí Hugr, un sistema integrado de boveda de notas en Obsidian y bot de automatización para gestionar proyectos universitarios, desarrollo de software y contenido técnico."
 pubDate: 2026-08-15
-status: "build"
+status: draft
 tags:
   - Obsidian
   - Python
   - Automation
   - Productivity
-image: /project-dotfiles.webp
-imageAlt: "Diagrama del sistema Hugr con Obsidian y bots de sincronización"
+image: ../../assets/blog/hugr.webp
+imageAlt: "Hugr: Sistema Segundo Cerebro y Asistente Personal con Obsidian y Bots"
 ---
 
 ## ¿Qué es Hugr?

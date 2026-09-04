@@ -1,6 +1,7 @@
 ---
 // src/pages/index.astro
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -9,6 +10,8 @@ import BlogCard from "../components/ui/BlogCard.astro";
 import LoadingKeyboard from "../components/ui/LoadingKeyboard.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 import { getPublishedPosts, readingTime } from "../utils/blog";
+import fechitatImg from "../assets/projects/fechitat.webp";
+import riegoImg from "../assets/projects/riegomendoza.webp";
 import "../global.css";
 
 // Proyectos ordenados por fecha
@@ -77,11 +80,11 @@ const posts = allPosts
 
         <div class="lg:col-span-5 relative min-h-[300px] sm:min-h-[380px]" aria-label="Proyectos destacados">
           <div class="absolute inset-x-5 top-1/2 -translate-y-1/2 rounded-3xl border border-border bg-background-card p-3 shadow-2xl shadow-black/20 rotate-[-3deg]">
-            <img src="/project-fechitat.webp" alt="Vista del portal FECHITAT" width="1920" height="1080" class="w-full aspect-[16/10] object-cover rounded-2xl" fetchpriority="high" />
+            <Image src={fechitatImg} alt="Vista del portal FECHITAT" class="w-full aspect-[16/10] object-cover rounded-2xl" loading="eager" />
             <p class="px-2 pt-3 pb-1 text-xs font-mono text-muted">01 · FECHITAT</p>
           </div>
           <div class="absolute right-0 bottom-2 w-2/3 rounded-2xl border border-border bg-background-surface p-2 shadow-xl rotate-[5deg]">
-            <img src="/project-riegomendoza.webp" alt="Vista de Riego Mendoza" width="1920" height="1080" class="w-full aspect-[16/10] object-cover rounded-xl" loading="lazy" />
+            <Image src={riegoImg} alt="Vista de Riego Mendoza" class="w-full aspect-[16/10] object-cover rounded-xl" loading="lazy" />
             <p class="px-1 pt-2 pb-1 text-[10px] font-mono text-muted">02 · RIEGO MENDOZA</p>
           </div>
         </div>

@@ -5,6 +5,8 @@
  * Entire card is a clickable link to the article with equalized minimum height.
  */
 
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import FormattedDate from "../FormattedDate.astro";
 
 interface Props {
@@ -15,7 +17,7 @@ interface Props {
   pubDate: Date;
   tags?: string[];
   readingTime?: number;
-  image?: string;
+  image?: ImageMetadata | string;
   imageAlt?: string;
   featured?: boolean;
 }
@@ -43,13 +45,23 @@ const displayTags = tags.slice(0, 3);
   {/* Full-cover image with bottom-up theme-adaptive gradient */}
   {image ? (
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-background-subtle">
-      <img
-        src={image}
-        alt={imageAlt || title}
-        class="w-full h-full object-cover object-top opacity-60 group-hover:opacity-85 group-hover:scale-105 transition-all duration-500"
-        loading="lazy"
-        decoding="async"
-      />
+      {typeof image === "string" ? (
+        <img
+          src={image}
+          alt={imageAlt || title}
+          class="w-full h-full object-cover object-top opacity-60 group-hover:opacity-85 group-hover:scale-105 transition-all duration-500"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <Image
+          src={image}
+          alt={imageAlt || title}
+          class="w-full h-full object-cover object-top opacity-60 group-hover:opacity-85 group-hover:scale-105 transition-all duration-500"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
       <div class="absolute inset-0 bg-gradient-to-t from-background-card via-background-card/85 to-transparent" />
       <div class="absolute inset-0 bg-gradient-to-t from-background-card/95 via-background-card/40 to-transparent" />
     </div>

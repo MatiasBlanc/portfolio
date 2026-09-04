@@ -9,7 +9,7 @@ tags:
   - Groq
   - REST APIs
   - GitHub API
-image: /project-trending2tweet.webp
+image: ../../assets/projects/trending2tweet.webp
 imageAlt: "Trending2Tweet automated workflow dashboard and AI thread generator"
 ---
 
