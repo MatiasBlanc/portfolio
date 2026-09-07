@@ -1,31 +1,52 @@
 # Matías Blanc — Full-Stack & Web Engineer
 
-> Technical portfolio, engineering builds, and blog by Matías Blanc.
+> Technical portfolio and Spanish blog by Matías Blanc, a Computer Engineering student and developer based in Coquimbo, Chile.
 
 ## About
-- **Name**: Matías Blanc
-- **Role**: Full-Stack & Web Developer / IT Engineering Student at Universidad Católica del Norte (UCN)
-- **Location**: Coquimbo, Chile
-- **Website**: https://matiasblanc.dev
-- **Contact**: hi@matiasblanc.dev
-- **Profiles**:
+- **Name:** Matías Blanc
+- **Role:** Full-Stack & Web Developer / Computer Engineering Student at Universidad Católica del Norte (UCN)
+- **Location:** Coquimbo, Chile
+- **Website:** https://matiasblanc.dev
+- **Contact:** hi@matiasblanc.dev
+- **Profiles:**
   - GitHub: https://github.com/matiasblanc
   - LinkedIn: https://linkedin.com/in/matiasblanc
-  - Twitter/X: https://x.com/matiasblnc
+  - X: https://x.com/matiasblnc
   - Upwork: https://www.upwork.com/freelancers/~matiasblanc
 
-## Core Expertise & Tech Stack
-- **Frontend & Web**: React, Next.js, TypeScript, Astro, TailwindCSS, HTML5/CSS3
-- **Backend & Data**: Python, FastAPI, Node.js, PostgreSQL, WebSockets, REST APIs
-- **Mobile & Cross-Platform**: React Native, Expo
-- **Tools & Infra**: Linux, Docker, Git/GitHub, Neovim, Vercel
+## Expertise
+- **Frontend and web:** React, Next.js, TypeScript, Astro, Tailwind CSS, HTML and CSS
+- **Backend and data:** Python, FastAPI, Node.js, PostgreSQL, WebSockets and REST APIs
+- **Mobile:** React Native and Expo
+- **Tools and infrastructure:** Linux, Docker, Git, GitHub, Neovim and Vercel
 
-## Featured Projects
-- **Riego Mendoza (https://riegomendoza.ar)**: High-performance water engineering and smart irrigation portal with automated lead acquisition.
-- **FECHITAT (https://fechitat.cl)**: Official institutional web portal for the Chilean Federation of Traditional Taekwon-Do, interactive dojo maps, and rank registry.
-- **ITF Taekwon-Do App**: Real-time scoring, tournament brackets, and federation management with React Native, Expo, and WebSockets.
-- **Personal Portfolio & Blog**: Ultra-fast, accessible, content-focused Astro 5 + TailwindCSS portfolio.
+## Projects
+- [FECHITAT](https://matiasblanc.dev/projects/fechitat): An Astro and Sanity institutional website prototype for the Chilean Federation of Traditional Taekwon-Do. It focuses on information architecture, school discovery, events, documents and accessible public content. The portfolio case study does not currently claim a working public domain.
+- [ITF App](https://matiasblanc.dev/projects/itf-app): A functional React Native and Expo prototype for practitioner identity, dojang management, attendance, progression and competition-day information. It is not an official ITF platform and uses temporary or simulated data for some tournament flows.
+- [Made in Chile](https://matiasblanc.dev/projects/madeinchile): An Astro, React and Supabase directory for discovering software and technology projects created in Chile. The catalogue prioritizes project context, freshness and useful outbound visits over volume.
+  - Live site: https://madeinchile.tech
+- [Riego Mendoza](https://matiasblanc.dev/projects/riegomendoza): A mobile-first React and Vite website that explains irrigation services and guides visitors toward a useful WhatsApp conversation.
+  - Live site: https://riego-mendoza.vercel.app
+  - Source: https://github.com/MatiasBlanc/riego-mendoza
 
-## Technical Blog & Articles
-- [Articles & Builds Index](https://matiasblanc.dev/blog): Technical articles on web architecture, React, Neovim, AI agents, and developer tooling.
-- RSS Feed: https://matiasblanc.dev/rss.xml
+## Blog
+- [¿Cómo aplicar Clean Architecture en React sin sobreingeniería?](https://matiasblanc.dev/blog/clean-architecture-reactjs): A practical guide to domain rules, use cases, infrastructure adapters, UI boundaries and criteria for extracting layers.
+- [¿Cómo aprender a programar sin depender de tutoriales?](https://matiasblanc.dev/blog/como-aprender-a-programar-sin-coleccionar-tutoriales): A practice-first route based on choosing a direction, building small projects, reading errors and using AI as a tutor.
+- [¿Qué debe demostrar un proyecto de portafolio de programación?](https://matiasblanc.dev/blog/que-hace-valioso-un-proyecto-de-portafolio): A framework for presenting context, users, decisions, contribution, evidence, limitations and project status.
+- [¿Cómo organizar tus dotfiles para reconstruir tu entorno Linux?](https://matiasblanc.dev/blog/dotfiles): Lessons from versioning Neovim, Kitty and terminal configuration while excluding secrets, sessions and machine-specific state.
+- [¿El ejercicio físico ayuda a concentrarse al programar?](https://matiasblanc.dev/blog/el-entrenamiento-fisico-es-clave-para-programar-mejor): A cautious review of exercise, cognition and programming routines that distinguishes evidence from personal experience.
+- [¿Por qué documentar software en español y dar visibilidad al talento local?](https://matiasblanc.dev/blog/el-talento-no-necesita-traduccion): An argument for bilingual documentation and Chilean technology communities, including the Made in Chile project.
+- [¿Cómo conecté Telegram con Obsidian mediante IA? El caso de Hugr](https://matiasblanc.dev/blog/hugr): The architecture of a personal assistant that validates model output before writing notes or proposing calendar events.
+- [¿Cómo generar borradores para X con IA y revisión humana?](https://matiasblanc.dev/blog/trending2tweet): A local Python pipeline that finds technical topics, preserves sources and creates Markdown drafts without automatic publication.
+- [¿Cómo diseñé ZenReader para leer artículos sin distracciones?](https://matiasblanc.dev/blog/zenreader): An open-source browser extension concept using client-side extraction, configurable typography and local storage, with explicit privacy and compatibility limitations.
+
+## Content policy
+- Articles are based on personal engineering work, experiments and clearly attributed sources.
+- Project status and limitations are stated in each case study; prototypes should not be described as production systems.
+- The Spanish article about exercise is educational and does not replace medical or professional advice.
+- The article about Agencia IA remains a draft and is intentionally excluded from the published blog index.
+
+## Feeds
+- Blog index: https://matiasblanc.dev/blog
+- RSS: https://matiasblanc.dev/rss.xml
+- Sitemap: https://matiasblanc.dev/sitemap-index.xml

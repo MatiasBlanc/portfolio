@@ -1,145 +1,308 @@
 ---
-title: Estructurando aplicaciones React con Clean Architecture 2026
-description: Guía práctica para estructurar aplicaciones React con Clean Architecture.
-category: blog
-pubDate: 08 Jul 2022
-status: draft
+title: "¿Cómo aplicar Clean Architecture en React sin sobreingeniería?"
+description: "Una guía práctica para separar dominio, casos de uso, infraestructura y UI en React, con criterios para saber cuándo la arquitectura ayuda y cuándo sobra."
+lang: es
+pubDate: 2022-07-08
+updatedDate: 2026-09-03
+status: build
 tags:
   - React
   - TypeScript
   - Arquitectura
 ---
-# Estructura de Proyecto de ReactJs con Clean Architecture - Documentación Detallada
 
-https://github.com/Gentleman-Programming/Front-End-Clean-Architecture
+**En React, Clean Architecture merece la pena cuando separa reglas de negocio y contratos externos que necesitas probar o cambiar; no cuando solo añade carpetas.** La dirección de las dependencias debe proteger el dominio de React, HTTP y las bibliotecas de estado.
 
-**Autor**: Gentleman
+La mayoría de los artículos sobre arquitectura frontend empieza con un árbol de carpetas. Ese suele ser el primer error.
 
-**Fuente del Video**: [Cómo estructurar tu project de ReactJs? Aplicamos Clean Architecture en Front End - #part1](https://www.youtube.com/watch?v=5LqhlCd2_nE)
+Puedes crear `domain/`, `application/` e `infrastructure/` y seguir teniendo un componente que valida reglas de negocio, llama a `fetch`, transforma la respuesta y muestra un *toast*. Las carpetas parecen limpias; las dependencias no.
 
-## Introducción
+> Clean Architecture no consiste en ordenar archivos. Consiste en decidir qué código puede conocer a qué otro código.
 
-Este documento proporciona una guía detallada sobre la aplicación de la Clean Architecture en proyectos de ReactJs, orientándonos hacia una estructuración eficiente y una gestión eficaz del estado y de los componentes.
+Esta guía es una revisión completa de mis notas de 2022, inspiradas inicialmente por el trabajo de [Gentleman Programming](https://github.com/Gentleman-Programming/Front-End-Clean-Architecture). Hoy mantendría la idea central, pero cambiaría casi toda la aplicación práctica.
 
-## Clean Architecture
+## ¿Qué problema resuelve Clean Architecture en React?
 
-### Conceptos Básicos
+Imagina una pantalla para suspender una cuenta. La regla dice que no se puede suspender al último administrador activo.
 
-- **Dominio/Modelos/State**: Define las entidades y su estado durante el ciclo de vida de la aplicación.
-- **Casos de Uso**: Operaciones que se pueden realizar sobre los modelos.
-- **Adaptadores**: Facilitan la conversión de datos externos para que puedan ser manejados por la aplicación.
+En una implementación rápida, el componente puede terminar haciendo todo:
 
-### Beneficios
+```tsx
+function SuspendUserButton({ userId }: { userId: string }) {
+  const [isLoading, setIsLoading] = useState(false);
 
-- Organización clara del código.
-- Facilidad de mantenimiento.
-- Escalabilidad del proyecto.
+  async function handleClick() {
+    setIsLoading(true);
+    const response = await fetch(`/api/users/${userId}/suspend`, {
+      method: "POST",
+    });
 
-## Estructura de Carpetas Sugerida
+    if (!response.ok) {
+      toast.error("No se pudo suspender el usuario");
+    }
 
+    setIsLoading(false);
+  }
+
+  return <button onClick={handleClick}>Suspender</button>;
+}
 ```
+
+No hay nada incorrecto en `fetch` o `useState`. El problema aparece cuando el componente también decide **si** la operación está permitida, conoce el formato exacto del backend y repite esa lógica en otros flujos.
+
+Cuando cambie la API, tocarás la UI. Cuando cambie la regla, tocarás la UI. Cuando quieras probar la regla, renderizarás React aunque la regla no tenga nada visual.
+
+## ¿Cómo se relacionan dominio, aplicación, infraestructura y UI?
+
+Una separación útil puede pensarse en cuatro zonas:
+
+1. **Dominio:** conceptos y reglas del negocio.
+2. **Aplicación:** acciones que el usuario puede ejecutar.
+3. **Infraestructura:** API, almacenamiento, analítica y otros detalles externos.
+4. **Presentación:** componentes, rutas, estado visual y accesibilidad.
+
+La regla de dependencias apunta hacia el dominio:
+
+```text
+React → caso de uso → dominio
+           ↑
+     adaptador HTTP
+```
+
+El dominio no importa React, Axios, Zustand ni el SDK del proveedor. Los casos de uso declaran qué necesitan mediante contratos. La infraestructura implementa esos contratos. La UI conecta las piezas.
+
+## ¿Cómo se aplica en un ejemplo pequeño?
+
+### 1. La regla vive en el dominio
+
+```ts
+export interface User {
+  id: string;
+  role: "admin" | "member";
+  isActive: boolean;
+}
+
+export function canSuspendUser(
+  user: User,
+  activeAdminCount: number,
+): boolean {
+  const isLastActiveAdmin =
+    user.role === "admin" && user.isActive && activeAdminCount === 1;
+
+  return !isLastActiveAdmin;
+}
+```
+
+Esta función no sabe dónde llegaron los usuarios ni cómo se mostrará el error. Se puede probar con datos simples.
+
+### 2. El caso de uso expresa la intención
+
+```ts
+export interface UserRepository {
+  suspend(userId: string): Promise<void>;
+}
+
+export interface SuspendUserInput {
+  user: User;
+  activeAdminCount: number;
+}
+
+export class CannotSuspendLastAdminError extends Error {}
+
+export function createSuspendUser(repository: UserRepository) {
+  return async function suspendUser(input: SuspendUserInput): Promise<void> {
+    if (!canSuspendUser(input.user, input.activeAdminCount)) {
+      throw new CannotSuspendLastAdminError();
+    }
+
+    await repository.suspend(input.user.id);
+  };
+}
+```
+
+El caso de uso conoce la operación `suspend`, pero no su URL. La interfaz es un puerto definido por la necesidad de la aplicación, no una copia de todos los endpoints del backend.
+
+### 3. La infraestructura traduce HTTP al contrato
+
+```ts
+export function createHttpUserRepository(
+  baseUrl: string,
+  fetcher: typeof fetch,
+): UserRepository {
+  return {
+    async suspend(userId: string): Promise<void> {
+      const response = await fetcher(`${baseUrl}/users/${userId}/suspension`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error(`La API respondió con estado ${response.status}`);
+      }
+    },
+  };
+}
+```
+
+Aquí sí pertenecen la URL, el verbo HTTP y el código de estado. Si el backend cambia, el dominio permanece intacto.
+
+### 4. ¿Cómo gestiona React la experiencia?
+
+La capa de presentación decide cuándo deshabilitar el botón, cómo representar la carga, qué mensaje mostrar y dónde devolver el foco. Puede integrar el caso de uso mediante un *hook* o una mutación de TanStack Query.
+
+Una comprobación de interfaz no es una garantía de seguridad. La regla de “no suspender al último administrador” debe validarse también en el backend, dentro de una operación segura frente a cambios simultáneos.
+
+Lo importante es que React **presenta** la decisión del dominio; no la reinventa.
+
+## ¿Cómo organizar el código por funcionalidad?
+
+Un proyecto puede tener todas las interfaces en `components/`, todos los *hooks* en `hooks/` y todas las peticiones en `services/`. Al principio parece ordenado. A medida que crece, modificar “usuarios” obliga a recorrer toda la aplicación.
+
+Prefiero mantener juntas las piezas que cambian por la misma razón:
+
+```text
 src/
-├── adapters/
-│   ├── index.js
-│   └── userAdapter.js
-├── components/
-│   ├── UserComponent.jsx
-│   └── AdminComponent.jsx
-├── models/
-│   └── userModel.js
-├── hooks/
-│   ├── useUser.js
-│   └── useAdmin.js
-├── services/
-│   └── userService.js
-├── utilities/
-│   └── formatter.js
-├── interceptors/
-│   └── authInterceptor.js
-├── contexts/
-│   └── UserContext.js
-└── pages/
-    └── Home/
-        ├── Home.jsx
-        ├── components/
-        │   └── HomeButton.jsx
-        ├── models/
-        │   └── homeModel.js
-        ├── hooks/
-        │   └── useHomeLogic.js
-        ├── services/
-        │   └── homeService.js
-        └── utilities/
-            └── homeFormatter.js
+├── app/
+│   ├── providers/
+│   └── router/
+├── features/
+│   └── suspend-user/
+│       ├── application/
+│       ├── domain/
+│       ├── infrastructure/
+│       ├── ui/
+│       └── index.ts
+├── entities/
+│   └── user/
+└── shared/
+    ├── api/
+    └── ui/
 ```
 
-### Descripción Detallada de la Estructura
+No todas las funcionalidades necesitan las cuatro subcarpetas. Una validación de formulario puede vivir junto a su componente. Separar por capas tiene sentido cuando existe lógica, infraestructura o reutilización real.
 
-#### Pages/Home
+La combinación que mejor me funciona es:
 
-La carpeta `Home` funciona como un contenedor (Container Pattern), encapsulando toda la lógica y los componentes específicos de la página de inicio. Esto permite una mejor organización y un enfoque modular:
+> **Funcionalidades por fuera; límites limpios por dentro.**
 
-- **Home.jsx**: El componente principal que actúa como el contenedor.
-- **Components**: Componentes específicos de la página Home, como `HomeButton.jsx`.
-- **Models**: Define modelos específicos utilizados en la página Home.
-- **Hooks**: Hooks personalizados para la lógica de negocio de la página Home.
-- **Services**: Servicios que interactúan con APIs o recursos externos específicos para Home.
-- **Utilities**: Herramientas y funciones de ayuda específicas para la página Home.
+## ¿Cómo evitan los adaptadores que la API gobierne la UI?
 
-### La Regla del Alcance
+Supongamos que el backend devuelve:
 
-La regla del alcance es fundamental para entender y organizar la reutilización y la carga perezosa de componentes:
-
-- **Components en Root**: Accesibles y reutilizables por toda la aplicación.
-- **Components en Funcionalidades Específicas**: Utilizados solo dentro de su contexto específico, como en la carpeta `Home`.
-
-### Beneficios de la Regla del Alcance
-
-- **Claridad y Escalabilidad**: Facilita la comprensión del alcance y uso de los componentes, y mejora la escalabilidad del proyecto.
-- **Optimización de la Carga**: Permite una carga más eficiente al cargar solo los componentes necesarios para la funcionalidad solicitada.
-
-## Conclusión
-
-Adoptar la Clean Architecture en ReactJs con un enfoque estructurado y modular facilita el desarrollo y mantenimiento de aplicaciones complejas y escalables. La inclusión del patrón de contenedor dentro de las páginas específicas, como se muestra en la carpeta `Home`, proporciona un marco claro para la organización y optimización de los componentes y la lógica de negocio.
-
-### Patrón Contenedor en la Estructura de Carpetas de ReactJs
-
-#### Uso del Patrón Contenedor
-
-El patrón contenedor es una estrategia de diseño que encapsula los componentes y la lógica específicos de una funcionalidad dentro de su propia subcarpeta bajo `pages`. Esto facilita la organización modular del código y mejora la carga perezosa de los componentes. Aquí te muestro cómo se implementa típicamente dentro de la carpeta `Home`:
-
-```
-src/
-└── pages/
-    └── Home/
-        ├── Home.jsx         # Contenedor principal
-        ├── components/      # Componentes específicos de Home
-        │   └── HomeButton.jsx
-        ├── models/          # Modelos usados en Home
-        │   └── homeModel.js
-        ├── hooks/           # Hooks específicos de Home
-        │   └── useHomeLogic.js
-        ├── services/        # Servicios usados por Home
-        │   └── homeService.js
-        └── utilities/       # Funciones auxiliares para Home
-            └── homeFormatter.js
+```json
+{
+  "user_id": "usr_42",
+  "display_name": "Ana",
+  "role": "member",
+  "active": 1
+}
 ```
 
-#### Detalles del Patrón Contenedor
+La aplicación no debería arrastrar `user_id` y `active: 1` por cada componente. Un adaptador puede convertir ese DTO en un modelo interno:
 
-- **Home.jsx**: Actúa como el componente principal que coordina y gestiona los otros componentes específicos dentro de la carpeta `Home`. Este componente funciona como un "contenedor" que encapsula toda la lógica y estado específicos de la página de inicio.
-- **Components**: Contiene todos los componentes visuales que solo son relevantes para la página `Home`. Por ejemplo, `HomeButton.jsx` podría ser un botón personalizado solo usado en esta página.
-- **Models**: Define estructuras de datos que son únicas para la página `Home`, como `homeModel.js` que podría contener definiciones de estado y lógica de negocio específicas.
-- **Hooks**: Agrupa todos los hooks que son utilizados únicamente dentro de la página `Home`, como `useHomeLogic.js`, que puede contener lógica de manejo de estado o efectos secundarios.
-- **Services**: Los servicios que realiza llamadas a APIs o realiza operaciones de datos que solo conciernen a la página `Home`.
-- **Utilities**: Funciones de ayuda o herramientas específicas que son utilizadas solamente dentro del contexto de `Home`, como formateadores, validadores, o calculadoras.
+```ts
+type UserDto = {
+  user_id: string;
+  display_name: string;
+  role: "admin" | "member";
+  active: 0 | 1;
+};
 
-#### Beneficios del Patrón Contenedor
+export function toUser(dto: UserDto): User {
+  return {
+    id: dto.user_id,
+    role: dto.role,
+    isActive: dto.active === 1,
+  };
+}
+```
 
-- **Encapsulación**: Aísla la lógica y componentes de una página específica, haciendo el código más fácil de entender y mantener.
-- **Modularidad**: Facilita el manejo de cada funcionalidad como un módulo independiente, lo cual es ideal para el mantenimiento y la prueba de unidades.
-- **Optimización de la Carga**: Mejora la carga perezosa al asegurar que solo se carguen los recursos necesarios cuando se accede a la página `Home`.
+El adaptador es especialmente valioso cuando:
 
----
+- el contrato externo usa otra convención de nombres;
+- faltan campos y necesitas valores explícitos;
+- una fecha llega como texto;
+- existen versiones de una API;
+- el mismo modelo se obtiene desde HTTP y almacenamiento local.
 
-Este enfoque del patrón contenedor en la estructura del proyecto de ReactJs es crucial para mantener una arquitectura limpia y organizada, asegurando que cada componente y pieza de lógica tenga un lugar bien definido y un propósito claro.
+Si el adaptador solo copia cinco propiedades con el mismo nombre, probablemente todavía no aporta nada.
+
+## ¿Cómo separar el estado del servidor del estado de interfaz?
+
+Otro cambio respecto de mis notas antiguas: no pondría todo en Context ni en un *store* global.
+
+- **Estado remoto:** usuarios, proyectos, permisos. Tiene caché, reintentos e invalidación. Una herramienta como TanStack Query suele encajar bien.
+- **Estado de URL:** búsqueda, filtros, paginación. Debería poder compartirse y sobrevivir una recarga.
+- **Estado visual local:** modal abierto, pestaña activa, borrador temporal. Vive cerca del componente.
+- **Estado de sesión global:** identidad o preferencias transversales. Puede justificar un contexto o *store*.
+
+La arquitectura se vuelve más simple cuando cada dato tiene un dueño claro.
+
+## ¿Qué probar en cada límite de la arquitectura?
+
+Una estrategia razonable:
+
+### Dominio
+
+Pruebas unitarias rápidas para reglas y transformaciones. Sin render, red ni *mocks* de framework.
+
+### Casos de uso
+
+Repositorios falsos pequeños que verifiquen decisiones: cuándo se llama a una dependencia, qué error se devuelve y qué datos se envían.
+
+### Infraestructura
+
+Pruebas de contrato para serialización, rutas, cabeceras y errores HTTP.
+
+### UI
+
+Pruebas orientadas al comportamiento visible: el usuario puede iniciar la acción, entiende por qué está bloqueada y recibe un estado de error accesible.
+
+### Flujo completo
+
+Pocas pruebas E2E para los recorridos de mayor riesgo. No necesitas reproducir cada combinación que ya cubrió el dominio.
+
+## ¿Qué errores hacen que Clean Architecture empeore un proyecto?
+
+### Crear una interfaz para cada función
+
+La inversión de dependencias sirve en fronteras que pueden cambiar o necesitan reemplazo. Una interfaz para sumar dos números solo agrega navegación.
+
+### Duplicar modelos sin una razón
+
+`UserDto`, `UserEntity`, `UserModel`, `UserViewModel` pueden ser cuatro formas justificadas o cuatro copias idénticas. La transformación debe proteger una diferencia real.
+
+### Construir una carpeta `shared` infinita
+
+Mover algo a `shared` porque apareció dos veces puede borrar su contexto. Primero confirma que ambas piezas cambian por la misma razón.
+
+### Ocultar toda la biblioteca externa
+
+Encapsular una dependencia estable detrás de una réplica exacta de su API no reduce acoplamiento; solo crea una API adicional que mantener.
+
+### Diseñar para una escala imaginaria
+
+Una landing, un prototipo y un panel empresarial no necesitan el mismo número de capas. La arquitectura debe pagar su costo con cambios que realmente esperas.
+
+## ¿Cuándo merece la pena extraer una capa?
+
+Antes de crear un caso de uso, puerto o adaptador, pregunto:
+
+1. ¿Existe una regla independiente de React?
+2. ¿Este proveedor o contrato externo puede cambiar?
+3. ¿Necesito probar esta decisión sin renderizar una pantalla?
+4. ¿Más de una interfaz ejecutará la misma acción?
+5. ¿La transformación protege al resto del sistema de datos externos?
+
+Si casi todas las respuestas son “no”, mantengo el código cerca de la funcionalidad.
+
+## ¿Cuál es el criterio para decidir?
+
+La mejor arquitectura frontend no es la que exhibe más patrones. Es la que permite responder con claridad:
+
+- dónde vive una regla;
+- quién puede cambiarla;
+- qué depende del framework;
+- qué ocurrirá si cambia la API;
+- cómo comprobar que la decisión sigue siendo correcta.
+
+Empieza con componentes y funcionalidades claras. Extrae límites cuando el código te muestre una razón. Clean Architecture funciona mejor como una herramienta para controlar dependencias que como una plantilla que debes completar.

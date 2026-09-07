@@ -12,11 +12,11 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, description, pubDate, status, tags, image, imageAlt, liveUrl, githubUrl } = project.data;
+const { title, description, lang, pubDate, status, tags, image, imageAlt, liveUrl, githubUrl } = project.data;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -72,22 +72,15 @@ const { title, description, pubDate, status, tags, image, imageAlt, liveUrl, git
 
           <!-- Live Mode / Demo Button -->
           <div class="flex items-center gap-2.5">
-            {liveUrl ? (
+            {liveUrl && (
               <a
                 href={liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-all shadow-md select-none"
               >
-                <span>Live Mode ↗</span>
-              </a>
-            ) : (
-              <a
-                href="/#contact"
-                class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-all shadow-md select-none"
-              >
-                <span data-lang-en>Live Demo ↗</span>
-                <span data-lang-es>Live Demo ↗</span>
+                <span data-lang-en>View live ↗</span>
+                <span data-lang-es>Ver sitio ↗</span>
               </a>
             )}
             {githubUrl && (

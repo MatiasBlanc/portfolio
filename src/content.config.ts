@@ -8,6 +8,7 @@ const blog = defineCollection({
 		z.object({
 			title: z.string(),
 			description: z.string(),
+			lang: z.enum(['es', 'en']),
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			status: z.string(),
@@ -31,6 +32,7 @@ const projects = defineCollection({
 		z.object({
 			title: z.string(),
 			description: z.string(),
+			lang: z.enum(['es', 'en']),
 			pubDate: z.coerce.date(),
 			status: z.enum(['en_progreso', 'completado', 'pausado']),
 			tags: z.array(z.string()),

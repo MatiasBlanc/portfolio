@@ -1,518 +1,230 @@
 ---
-title: "El Setup Definitivo para Terminal: Mis Dotfiles"
-description: "El stack definitivo para desarrollo. De VSCode a Neovim: Configurando el stack definitivo"
-pubDate: 21 Jul 2026
+title: "¿Cómo organizar tus dotfiles para reconstruir tu entorno Linux?"
+description: "Cómo organizo Neovim, Kitty y mis herramientas de terminal, qué merece vivir en Git y qué aprendí después de convertir la configuración en un proyecto."
+lang: es
+pubDate: 2026-07-21
+updatedDate: 2026-09-03
 status: build
-updatedDate: 21 Jul 2026
 tags:
   - Terminal
   - Neovim
-  - Zsh
+  - Linux
 image: ../../assets/blog/dotfiles.webp
-imageAlt: "El Setup Definitivo para Terminal: Mis Dotfiles"
+imageAlt: "Editor Neovim y terminal Kitty con el tema Tokyo Night"
 faq:
-  - question: ¿Es necesario ser un experto para empezar a usar dotfiles?
-    answer: No. Puedes empezar copiando configs, pero es mejor que entiendas cada línea antes de incluirla. Conocer lo básico de Zsh, Neovim y la estructura de archivos te evitará frustraciones al depurar.
-  - question: ¿Qué diferencia hay entre una terminal como Kitty y el entorno de desarrollo integrado (VS Code)?
-    answer: Kitty es una terminal. VS Code es un editor con terminal integrado. La diferencia clave es que Kitty renderiza por GPU y permite splits nativos, mientras que el IDE trae más herramientas integradas pero consume más recursos.
-  - question: ¿Vale la pena el esfuerzo de migrar de VS Code a Neovim?
-    answer: Si pasas muchas horas escribiendo código, sí. La curva de aprendizaje es real, pero una vez que la superas, editas a la velocidad del pensamiento y sin un navegador que consuma memoria.
-  - question: ¿Cómo puedo mantener mis dotfiles sincronizados entre equipos?
-    answer: Suelo usar un repositorio Git y crear symlinks manualmente (o con una herramienta como Stow). Así cualquier cambio queda versionado y puedes reinstalarlo en otra máquina de forma muy rápida.
+  - question: "¿Necesito saber Lua para configurar Neovim?"
+    answer: "No para empezar. Puedes modificar opciones y keymaps básicos con poco Lua, pero conviene entender cada fragmento que copies antes de depender de él."
+  - question: "¿Debo copiar todos tus dotfiles?"
+    answer: "No. Usa el repositorio como referencia y adopta una pieza a la vez. Una configuración personal funciona cuando refleja tu flujo, no cuando reproduce el de otra persona."
+  - question: "¿Cómo sincronizo dotfiles entre equipos?"
+    answer: "Mantén en Git solo archivos portables, excluye secretos y datos de sesión, y enlaza o copia las configuraciones desde un repositorio clonado. Un script de instalación puede venir después."
 ---
 
-<div align="left">
+**Un repositorio de dotfiles debe conservar solo la configuración que puedes explicar y reconstruir: preferencias portables, dependencias declaradas y ningún secreto.** En mi caso reúne Neovim, Kitty y herramientas de terminal para recuperar un entorno Linux sin depender de la memoria.
 
-<div class="flex items-center gap-3 flex-wrap">
-  <img src="https://img.shields.io/badge/Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white" alt="Neovim" />
-  <img src="https://img.shields.io/badge/Kitty-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJDNi40NzcgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMnptMCAxOGMtNC40MTEgMC04LTMuNTg5LTgtOHMzLjU4OS04IDgtOCA4IDMuNTg5IDggOC0zLjU4OSA4LTggOHoiIGZpbGw9IiNmZmYiLz48L3N2Zz==&logoColor=white" alt="Kitty" />
-  <img src="https://img.shields.io/badge/Zsh-F15A24?style=for-the-badge&logo=zsh&logoColor=white" alt="Zsh" />
-  <img src="https://img.shields.io/badge/Starship-DD3B41?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMyA3djEwbDkgNSA5LTVIN0wxMiAyeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==&logoColor=white" alt="Starship" />
-</div>
+Durante años configuré el editor como quien ordena un escritorio: movía cosas hasta que se veían bien y esperaba no tener que repetirlo. Cada reinstalación demostraba que no tenía un sistema, solo una máquina cuidadosamente improvisada.
 
-> Si vas a pasar horas frente a una terminal, al menos que sea bonita
+Mis [dotfiles](https://github.com/MatiasBlanc/dotfiles) nacieron para cambiar eso. El repositorio conserva la configuración que puedo explicar, reconstruir y revisar; no una copia completa de mi carpeta personal.
 
----
+> Un buen setup no es el que tiene más plugins. Es el que puedes perder hoy y recuperar mañana sin depender de tu memoria.
 
-## 📖 Tabla de Contenidos
+## ¿Qué versiono en mis dotfiles?
 
-- [¿Qué es esto?](#-qué-es-esto)
-- [Estructura del Repo](#-estructura-del-repo)
-- [🚀 Kitty — La Terminal](#-kitty--la-terminal)
-- [⚡ Neovim — El Editor](#-neovim--el-editor)
-- [🐚 Zsh + Starship — El Shell](#-zsh--starship--el-shell)
-- [📦 Git — El Control de Versiones](#-git--el-control-de-versiones)
-- [🎨 Screenshots](#-screenshots)
-- [🛠️ Mejoras Pendientes](#️-mejoras-pendientes)
-- [📝 Licencia](#-licencia)
+El núcleo actual tiene tres partes:
 
----
-
-## 🤔 ¿Qué es esto?
-
-Estos son mis **dotfiles** — la configuración que convierte una terminal genérica en _mi_ terminal. Si eres de los que copian configs de YouTube sin saber qué hacen, bienvenido. Si eres de los que leen todo antes de copiar, **doble bienvenido**.
-
-> **Stack principal:** Neovim + Kitty + Zsh + Starship
-> **Lenguajes:** Python, JavaScript/TypeScript, React, Lua
-> **SO:** Fedora Linux (porque los rolling releases son para valientes)
-
----
-
-## 📁 Estructura del Repo
-
-```
+```text
 dotfiles/
-├── kitty/                  # Configuración de la terminal
-│   ├── kitty.conf          # Configuración principal
-│   └── tokyonight.conf     # Tema Tokyo Night
-│
-├── nvim/                   # Configuración de Neovim
-│   ├── init.lua            # Punto de entrada
+├── kitty/
+│   ├── kitty.conf
+│   └── tokyonight.conf
+├── nvim/
+│   ├── init.lua
+│   ├── lazy-lock.json
 │   ├── lua/
-│   │   ├── atajos.lua      # Keymaps personalizados
-│   │   ├── opciones.lua    # Opciones del editor
-│   │   ├── plugins.lua     # Carga de plugins (Lazy.nvim)
-│   │   ├── lsp_config.lua  # Configuración de LSPs
-│   │   ├── core/           # Configuraciones core
-│   │   └── plugins/        # Configs individuales de plugins
-│   ├── snippets/           # Snippets personalizados
-│   │   ├── python.lua      # Snippets de Python
-│   │   ├── javascript.lua  # Snippets de JS
-│   │   ├── react.lua       # Snippets de React
-│   │   └── html.lua        # Snippets de HTML
-│   └── folding/            # Persistencia de folds
-│
-├── zsh/                    # Configuración del shell
-│   ├── .zshrc              # Configuración de Zsh + Zinit
-│   └── starship.toml       # Tema del prompt
-│
-├── .gitconfig              # Configuración de Git
-├── .gitignore              # Archivos ignorados
-└── AGENTS.md               # Instrucciones para la IA
+│   │   ├── core/
+│   │   └── plugins/
+│   └── snippets/
+├── pi/
+│   └── agent/
+├── .gitconfig
+└── AGENTS.md
 ```
 
----
+También experimento con configuración de agentes y herramientas de terminal. Eso vuelve más importante separar **preferencias portables** de estado generado, cachés y credenciales.
 
-## 🚀 Kitty — La Terminal
+## ¿Qué regla uso para decidir qué entra al repositorio?
 
-### ¿Por qué Kitty y no Alacritty/Warp/la-que-esté-de-moda?
+Un archivo debe cumplir al menos una de estas condiciones:
 
-Porque Kitty tiene:
+- cambia deliberadamente cómo trabajo;
+- sería costoso reconstruirlo de memoria;
+- sirve como documentación ejecutable;
+- necesita historial para entender por qué cambió.
 
-- ✅ **GPU-accelerated** rendering
-- ✅ **Splits nativos** (no necesitas tmux para dividir pantalla)
-- ✅ **Protocolo de imágenes** (puedes ver imágenes en la terminal)
-- ✅ **Tabs con powerline** (porque lo bonito importa)
+No versiono un archivo solo porque existe dentro de `~/.config`.
 
-### Configuración destacada
+Quedan fuera:
 
-```conf
-# Fuentes — JetBrains Mono Nerd Font (la mejor para devs)
-font_family      family="JetBrainsMono Nerd Font"
-font_size        12.0
+- tokens y secretos;
+- historiales y sesiones;
+- cachés;
+- logs;
+- rutas privadas que solo funcionan en una máquina;
+- archivos generados que la herramienta puede reconstruir.
 
-# Layouts habilitados — splits y stack
-enabled_layouts splits, stack
+Esta frontera es más importante que la elección entre Neovim y VS Code.
 
-# Transparencia sutil (requiere compositor)
-background_opacity 0.95
+## ¿Cómo mantengo explícita la configuración de Neovim?
 
-# Powerline tabs (porque somos fancy)
-tab_bar_style powerline
-tab_powerline_style slanted
-```
-
-### Atajos de Kitty
-
-| Atajo             | Acción                 |
-| ----------------- | ---------------------- |
-| `Ctrl+Shift+H`    | Split horizontal       |
-| `Ctrl+Shift+V`    | Split vertical         |
-| `Ctrl+Shift+↑↓←→` | Navegar entre paneles  |
-| `Ctrl+C`          | Copiar (o interrumpir) |
-| `Ctrl+V`          | Pegar                  |
-
-### Tema: Tokyo Night 🌙
-
-El tema está en `kitty/tokyonight.conf` y es el mismo que uso en Neovim. **Consistencia visual es clave**.
-
-```
-background  #1a1b26
-foreground  #c0caf5
-cursor      #c0caf5
-```
-
-> 💡 **Tip:** Si quieres cambiar el tema, solo modifica el `include` en `kitty.conf`
-
----
-
-## ⚡ Neovim — El Editor
-
-### ¿Por qué Neovim y no VS Code?
-
-Porque después de la curva de aprendizaje (que sí, es empinada), editas código a la velocidad del pensamiento. Y porque **no necesitas un navegador para editar texto**.
-
-### Plugins Instalados
-
-| Plugin                  | Propósito                                |
-| ----------------------- | ---------------------------------------- |
-| `lazy.nvim`             | Gestor de plugins (el mejor, sin debate) |
-| `tokyonight.nvim`       | Tema visual                              |
-| `alpha-nvim`            | Dashboard de inicio                      |
-| `lualine.nvim`          | Barra de estado                          |
-| `bufferline.nvim`       | Pestañas de buffers                      |
-| `nvim-tree.lua`         | Explorador de archivos                   |
-| `telescope.nvim`        | Buscador fuzzy (el corazón del workflow) |
-| `nvim-lspconfig`        | Configuración de LSPs                    |
-| `mason.nvim`            | Instalador de LSPs/formatters            |
-| `nvim-cmp`              | Autocompletado                           |
-| `LuaSnip`               | Snippets                                 |
-| `nvim-treesitter`       | Resaltado de sintaxis avanzado           |
-| `gitsigns.nvim`         | Indicadores de Git en el editor          |
-| `conform.nvim`          | Formateo automático                      |
-| `toggleterm.nvim`       | Terminal integrada                       |
-| `comment.nvim`          | Comentar/descomentar código              |
-| `nvim-autopairs`        | Autocierre de paréntesis/llaves          |
-| `indent-blankline.nvim` | Guías de indentación                     |
-| `emmet-vim`             | Emmet para HTML/CSS                      |
-| `pi-agent.nvim`         | Integración con Pi Agent                 |
-
-### Lenguajes Soportados (LSP)
+Mi `init.lua` hace poco: define la tecla líder, carga opciones propias, instala `lazy.nvim` si falta y descubre los módulos de plugins.
 
 ```lua
-ensure_installed = { "html", "cssls", "ts_ls", "pyright", "lua_ls" }
-```
+vim.g.mapleader = " "
+require("core")
 
-- **HTML/CSS** — Web basics
-- **TypeScript/JavaScript** — Frontend y Node
-- **Python** — Pyright como LSP
-- **Lua** — Para configurar Neovim con Neovim 🤯
-
-### Keymaps Esenciales
-
-#### Navegación
-
-| Atajo         | Acción                          |
-| ------------- | ------------------------------- |
-| `Espacio + f` | Buscar archivos (Telescope)     |
-| `Espacio + g` | Buscar texto (Live Grep)        |
-| `Espacio + e` | Toggle explorador (NvimTree)    |
-| `Espacio + n` | Toggle explorador (alternativo) |
-| `Ctrl+\`      | Toggle terminal                 |
-
-#### Edición
-
-| Atajo         | Acción                                            |
-| ------------- | ------------------------------------------------- |
-| `jk` / `kj`   | Salir del modo insertar (todas las combinaciones) |
-| `Espacio + d` | Comentar/descomentar línea                        |
-| `Tab`         | Siguiente sugerencia de autocompletado            |
-| `Shift+Tab`   | Sugerencia anterior                               |
-
-#### Buffers
-
-| Atajo          | Acción           |
-| -------------- | ---------------- |
-| `Espacio + v`  | Buffer anterior  |
-| `Espacio + b`  | Buffer siguiente |
-| `Espacio + bd` | Cerrar buffer    |
-| `Ctrl+1`       | Ir al buffer 1   |
-
-#### Git (Gitsigns)
-
-| Atajo          | Acción                      |
-| -------------- | --------------------------- |
-| `]h` / `[h`    | Siguiente/anterior hunk     |
-| `Espacio + hs` | Stage hunk                  |
-| `Espacio + hr` | Reset hunk                  |
-| `Espacio + hp` | Preview hunk                |
-| `Espacio + hb` | Blame línea                 |
-| `Espacio + gg` | LazyGit (terminal flotante) |
-
-### Snippets Personalizados
-
-Tengo snippets para **Python**, **JavaScript**, **React** y **HTML**. Algunos ejemplos:
-
-#### Python
-
-```python
-# def + Tab → Función
-# defd + Tab → Función con docstring
-# class + Tab → Clase con __init__
-# try + Tab → Try/Except
-# main + Tab → if __name__ == "__main__"
-# prd + Tab → print(f"DEBUG variable: {variable}")
-```
-
-#### React
-
-```jsx
-// rfc + Tab → Componente funcional
-// rfcts + Tab → Componente con TypeScript
-// us + Tab → useState
-// ue + Tab → useEffect
-// hook + Tab → Custom hook
-// jmap + Tab → JSX .map()
-```
-
-### Configuración de Folding
-
-Neovim recuerda los folds entre sesiones gracias a:
-
-```lua
-vim.opt.viewdir = vim.fn.expand("~/.config/nvim/folding")
-
--- Auto-save folds al guardar
-vim.api.nvim_create_autocmd("BufWrite", {
-  pattern = "*",
-  command = "mkview"
-})
-
--- Auto-load folds al abrir
-vim.api.nvim_create_autocmd("BufRead", {
-  pattern = "*",
-  command = "silent! loadview"
+require("lazy").setup({
+  { import = "plugins" },
 })
 ```
 
-### Dashboard de Inicio
+Cada plugin tiene un archivo. No porque una carpeta por plugin sea universalmente mejor, sino porque puedo desactivar uno, revisar su configuración y entender su impacto sin recorrer un bloque enorme.
 
-Al abrir Neovim, te recibe un ASCII art con opciones rápidas:
+### El conjunto que realmente sostiene mi flujo
 
-```
-███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
-████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
-██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
-██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
-██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+| Necesidad | Herramienta |
+| --- | --- |
+| Buscar archivos y texto | Telescope |
+| Navegar el árbol | nvim-tree |
+| LSP e instalación | nvim-lspconfig + Mason |
+| Autocompletado | nvim-cmp |
+| Sintaxis estructural | Treesitter |
+| Formato | conform.nvim |
+| Señales de Git | gitsigns.nvim |
+| Snippets | LuaSnip |
+| Integración con el agente | pi-agent.nvim |
 
-          [ m b l a n c @nvim ]
-```
+La lista completa es más larga, pero esta tabla cuenta mejor la historia: cada dependencia debe responder a una fricción concreta.
 
----
+## ¿Qué keymaps sobreviven a las modas?
 
-## 🐚 Zsh + Starship — El Shell
+Los atajos más valiosos no son los más ingeniosos. Son los que uso hasta olvidarme de que los configuré.
 
-### ¿Por qué Zsh + Starship?
+```lua
+local map = vim.keymap.set
+local opts = { noremap = true, silent = true }
 
-- **Zsh** → Autocompletado superior, glob patterns, y plugins con Zinit
-- **Starship** → Prompt minimalista, rápido, y con información contextual
-
-### Zinit Plugins
-
-```bash
-# Plugins de Zinit (gestor de plugins para Zsh)
-zinit light zdharma-continuum/zinit-annex-as-monitor
-zinit light zdharma-continuum/zinit-annex-bin-gem-node
-zinit light zdharma-continuum/zinit-annex-patch-dl
-zinit light zdharma-continuum/zinit-annex-rust
-
-# Zoxide (navegación inteligente de directorios)
-zinit light ajeetdsouza/zoxide
-
-# Starship (prompt)
-zinit light starship/starship
+map("n", "<leader>w", ":w<CR>", opts)
+map("n", "<C-h>", "<C-w>h", opts)
+map("n", "<C-j>", "<C-w>j", opts)
+map("n", "<C-k>", "<C-w>k", opts)
+map("n", "<C-l>", "<C-w>l", opts)
+map("n", "<Esc>", ":noh<CR>", opts)
 ```
 
-### Herramientas en PATH
+También mantengo el cursor centrado al saltar resultados, conservo la selección después de indentar y separo “eliminar” de “sobrescribir el portapapeles”. Son detalles pequeños que eliminan interrupciones cientos de veces.
 
-```bash
-# npm global packages
-export PATH=~/.npm-global/bin:$PATH
+Un atajo muy específico ejecuta archivos sobre un RP2040:
 
-# Local binaries
-export PATH="/home/mblanc/.local/bin:$PATH"
-
-# Bun (runtime JS alternativo)
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+```lua
+map(
+  "n",
+  "<leader>r",
+  ":w<CR>:vsplit term://mpremote run %<CR>",
+  { desc = "Ejecutar script en RP2040" }
+)
 ```
 
-### Alias Importantes
+Ese *keymap* explica mejor por qué existen los dotfiles que cualquier captura bonita: adapta una herramienta general a una tarea que yo repito.
 
-```bash
-alias idea='~/programas/idea-2026.1.4/idea-IU-261.26222.65/bin/idea.sh'
+## ¿Qué consecuencias tienen estas opciones?
+
+Algunas preferencias son visuales; otras cambian cómo el editor protege el trabajo.
+
+```lua
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.undofile = true
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.clipboard = "unnamedplus"
 ```
 
-### Prompt de Starship
+Desactivar `swapfile` y `backup` reduce archivos auxiliares, pero también elimina mecanismos de recuperación. Solo tiene sentido porque conservo historial persistente de *undo* y versiono el código. Copiar esas líneas sin entender el intercambio sería una mala recomendación.
 
-El prompt muestra:
+Esa es una lección general: **cada opción debería poder explicarse como una decisión, no como una superstición heredada de otro README**.
 
-```
-@matias:~/proyecto  main ≡ +2⇡  python 3.11 node 20.12 ➜
-```
+## ¿Cómo configuro Kitty sin convertirlo en otro sistema operativo?
 
-- **Usuario y directorio** → Siempre visible (fondo azul Tokyo Night)
-- **Rama de Git** → Con indicadores de status (fondo púrpura)
-- **Versión de lenguaje** → Solo cuando estás en un proyecto de ese lenguaje
-- **Duración del comando** → Si tarda más de 2 segundos
-- **Hora** → A la derecha
-- **Carácter de éxito/error** → Verde `➜` o rojo `✗`
-
-#### Paleta de colores (Tokyo Night Storm)
-
-| Elemento           | Color    | Hex       |
-| ------------------ | -------- | --------- |
-| Username/Directory | Azul     | `#7aa2f7` |
-| Git branch         | Púrpura  | `#bb9af7` |
-| Python             | Amarillo | `#e0af68` |
-| Node.js            | Verde    | `#73daca` |
-| Rust               | Rojo     | `#f7768e` |
-| Go                 | Cyan     | `#7dcfff` |
-| Success            | Verde    | `#73daca` |
-| Error              | Rojo     | `#f7768e` |
-
----
-
-## 📦 Git — El Control de Versiones
+Uso Kitty por su renderizado acelerado, divisiones nativas y configuración en texto. Mi archivo define fuente, márgenes, alerta visual, opacidad, tema y unos pocos atajos.
 
 ```ini
-[user]
-    name = Matias Blanc
-    email = matias.f.blanc@gmail.com
+font_family family="JetBrainsMono Nerd Font"
+font_size 14.0
+enabled_layouts splits, stack
+background_opacity 0.95
 
-[init]
-    defaultBranch = main        # No más 'master'
-
-[core]
-    editor = nvim               # Neovim para commits
-
-[color]
-    ui = auto                   # Colores en terminal
-
-[pull]
-    rebase = false              # Merge por defecto al pull
-
-[alias]
-    st = status
-    co = checkout
-    pu = push
-    cm = commit -m
-    pl = pull
+map ctrl+shift+h launch --location=hsplit
+map ctrl+shift+v launch --location=vsplit
 ```
 
-### Aliases de Git
+El tema Tokyo Night mantiene una identidad visual común con Neovim. Me gusta que el entorno se vea cuidado, pero la estética tiene una condición: no puede impedir leer contraste, distinguir el foco o trabajar sin transparencia.
 
-| Alias              | Comando                   |
-| ------------------ | ------------------------- |
-| `git st`           | `git status`              |
-| `git co`           | `git checkout`            |
-| `git pu`           | `git push`                |
-| `git cm "mensaje"` | `git commit -m "mensaje"` |
-| `git pl`           | `git pull`                |
+## ¿Por qué importa `lazy-lock.json`?
 
-> ⚠️ Los aliases están definidos una sola vez en `[alias]`, sin secciones anidadas.
+Declarar plugins permite instalar “algo parecido” a mi editor. Versionar el *lockfile* permite reconstruir versiones concretas.
 
----
+Sin ese archivo, una instalación nueva puede traer cambios incompatibles aunque mi configuración no haya variado. Con él, actualizar se convierte en una decisión que Git puede mostrar y revertir.
 
-## 🎨 Screenshots
+Lo mismo aplica a cualquier entorno reproducible: la lista de dependencias describe la intención; el *lockfile* describe el estado.
 
-> _TODO: Agregar screenshots del setup en acción_
+## ¿Qué hice mal al principio?
 
-```bash
-# Para tomar un screenshot de Kitty:
-# Ctrl+Shift+P → save_png
-```
+### Documenté una configuración ideal, no la real
 
----
+Mi README llegó a mencionar carpetas y herramientas que ya no estaban en el repositorio. Una documentación desincronizada es peor que una breve: hace que una instalación falle mientras asegura que todo funciona.
 
-## 🛠️ Mejoras Pendientes
+Ahora trato el árbol real como fuente de verdad y evito prometer un instalador que todavía no existe.
 
-Cosas que deberían mejorar pero "funciona así que no lo toco":
+### Convertí opiniones en verdades
 
-### Neovim
+“Este es el mejor gestor” o “editarás a la velocidad del pensamiento” suenan bien, pero no ayudan. Neovim tiene una curva de aprendizaje y mantenimiento. VS Code resuelve muchas necesidades con menor costo inicial. La herramienta correcta depende del trabajo y de cuánto quieras convertir la configuración en una afición.
 
-- [ ] Agregar `which-key.nvim` para visualizar keymaps
-- [ ] Configurar `telescope-fzf-native` correctamente (ya está en deps pero no configurado)
-- [ ] Agregar soporte para debugging (`nvim-dap`)
-- [ ] Snippets para más lenguajes (Bash, SQL, Docker)
-- [ ] Configurar `noice.nvim` para UI de comandos mejorada
+### Guardé rutas absolutas
 
-### Kitty
+Una ruta como `/home/mblanc/...` funciona exactamente en un equipo. Prefiero `vim.fn.expand("~")`, variables de entorno o rutas calculadas desde el archivo cuando una configuración debe ser portable.
 
-- [ ] Agregar más temas alternativos
-- [ ] Configurar `kitten ssh` para remotos
-- [ ] Agregar custom kittens para workflows
+### Añadí plugins antes de aprender la función nativa
 
-### Zsh
+Cada plugin agrega carga, configuración, actualizaciones y posibilidades de conflicto. Primero intento resolver el problema con Neovim; después agrego una dependencia si mejora de forma clara la experiencia.
 
-- [ ] Agregar más plugins de Zinit (autosuggestions, syntax highlighting)
-- [ ] Configurar `fzf` como integración con Zsh
-- [ ] Agregar funciones personalizadas frecuentes
+## ¿Cómo empezar tus propios dotfiles?
 
-### General
+No copies el repositorio completo. Hazlo en capas:
 
-- [ ] Script de instalación automática (`install.sh`)
-- [ ] Stow para gestión de symlinks
-- [ ] Documentar dependencias del sistema
+1. versiona la configuración de una sola herramienta;
+2. elimina secretos y rutas personales;
+3. reinstálala manualmente en otro directorio o contenedor;
+4. documenta dependencias reales;
+5. añade *lockfiles*;
+6. crea enlaces simbólicos o un script solo cuando el proceso esté estable.
 
----
+Una prueba sencilla ayuda: si no puedes explicar una línea, coméntala o elimínala hasta saber por qué la necesitas. Para comprobar la reconstrucción, instala primero una sola herramienta en un directorio limpio o contenedor, verifica que las dependencias existen y documenta el resultado antes de añadir un instalador automático.
 
-## 📝 Instalación
+## ¿Qué falta para hacer reproducibles estos dotfiles?
 
-### Prerrequisitos
+Mi repositorio todavía necesita:
 
-```bash
-# Fedora
-sudo dnf install neovim kitty zsh starship git
+- un instalador idempotente;
+- comprobaciones de dependencias y versiones;
+- una estrategia clara para enlaces simbólicos;
+- una auditoría para eliminar archivos generados;
+- capturas actualizadas;
+- CI mínima que valide Lua y enlaces rotos.
 
-# Instalar Nerd Font
-mkdir -p ~/.local/share/fonts
-cd ~/.local/share/fonts
-curl -fLO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz
-tar xf JetBrainsMono.tar.xz
-fc-cache -fv
+No los escondo porque son parte del proyecto. Un setup personal nunca está “terminado”; lo importante es distinguir evolución de acumulación.
 
-# Cambiar shell por defecto
-chsh -s $(which zsh)
-```
+## ¿Cuál es el objetivo final de mis dotfiles?
 
-### Clonar y Configurar
+Mis dotfiles no buscan demostrar que uso herramientas difíciles. Buscan reducir el número de decisiones que repito cuando cambio de equipo, reinstalo Fedora o pruebo una nueva forma de trabajar.
 
-```bash
-# Clonar dotfiles
-git clone https://github.com/tu-usuario/dotfiles.git ~/dotfiles
-
-# Crear symlinks (manual por ahora)
-ln -sf ~/dotfiles/kitty ~/.config/kitty
-ln -sf ~/dotfiles/nvim ~/.config/nvim
-ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
-ln -sf ~/dotfiles/zsh/starship.toml ~/.config/starship.toml
-ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
-
-# Instalar plugins de Neovim
-nvim --headless "+Lazy! sync" +qa
-
-# Reiniciar terminal
-exec zsh
-```
-
----
-
-## 🤝 ¿Contribuir?
-
-Si quieres mejorar algo:
-
-1. Fork el repo
-2. Crea una rama (`git checkout -b feature/mejora-genial`)
-3. Commit (`git commit -m 'feat: agregar mejora genial'`)
-4. Push (`git push origin feature/mejora-genial`)
-5. Abre un Pull Request
-
----
-
-## 📜 Licencia
-
-MIT — Haz lo que quieras con esto. Si te funciona, genial. Si no, al menos aprendiste algo.
-
----
-
-<div align="center">
-
-**Hecho con ❤️ desde Chile.**
-<br>
-Por varias noches de "solo 5 minutos más configurando"
-![Last Commit](https://img.shields.io/github/last-commit/matiasblanc/dotfiles?style=flat-square)
-
-</div>
+La mejor señal de que funcionan no es una terminal espectacular. Es abrir una máquina limpia y volver a construir, con calma, un entorno que reconozco.

@@ -13,7 +13,7 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, updatedDate, tags = [] } = post.data;
+const { title, description, lang, pubDate, updatedDate, tags = [] } = post.data;
 const faq = post.data.faq;
 const estTime = readingTime(post.body);
 
@@ -28,7 +28,7 @@ ${post.body ?? ""}`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <BaseHead
       title={`${title} · Matías Blanc`}

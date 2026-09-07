@@ -1,55 +1,97 @@
 ---
-title: "Riego Mendoza — Smart Water & Agricultural Engineering Platform"
-description: "High-performance digital portal and automated client acquisition platform for Riego Mendoza, specializing in agricultural water engineering, vineyard irrigation, and smart automation."
+title: "Riego Mendoza: How did I design a mobile-first irrigation website?"
+description: "A mobile-first website that explains irrigation engineering services clearly and guides qualified visitors toward a useful WhatsApp conversation."
+lang: en
 pubDate: 2026-08-15
-status: "completado"
+status: completado
 tags:
-  - Astro
-  - TypeScript
-  - TailwindCSS
-  - Automation
-  - UI/UX
+  - React
+  - Vite
+  - Tailwind CSS
+  - UX/UI
+  - Local SEO
 image: ../../assets/projects/riegomendoza.webp
-imageAlt: "Riego Mendoza official web platform and smart irrigation solutions"
-liveUrl: "https://riegomendoza.ar"
+imageAlt: "Riego Mendoza website showing irrigation services and contact actions"
+liveUrl: "https://riego-mendoza.vercel.app"
+githubUrl: "https://github.com/MatiasBlanc/riego-mendoza"
 ---
 
-## Project Overview
+> **In one sentence:** I translated a specialized irrigation service into a website that a vineyard owner, contractor, or homeowner can understand from a phone in the field.
 
-**Riego Mendoza** is a specialized water engineering and precision irrigation firm based in Mendoza, Argentina. The platform provides a modern digital presence for landowners, vineyards, agricultural producers, and residential clients seeking smart, automated water management solutions.
+## The problem
 
-The project focuses on **technical clarity, agronomic brand identity, automated customer lead routing, and ultra-fast mobile loading.**
+Riego Mendoza works across automated irrigation, infrastructure, auditing, and hydroponics. That expertise is valuable, but it also creates a communication problem: a long technical catalogue can overwhelm a visitor before they understand which service fits their situation.
 
----
+The project therefore had two jobs:
 
-## What I Built
+1. establish a credible digital presence for the business;
+2. turn an imprecise visit into a useful first conversation.
 
-### 1. Tailored Agronomic Design System
-- Designed a custom, high-contrast visual identity featuring earthy moss tones (`#1F3D2B`), golden accents (`#B99A55`), clean water blues, and subtle topographic contour graphics that reflect precision field engineering.
-- Responsive typography pairing classical serif titles (*Cinzel*) with modern technical sans (*Montserrat*).
+## My role
 
-### 2. High-Performance Web Architecture
-- Built with a modern, lightweight web framework ensuring zero layout shift (CLS: 0), instantaneous paint times (LCP < 0.6s), and total responsiveness across smartphones and desktop monitors.
-- Minified critical assets, inline SVG vectors, and lazy-loaded interactive components for peak efficiency.
+I handled the product framing, visual direction, frontend implementation, responsive behavior, and contact journey. I also organized service content as data rather than embedding every detail directly in the UI.
 
-### 3. Automated WhatsApp & Lead Routing Engine
-- Embedded frictionless interactive quotation triggers directly linked to WhatsApp with pre-structured inquiry templates (crop type, area acreage, technical water requirements).
-- Dual-channel direct contact integration via async mail submission and social profile links.
+## From service list to decision path
 
----
+The page is structured around the questions a potential client asks:
 
-## Technical Highlights & Results
+- What problems can this team solve?
+- Do they understand agricultural and residential contexts?
+- What does each service involve?
+- How can I ask for an assessment without filling out a long form?
 
-* ⚡ **Blazing Fast Performance**: 99+ Lighthouse performance score with instant edge delivery.
-* 💧 **Frictionless Lead Funnel**: Custom URL & parameter builders that increase conversion rates for project quotation requests.
-* 📱 **Full Mobile Optimization**: Designed specifically for agricultural producers and contractors accessing technical specs from mobile devices in the field.
-* 🔍 **Regional SEO**: Geo-targeted meta tags, Schema.org local business structured data, and OpenGraph assets for search engine dominance across Mendoza and Cuyo.
+Service cards provide the first layer of information. FAQs answer common objections. Repeated but restrained calls to action let a visitor contact the business when they have enough context.
 
----
+## Design system rooted in the place
 
-## Tech Stack
+I avoided the generic blue palette common to engineering websites. The interface combines:
 
-* **Framework**: Modern Static Architecture & Semantic HTML5
-* **Styling**: Tailored Design Tokens, Custom CSS3 Grid & Flexbox, Fluid Typography
-* **Integration**: WhatsApp API Deep Links, Asynchronous Contact Form Submissions
-* **Deployment**: Global CDN / High-Availability Edge Hosting
+- deep moss green for agricultural context;
+- warm gold for high-intent actions;
+- cream surfaces for readability;
+- water imagery and restrained motion for continuity.
+
+The result feels connected to Mendoza without turning the page into a visual cliché.
+
+## Engineering decisions
+
+### React without unnecessary application complexity
+
+This is a focused commercial site, not a dashboard. React components are used where they improve maintainability—services, statistics, FAQs, navigation, and repeated UI—but the architecture stays intentionally small.
+
+### Content separated from presentation
+
+Service definitions live in JSON and are rendered by reusable components. That makes wording, ordering, and future additions easier to manage without duplicating markup.
+
+### Mobile contact as a first-class flow
+
+A floating WhatsApp action and contextual contact links remove friction for visitors already using their phones. The message starts the conversation; it does not pretend to replace the technical diagnosis the business still needs to perform.
+
+> A conversion is not a click on WhatsApp. It is the start of a conversation with enough context to be useful.
+
+## Current result
+
+The delivered site includes:
+
+- a responsive React interface built with Vite;
+- modular sections and reusable UI components;
+- service data separated from presentation;
+- scroll-triggered motion with reduced visual noise;
+- FAQ and contact paths designed for mobile use;
+- semantic metadata for the business and its regional audience.
+
+## What I would improve next
+
+- Add privacy-friendly analytics for service interest and contact clicks.
+- Validate the copy with real search and enquiry data instead of assumptions.
+- Introduce project case studies with concrete before-and-after outcomes.
+- Run recurring accessibility and performance audits as content changes.
+
+## Stack
+
+- **UI:** React 19
+- **Build tool:** Vite 8
+- **Styling:** Tailwind CSS 4
+- **Icons:** Lucide React and React Icons
+- **Content:** local structured data
+- **Deployment:** Vercel

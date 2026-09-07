@@ -1,5 +1,5 @@
 ---
-title: "Trending2Tweet: automatizar la búsqueda sin automatizar el criterio"
+title: "¿Cómo generar borradores para X con IA y revisión humana?"
 description: "Cómo construí un pipeline local en Python que convierte tendencias técnicas en borradores con fuentes, revisión humana y archivos Markdown."
 lang: es
 pubDate: 2026-07-01
@@ -14,6 +14,8 @@ image: ../../assets/blog/trending2tweet.webp
 imageAlt: "Flujo de Trending2Tweet desde las fuentes hasta un borrador en Obsidian"
 ---
 
+**Trending2Tweet es un pipeline local en Python que encuentra temas técnicos, prepara un brief con fuentes y genera borradores Markdown para X; la publicación requiere revisión humana.** Separar búsqueda, análisis y redacción permite verificar los hechos antes de decidir qué merece una postura propia.
+
 Encontrar temas para escribir parecía una tarea simple hasta que intenté hacerla todos los días. Abría GitHub, Hacker News y X; guardaba diez enlaces; leía dos; publicaba ninguno.
 
 Mi primera reacción fue automatizarlo todo. También fue la equivocada.
@@ -22,7 +24,7 @@ Un bot capaz de detectar una tendencia, resumirla y publicarla sin revisión aho
 
 > No quería una cuenta que pareciera activa. Quería un proceso que me ayudara a tener algo propio que decir.
 
-## El problema real no era escribir
+## ¿Qué problema resuelve Trending2Tweet?
 
 El cuello de botella estaba antes del primer párrafo:
 
@@ -36,7 +38,7 @@ Trending2Tweet automatiza esa parte. Puede tomar candidatos de GitHub, Hacker Ne
 
 El resultado **no se publica solo**. Queda esperando una revisión.
 
-## El pipeline actual
+## ¿Cómo funciona el pipeline de Trending2Tweet?
 
 ```text
 Fuentes técnicas
@@ -100,7 +102,7 @@ Debajo quedan el texto propuesto, sus metadatos y una lista de control:
 
 Ese último tramo es intencionalmente manual.
 
-## Decisiones técnicas poco glamorosas, pero importantes
+## ¿Qué decisiones técnicas resultaron importantes?
 
 ### SQLite para no repetirme
 
@@ -114,7 +116,7 @@ La configuración acepta endpoints compatibles con OpenAI. Así puedo cambiar mo
 
 Los generadores tienen límites máximos; las credenciales viven fuera del repositorio; y las operaciones sobre notas validan que el archivo sea Markdown y permanezca dentro de la bóveda autorizada. En una herramienta que mueve y archiva contenido, una ruta mal validada es más peligrosa que un tweet mediocre.
 
-## Lo que encontré al probarlo con contenido real
+## ¿Qué descubrí al probarlo con contenido real?
 
 La automatización sí resolvió el trabajo mecánico. Mi bóveda empezó a llenarse de borradores sobre repositorios, noticias y código.
 
@@ -129,7 +131,7 @@ Por eso cambié el objetivo. Ya no optimizo el sistema para “generar contenido
 3. ¿Qué parte aporté yo?
 4. ¿Por qué vale la pena publicar esto?
 
-## Lo que todavía está incompleto
+## ¿Qué sigue incompleto?
 
 Trending2Tweet sigue en desarrollo. Hoy tiene limitaciones concretas:
 
@@ -140,14 +142,14 @@ Trending2Tweet sigue en desarrollo. Hoy tiene limitaciones concretas:
 - las fuentes rápidas envejecen y requieren verificación el mismo día;
 - todavía debo medir si el sistema mejora mi constancia o solo aumenta el inventario.
 
-## El siguiente paso
+## ¿Cuál es el siguiente paso?
 
 Quiero convertir el checklist editorial en una máquina de estados: `capturado → verificado → editado → aprobado → publicado`. Ninguna pieza debería saltar desde “generada” hasta “publicada”.
 
 También quiero evaluar consistencia de voz contra mis propios textos publicados. No para que una IA me imite, sino para detectar señales de alerta: clichés, afirmaciones sin fuente, tono promocional y conclusiones que yo nunca defendería.
 
-## Lo que me enseñó este proyecto
+## ¿Qué me enseñó este proyecto?
 
-Construir el scraper, el cliente de LLM y la integración con Obsidian fue la parte directa. Lo difícil fue diseñar **dónde termina la automatización**.
+Construir el scraper, el cliente de LLM y la integración con Obsidian fue la parte directa. Lo difícil fue diseñar **dónde termina la automatización**. El flujo se complementa con [Hugr](/blog/hugr), que uso para organizar capturas y contexto en mi bóveda.
 
 En herramientas creativas, el mejor flujo no siempre es el que elimina más pasos. A veces es el que conserva el paso en el que una persona se hace responsable de lo que firma.
