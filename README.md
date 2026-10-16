@@ -59,7 +59,7 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 
 ## 🌐 Sitio en vivo
 
-El sitio está desplegado en **[matiasblanc.dev](https://matiasblanc.dev)**.
+El sitio está desplegado en **[mb.madeinchile.tech](https://mb.madeinchile.tech)**.
 
 ## 📄 Licencia
 

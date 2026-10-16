@@ -39,8 +39,8 @@ const imageSrc =
       ? image
       : "/project-itf.webp";
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://matiasblanc.dev");
-const imageURL = new URL(imageSrc, Astro.site || "https://matiasblanc.dev");
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://mb.madeinchile.tech");
+const imageURL = new URL(imageSrc, Astro.site || "https://mb.madeinchile.tech");
 
 const pathname = Astro.url.pathname.replace(/\/$/, "");
 const isContentDetail =
@@ -69,7 +69,7 @@ const schemaData =
         author: {
           "@type": "Person",
           name: author,
-          url: "https://matiasblanc.dev",
+          url: "https://mb.madeinchile.tech",
           sameAs: [
             "https://github.com/matiasblanc",
             "https://linkedin.com/in/matiasblanc",
@@ -80,7 +80,7 @@ const schemaData =
         publisher: {
           "@type": "Person",
           name: "Matías Blanc",
-          url: "https://matiasblanc.dev",
+          url: "https://mb.madeinchile.tech",
         },
         keywords: tags.length > 0 ? tags.join(", ") : undefined,
         inLanguage: "es",
@@ -90,10 +90,10 @@ const schemaData =
         "@graph": [
           {
             "@type": "Person",
-            "@id": "https://matiasblanc.dev/#person",
+            "@id": "https://mb.madeinchile.tech/#person",
             name: "Matías Blanc",
-            url: "https://matiasblanc.dev",
-            image: new URL("/project-itf.webp", Astro.site || "https://matiasblanc.dev").href,
+            url: "https://mb.madeinchile.tech",
+            image: new URL("/project-itf.webp", Astro.site || "https://mb.madeinchile.tech").href,
             jobTitle: "Full-Stack & Web Engineer",
             description:
               "Full-Stack & Web Developer specializing in React, Next.js, TypeScript, and Python.",
@@ -120,12 +120,12 @@ const schemaData =
           },
           {
             "@type": "WebSite",
-            "@id": "https://matiasblanc.dev/#website",
-            url: "https://matiasblanc.dev",
+            "@id": "https://mb.madeinchile.tech/#website",
+            url: "https://mb.madeinchile.tech",
             name: "Matías Blanc — Full-Stack & Web Engineer",
             description: description,
             publisher: {
-              "@id": "https://matiasblanc.dev/#person",
+              "@id": "https://mb.madeinchile.tech/#person",
             },
           },
         ],
@@ -144,6 +144,7 @@ const schemaData =
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 <meta name="theme-color" content="#000000" />
+<meta name="google-site-verification" content="ThixcXXg8BGNolAnJ0VlCvcW1BCq31n8ag2v_NjYd-s" />
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Open Graph / Facebook -->
@@ -161,7 +162,7 @@ const schemaData =
   <meta property="article:modified_time" content={updatedDate.toISOString()} />
 )}
 {type === "article" && (
-  <meta property="article:author" content="https://matiasblanc.dev" />
+  <meta property="article:author" content="https://mb.madeinchile.tech" />
 )}
 {type === "article" && tags.map((tag) => (
   <meta property="article:tag" content={tag} />

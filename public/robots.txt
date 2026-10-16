@@ -1,4 +1,4 @@
-# Robots.txt for https://matiasblanc.dev
+# Robots.txt for https://mb.madeinchile.tech
 User-agent: *
 Allow: /
 
@@ -34,5 +34,5 @@ User-agent: CCBot
 Allow: /
 
 # Sitemaps and Feeds
-Sitemap: https://matiasblanc.dev/sitemap-index.xml
-Sitemap: https://matiasblanc.dev/rss.xml
+Sitemap: https://mb.madeinchile.tech/sitemap-index.xml
+Sitemap: https://mb.madeinchile.tech/rss.xml

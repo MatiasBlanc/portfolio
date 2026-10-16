@@ -11,7 +11,7 @@ export async function GET(context) {
 	return rss({
 		title: SITE_TITLE,
 		description: SITE_DESCRIPTION,
-		site: context.site || 'https://matiasblanc.dev',
+		site: context.site || 'https://mb.madeinchile.tech',
 		items: sortedPosts.map((post) => ({
 			title: post.data.title,
 			description: post.data.description,
