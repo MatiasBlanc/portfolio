@@ -1,0 +1,18 @@
+---
+interface Props {
+  section: "blog" | "projects";
+  title: string;
+}
+
+const { section, title } = Astro.props;
+---
+
+<nav aria-label="Ruta de navegación" class="mb-6 text-xs text-muted">
+  <ol class="flex flex-wrap items-center gap-2">
+    <li><a href="/" class="hover:text-primary">Inicio</a></li>
+    <li aria-hidden="true">/</li>
+    <li><a href={`/${section}`} class="hover:text-primary">{section === "blog" ? "Blog" : "Proyectos"}</a></li>
+    <li aria-hidden="true">/</li>
+    <li aria-current="page">{title}</li>
+  </ol>
+</nav>

@@ -1,4 +1,4 @@
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 
 /**
  * Obtiene los posts del blog que están publicados, excluyendo los que
@@ -6,7 +6,7 @@ import { getCollection } from "astro:content";
  *
  * @returns Lista de posts publicados, sin ordenar.
  */
-export async function getPublishedPosts() {
+export async function getPublishedPosts(): Promise<CollectionEntry<"blog">[]> {
   const posts = await getCollection("blog");
   return posts.filter(
     (post) => post.data.status !== "en_progreso" && post.data.status !== "draft"
@@ -22,7 +22,7 @@ const WORDS_PER_MINUTE = 200;
  * @param body Contenido en texto plano o markdown
  * @returns Minutos estimados (mínimo 1)
  */
-export function readingTime(body: string): number {
-  const words = body.trim().split(/\s+/).length;
+export function readingTime(body: string | undefined): number {
+  const words = (body ?? "").trim().split(/\s+/).length;
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
 }

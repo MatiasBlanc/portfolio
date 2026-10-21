@@ -4,7 +4,6 @@ import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import ProjectCard from "../../components/ui/ProjectCard.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 import "../../global.css";
 
 const projects = (await getCollection("projects")).sort(
@@ -13,11 +12,12 @@ const projects = (await getCollection("projects")).sort(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es" data-lang="es">
   <head>
     <BaseHead
-      title={`Projects · ${SITE_TITLE}`}
-      description={SITE_DESCRIPTION}
+      title="Proyectos de desarrollo web y aplicaciones | Matías Blanc"
+      pageTitle="Proyectos"
+      description="Casos de estudio de sitios web y aplicaciones: FECHITAT, ITF App, Made in Chile y Riego Mendoza. Contexto, decisiones técnicas y límites de cada proyecto."
     />
   </head>
   <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">

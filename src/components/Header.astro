@@ -253,10 +253,9 @@ const navLinks = [
     if (!isContentDetail) return;
 
     const domain = window.location.hostname;
-    document.cookie = `googtrans=/es/${lang}; path=/;`;
-    document.cookie = `googtrans=/es/${lang}; path=/; domain=${domain}`;
-    document.cookie = `googtrans=/auto/${lang}; path=/;`;
-    document.cookie = `googtrans=/auto/${lang}; path=/; domain=${domain}`;
+    const sourceLang = document.documentElement.lang;
+    document.cookie = `googtrans=/${sourceLang}/${lang}; path=/;`;
+    document.cookie = `googtrans=/${sourceLang}/${lang}; path=/; domain=${domain}`;
 
     function triggerCombo() {
       const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
@@ -309,7 +308,7 @@ const navLinks = [
   }
 
   // Init from storage
-  const initialLang = localStorage.getItem("preferred_lang") || "en";
+  const initialLang = localStorage.getItem("preferred_lang") === "en" ? "en" : "es";
   applyLang(initialLang);
 
   // Toggle listener

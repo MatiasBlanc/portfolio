@@ -3,7 +3,7 @@ title: "¿Cómo aplicar Clean Architecture en React sin sobreingeniería?"
 description: "Una guía práctica para separar dominio, casos de uso, infraestructura y UI en React, con criterios para saber cuándo la arquitectura ayuda y cuándo sobra."
 lang: es
 pubDate: 2022-07-08
-updatedDate: 2026-09-03
+updatedDate: 2026-10-19
 status: build
 tags:
   - React
@@ -60,6 +60,13 @@ Una separación útil puede pensarse en cuatro zonas:
 2. **Aplicación:** acciones que el usuario puede ejecutar.
 3. **Infraestructura:** API, almacenamiento, analítica y otros detalles externos.
 4. **Presentación:** componentes, rutas, estado visual y accesibilidad.
+
+| Capa | Responsabilidad en este ejemplo | No debería conocer |
+| --- | --- | --- |
+| Dominio | Decidir si se puede suspender una cuenta | React, HTTP o almacenamiento |
+| Aplicación | Coordinar la suspensión mediante un contrato | Componentes y URLs concretas |
+| Infraestructura | Convertir el contrato en una petición HTTP | Estado visual del botón |
+| Presentación | Mostrar carga, éxito y errores | Detalles del formato de la API |
 
 La regla de dependencias apunta hacia el dominio:
 
@@ -245,6 +252,52 @@ Una estrategia razonable:
 
 Pruebas unitarias rápidas para reglas y transformaciones. Sin render, red ni *mocks* de framework.
 
+### Un test de dominio que puedes ejecutar sin React
+
+Guarda la interfaz `User` y la función `canSuspendUser` del primer ejemplo en `domain.ts`. Al lado, crea `domain.test.mjs`:
+
+```js
+import assert from "node:assert/strict";
+import test from "node:test";
+import { canSuspendUser } from "./domain.ts";
+
+test("impide suspender al último administrador activo", () => {
+  assert.equal(
+    canSuspendUser({ id: "admin-1", role: "admin", isActive: true }, 1),
+    false,
+  );
+});
+
+test("permite suspender a un administrador si queda otro activo", () => {
+  assert.equal(
+    canSuspendUser({ id: "admin-1", role: "admin", isActive: true }, 2),
+    true,
+  );
+});
+
+test("no bloquea a un miembro por el número de administradores", () => {
+  assert.equal(
+    canSuspendUser({ id: "member-1", role: "member", isActive: true }, 1),
+    true,
+  );
+});
+
+test("un administrador inactivo no es el último administrador activo", () => {
+  assert.equal(
+    canSuspendUser({ id: "admin-2", role: "admin", isActive: false }, 1),
+    true,
+  );
+});
+```
+
+Ejecuta con Node.js 22.12 o superior y su soporte de eliminación de tipos:
+
+```bash
+node --experimental-strip-types --test domain.test.mjs
+```
+
+No necesitas DOM ni un servidor para comprobar esta regla. El ejemplo presupone un recuento válido de administradores; no sustituye las validaciones de entrada, autorización ni concurrencia del backend. El ejecutor nativo está documentado en [Node.js Test runner](https://nodejs.org/api/test.html).
+
 ### Casos de uso
 
 Repositorios falsos pequeños que verifiquen decisiones: cuándo se llama a una dependencia, qué error se devuelve y qué datos se envían.
@@ -306,3 +359,14 @@ La mejor arquitectura frontend no es la que exhibe más patrones. Es la que perm
 - cómo comprobar que la decisión sigue siendo correcta.
 
 Empieza con componentes y funcionalidades claras. Extrae límites cuando el código te muestre una razón. Clean Architecture funciona mejor como una herramienta para controlar dependencias que como una plantilla que debes completar.
+
+Si estás usando este ejemplo para una candidatura, acompaña el código con [un caso de estudio que explique decisiones y límites](/blog/que-hace-valioso-un-proyecto-de-portafolio). Si todavía dependes de copiar ejemplos, prueba la [ruta para aprender a programar construyendo proyectos pequeños](/blog/como-aprender-a-programar-sin-coleccionar-tutoriales).
+
+## Fuentes y alcance de esta guía
+
+- [The Clean Architecture, Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html): origen de la regla de dependencias. La estructura de carpetas de este artículo es una adaptación, no una obligación del patrón.
+- [Thinking in React, documentación de React](https://react.dev/learn/thinking-in-react): descomposición de interfaces, estado mínimo y flujo de datos. React no exige implementar estas cuatro capas.
+- [Overview, documentación de TanStack Query](https://tanstack.com/query/latest/docs/framework/react/overview): alcance del estado de servidor, caché y sincronización; no reemplaza las reglas de negocio.
+- [Front-End Clean Architecture, Gentleman Programming](https://github.com/Gentleman-Programming/Front-End-Clean-Architecture): referencia que inspiró mis notas originales.
+
+El caso de suspensión es didáctico. Las decisiones deben adaptarse a las reglas, riesgos y tamaño de cada aplicación; añadir capas no demuestra por sí solo que una solución sea mejor.

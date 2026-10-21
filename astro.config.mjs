@@ -11,6 +11,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://mb.madeinchile.tech',
+  trailingSlash: 'never',
   integrations: [mdx(), sitemap(), react()],
 
   vite: {

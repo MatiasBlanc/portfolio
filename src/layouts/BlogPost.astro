@@ -6,16 +6,30 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ReaderSidebar from "../components/blog/ReaderSidebar.astro";
 import Faq from "../components/blog/Faq.astro";
-import { readingTime } from "../utils/blog";
+import { getPublishedPosts, readingTime } from "../utils/blog";
+import type { MarkdownHeading } from "astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+import ContentTranslation from "../components/ContentTranslation.astro";
 
 interface Props {
   post: CollectionEntry<"blog">;
+  headings: MarkdownHeading[];
 }
 
-const { post } = Astro.props;
+const { post, headings } = Astro.props;
 const { title, description, lang, pubDate, updatedDate, tags = [] } = post.data;
 const faq = post.data.faq;
 const estTime = readingTime(post.body);
+const tableOfContents = headings.filter((heading) => heading.depth === 2);
+const relatedPosts = (await getPublishedPosts())
+  .filter((entry) => entry.id !== post.id)
+  .map((entry) => ({
+    post: entry,
+    sharedTags: (entry.data.tags ?? []).filter((tag) => tags.includes(tag)).length,
+  }))
+  .filter((entry) => entry.sharedTags > 0)
+  .sort((a, b) => b.sharedTags - a.sharedTags || b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf())
+  .slice(0, 3);
 
 const rawMarkdown = `---
 title: "${title.replace(/"/g, '\\"')}"
@@ -32,8 +46,11 @@ ${post.body ?? ""}`;
   <head>
     <BaseHead
       title={`${title} · Matías Blanc`}
+      pageTitle={title}
       description={description}
       image={post.data.image}
+      imageAlt={post.data.imageAlt ?? undefined}
+      lang={lang}
       type="article"
       pubDate={pubDate}
       updatedDate={updatedDate}
@@ -61,6 +78,7 @@ ${post.body ?? ""}`;
       />
 
       <main class="max-w-2xl mx-auto py-6 sm:py-12">
+        <Breadcrumbs section="blog" title={title} />
         <!-- Back link -->
         <div class="mb-6 pb-3 sm:mb-10 sm:pb-4 border-b border-border text-xs">
           <a
@@ -75,12 +93,15 @@ ${post.body ?? ""}`;
 
         <!-- Article Header -->
         <header class="mb-8 pb-6 sm:mb-12 sm:pb-8 border-b border-border">
-          <div class="flex items-center gap-2 text-xs font-mono text-muted mb-3 sm:mb-4">
+          <p class="text-sm text-muted mb-3">
+            Por <a href="/#about" rel="author" class="text-primary hover:underline">Matías Blanc</a>
+          </p>
+          <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-muted mb-3 sm:mb-4">
             <FormattedDate date={pubDate} />
-            {estTime && <span>· {estTime} min read</span>}
+            {estTime && <span>· {estTime} min de lectura</span>}
             {updatedDate && (
               <span>
-                (Updated <FormattedDate date={updatedDate} />)
+                (Actualizado: <FormattedDate date={updatedDate} />)
               </span>
             )}
           </div>
@@ -105,6 +126,17 @@ ${post.body ?? ""}`;
             </div>
           )}
         </header>
+
+        {tableOfContents.length > 1 && (
+          <nav aria-labelledby="article-toc" class="mb-8 rounded-2xl border border-border bg-background-card p-5">
+            <h2 id="article-toc" class="font-semibold text-foreground mb-3">En este artículo</h2>
+            <ol class="space-y-2 text-sm leading-relaxed">
+              {tableOfContents.map((heading) => (
+                <li><a href={`#${heading.slug}`} class="text-primary hover:underline">{heading.text}</a></li>
+              ))}
+            </ol>
+          </nav>
+        )}
 
         <!-- Markdown Article Content (Styled with @tailwindcss/typography with high contrast) -->
         <article
@@ -139,6 +171,29 @@ ${post.body ?? ""}`;
           )}
         </article>
 
+        <aside aria-labelledby="article-author" class="mt-10 border-t border-border pt-6 text-sm text-muted leading-relaxed">
+          <h2 id="article-author" class="font-semibold text-foreground mb-2">Sobre el autor</h2>
+          <p>
+            Soy <a href="/#about" rel="author" class="text-primary hover:underline">Matías Blanc</a>,
+            desarrollador full-stack en Coquimbo, Chile, y estudiante de Ingeniería Civil en Computación en la UCN.
+            Documento las decisiones y limitaciones de <a href="/projects" class="text-primary hover:underline">mis proyectos</a>.
+          </p>
+        </aside>
+
+        {relatedPosts.length > 0 && (
+          <nav aria-labelledby="related-posts" class="mt-8 border-t border-border pt-6">
+            <h2 id="related-posts" class="text-lg font-semibold text-foreground mb-4">Artículos relacionados</h2>
+            <ul class="space-y-4">
+              {relatedPosts.map(({ post: related }) => (
+                <li>
+                  <a href={`/blog/${related.id}`} class="text-primary font-medium hover:underline">{related.data.title}</a>
+                  <p class="text-sm text-muted mt-1">{related.data.description}</p>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
         <!-- Footer navigation -->
         <div class="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-border flex items-center justify-between gap-4 text-xs sm:text-sm font-mono">
           <a
@@ -160,6 +215,7 @@ ${post.body ?? ""}`;
     </div>
 
     <Footer />
+    <ContentTranslation />
 
     <!-- Reading Progress Bar Logic -->
     <script>

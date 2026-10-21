@@ -5,18 +5,28 @@ import BlogCard from "../../components/ui/BlogCard.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import RssButton from "../../components/blog/RssButton.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+import { BLOG_DESCRIPTION, BLOG_TITLE } from "../../consts";
 import "../../global.css";
 
 const posts = (await getPublishedPosts()).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const startingPostIds = [
+  "clean-architecture-reactjs",
+  "que-hace-valioso-un-proyecto-de-portafolio",
+  "hugr",
+];
+const startingPosts = startingPostIds.flatMap((id) => {
+  const post = posts.find((entry) => entry.id === id);
+  return post ? [post] : [];
+});
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es" data-lang="es">
   <head>
-    <BaseHead title={`Articles & Builds · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={BLOG_TITLE} pageTitle="Blog" description={BLOG_DESCRIPTION} />
   </head>
   <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
     <Header />
@@ -26,10 +36,10 @@ const posts = (await getPublishedPosts()).sort(
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8">
         <div>
           <p class="text-xs font-mono font-semibold uppercase tracking-widest text-muted mb-1.5 sm:mb-3">
-            Matías Blanc · Writing
+            Matías Blanc · Blog técnico
           </p>
           <h1 class="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
-            Articles & Builds
+            Desarrollo web e IA aplicada
           </h1>
         </div>
 
@@ -37,15 +47,32 @@ const posts = (await getPublishedPosts()).sort(
         <RssButton />
       </div>
 
-      <!-- Prominent Search Bar (Clean and responsive) -->
+      <p class="max-w-3xl text-muted leading-relaxed mb-6 sm:mb-8">
+        Guías en español sobre React, TypeScript, arquitectura frontend y automatización con IA.
+        Comparto ejemplos de código, decisiones y límites de mis proyectos, no solo listas de herramientas.
+        <a href="/#about" rel="author" class="text-primary underline underline-offset-4">Conoce al autor</a>.
+      </p>
+
+      {startingPosts.length > 0 && (
+        <nav aria-labelledby="starting-guides" class="mb-8 rounded-2xl border border-border bg-background-card p-5">
+          <h2 id="starting-guides" class="font-semibold text-foreground mb-3">Empieza por estas guías</h2>
+          <ul class="space-y-2 text-sm">
+            {startingPosts.map((post) => (
+              <li><a href={`/blog/${post.id}`} class="text-primary hover:underline">{post.data.title}</a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      <!-- Búsqueda local; todos los artículos están enlazados en el HTML inicial. -->
       {posts.length > 0 && (
         <div class="mb-6 sm:mb-10 max-w-xl">
           <div class="relative">
             <input
               id="blog-search"
               type="search"
-              placeholder="Search articles by title or keyword..."
-              aria-label="Search articles"
+              placeholder="Busca por título, tema o tecnología..."
+              aria-label="Buscar artículos"
               class="w-full bg-background-card border border-border rounded-2xl pl-12 pr-5 py-3 sm:py-3.5 text-sm sm:text-base text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40 transition-all shadow-sm"
             />
             <svg
@@ -64,7 +91,7 @@ const posts = (await getPublishedPosts()).sort(
             </svg>
           </div>
           <p class="text-xs font-mono text-muted mt-2 sm:mt-3 pl-1">
-            <span id="blog-count">{`${posts.length} ${posts.length === 1 ? "article" : "articles"}`}</span>
+            <span id="blog-count" role="status">{`${posts.length} ${posts.length === 1 ? "artículo" : "artículos"}`}</span>
           </p>
         </div>
       )}
@@ -104,12 +131,12 @@ const posts = (await getPublishedPosts()).sort(
             ))}
           </div>
           <div id="blog-empty" class="hidden text-center py-12 sm:py-20">
-            <p class="text-muted text-base">No articles found matching your search.</p>
+            <p class="text-muted text-base">No hay artículos que coincidan con tu búsqueda.</p>
           </div>
         </>
       ) : (
         <div class="text-center py-12 sm:py-20">
-          <p class="text-muted text-base">No articles published yet.</p>
+          <p class="text-muted text-base">Todavía no hay artículos publicados.</p>
         </div>
       )}
     </main>
@@ -138,7 +165,7 @@ const posts = (await getPublishedPosts()).sort(
           if (show) visible++;
         });
 
-        if (countEl) countEl.textContent = `${visible} ${visible === 1 ? "article" : "articles"}`;
+        if (countEl) countEl.textContent = `${visible} ${visible === 1 ? "artículo" : "artículos"}`;
         emptyEl?.classList.toggle("hidden", visible > 0);
         gridEl?.classList.toggle("hidden", visible === 0);
       }

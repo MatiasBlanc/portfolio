@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#101114"/>
+  <rect x="64" y="72" width="72" height="8" rx="4" fill="#f97316"/>
+  <g font-family="DejaVu Sans, sans-serif">
+    <text x="64" y="220" font-size="76" font-weight="700" fill="#fafafa">Matías Blanc</text>
+    <text x="64" y="310" font-size="38" fill="#fafafa">Desarrollo web y automatizaciones</text>
+    <text x="64" y="375" font-size="30" fill="#b8b8bf">Astro · React · TypeScript · Python</text>
+    <text x="64" y="510" font-size="26" fill="#f97316">Coquimbo, Chile</text>
+    <text x="64" y="554" font-size="24" fill="#b8b8bf">mb.madeinchile.tech</text>
+  </g>
+</svg>

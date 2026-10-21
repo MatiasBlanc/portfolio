@@ -33,21 +33,6 @@ const posts = allPosts
     <BaseHead title={`${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
   <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
-    <!-- Initial Entrance Splash Screen (1 second, first visit only) -->
-    <div
-      id="page-entrance-loader"
-      class="fixed inset-0 z-[9999] bg-background flex flex-col items-center justify-center transition-opacity duration-500 select-none"
-      aria-hidden="true"
-    >
-      <LoadingKeyboard size="md" />
-    </div>
-    <script is:inline>
-      if (sessionStorage.getItem("portfolio_splash_shown")) {
-        const el = document.getElementById("page-entrance-loader");
-        if (el) el.style.display = "none";
-      }
-    </script>
-
     <Header />
 
     <main class="max-w-6xl mx-auto px-4 sm:px-6">
@@ -58,12 +43,12 @@ const posts = allPosts
       <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-10 pb-16 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 border-b border-border">
         <div class="lg:col-span-7">
           <h1 class="max-w-4xl text-[clamp(3rem,6vw,5rem)] font-extrabold leading-[0.98] tracking-[-0.055em] text-foreground">
-            <span data-lang-es>Creo software para problemas reales.</span>
-            <span data-lang-en>I build software for real-world problems.</span>
+            <span data-lang-es>Desarrollo web y automatizaciones en Chile.</span>
+            <span data-lang-en>Web development and automation in Chile.</span>
           </h1>
           <p class="max-w-2xl mt-6 text-base sm:text-lg leading-relaxed text-muted">
-            <span data-lang-es>Soy Matías. Desarrollo sitios, herramientas y automatizaciones para personas y organizaciones que necesitan algo que funcione, no solo que se vea bien.</span>
-            <span data-lang-en>I’m Matías. I build websites, tools and automations for people and organizations that need something that works, not just something that looks good.</span>
+            <span data-lang-es>Soy Matías Blanc, desarrollador full-stack en Coquimbo. Construyo sitios con Astro y React, aplicaciones y automatizaciones con TypeScript y Python para personas y organizaciones.</span>
+            <span data-lang-en>I’m Matías Blanc, a full-stack developer in Coquimbo, Chile. I build websites with Astro and React, applications and automations with TypeScript and Python for people and organizations.</span>
           </p>
           <div class="flex flex-wrap gap-3 mt-8">
             <a href="#projects" class="inline-flex items-center justify-center min-h-11 px-5 rounded-xl bg-primary text-sm font-semibold text-white hover:bg-primary-hover transition-colors">
@@ -689,19 +674,6 @@ const posts = allPosts
         if (submitBtn) submitBtn.disabled = false;
       });
 
-      // ── Entrance Splash Screen Loader (1 second on first visit only) ──
-      const entranceLoader = document.getElementById("page-entrance-loader");
-      if (entranceLoader && !sessionStorage.getItem("portfolio_splash_shown")) {
-        sessionStorage.setItem("portfolio_splash_shown", "true");
-        setTimeout(() => {
-          entranceLoader.classList.add("opacity-0", "pointer-events-none");
-          setTimeout(() => {
-            entranceLoader.style.display = "none";
-          }, 400);
-        }, 1000);
-      } else if (entranceLoader) {
-        entranceLoader.style.display = "none";
-      }
     </script>
   </body>
 </html>

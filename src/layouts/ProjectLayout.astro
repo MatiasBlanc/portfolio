@@ -6,6 +6,8 @@ import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import StatusBadge from "../components/ui/StatusBadge.astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+import ContentTranslation from "../components/ContentTranslation.astro";
 
 interface Props {
   project: CollectionEntry<"projects">;
@@ -18,18 +20,20 @@ const { title, description, lang, pubDate, status, tags, image, imageAlt, liveUr
 <!doctype html>
 <html lang={lang}>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <BaseHead
       title={`${title} · Matías Blanc`}
+      pageTitle={title}
       description={description}
       image={image}
+      imageAlt={imageAlt}
+      lang={lang}
     />
   </head>
   <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
     <Header />
 
     <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+      <Breadcrumbs section="projects" title={title} />
       <!-- Back nav -->
       <div class="mb-5 sm:mb-10">
         <a
@@ -164,5 +168,6 @@ const { title, description, lang, pubDate, status, tags, image, imageAlt, liveUr
     </main>
 
     <Footer />
+    <ContentTranslation />
   </body>
 </html>

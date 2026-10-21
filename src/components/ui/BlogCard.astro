@@ -38,9 +38,9 @@ const displayTags = tags.slice(0, 3);
 ---
 
 <a
-  href={`/blog/${id}/`}
+  href={`/blog/${id}`}
   class="group relative flex flex-col justify-between rounded-3xl border border-border bg-background-card hover:border-border-hover transition-all duration-200 overflow-hidden min-h-[280px] sm:min-h-[320px] h-full p-6 sm:p-7 block cursor-pointer select-none shadow-sm hover:shadow-md"
-  aria-label={`Read article: ${title}`}
+  aria-label={`Leer artículo: ${title}`}
 >
   {/* Full-cover image with bottom-up theme-adaptive gradient */}
   {image ? (
@@ -73,7 +73,7 @@ const displayTags = tags.slice(0, 3);
   <div class="relative z-10 flex items-center justify-between gap-2 text-xs font-mono text-muted pointer-events-none">
     <div class="flex items-center gap-1.5 text-xs text-muted">
       <FormattedDate date={pubDate} />
-      {readingTime && <span>· {readingTime} min read</span>}
+      {readingTime && <span>· {readingTime} min de lectura</span>}
     </div>
   </div>
 

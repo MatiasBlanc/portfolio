@@ -2,7 +2,11 @@
 User-agent: *
 Allow: /
 
-# Explicitly allow AI Search & LLM crawlers
+# Búsqueda en ChatGPT; independiente del permiso de entrenamiento de GPTBot.
+User-agent: OAI-SearchBot
+Allow: /
+
+# Permisos existentes de otros rastreadores; permitirlos no garantiza visibilidad.
 User-agent: GPTBot
 Allow: /
 

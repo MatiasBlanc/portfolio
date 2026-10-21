@@ -1,0 +1,13 @@
+<!-- El contenedor de traducción pertenece al body, nunca al head. -->
+<div id="google_translate_element" hidden></div>
+<script is:inline>
+  function googleTranslateElementInit() {
+    if (window.google && window.google.translate) {
+      new window.google.translate.TranslateElement(
+        { pageLanguage: document.documentElement.lang, includedLanguages: 'en,es', autoDisplay: false },
+        'google_translate_element'
+      );
+    }
+  }
+</script>
+<script is:inline src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
